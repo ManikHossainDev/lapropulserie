@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HLS Video Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: #0f0f0f;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
+      h1 {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      #video {
+        max-width: 100%;
+        background: #000;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      input {
+        width: 80%;
+        max-width: 700px;
+        padding: 12px;
+        margin: 15px 0;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        background: #e50914;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        display: block;
+        margin: 0 auto;
+      }
+      button:hover {
+        background: #f40612;
+      }
+      #debug {
+        background: #1a1a1a;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 6px;
+        text-align: left;
+        font-family: monospace;
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>HLS Video Player</h1>
+
+      <input
+        type="text"
+        id="urlInput"
+        value="https://d4k0cugb067ei.cloudfront.net/e-learning/journey-module/7c19a0e7-bbbd-4583-a72d-341b4a57e648/master.m3u8"
+        placeholder="Enter HLS Master URL (.m3u8)"
+      />
+
+      <button onclick="loadVideo()">Load & Play</button>
+
+      <br />
+      <video id="video" controls autoplay></video>
+
+      <div id="debug"></div>
+    </div>
+
+    <script>
+      const video = document.getElementById('video');
+      const urlInput = document.getElementById('urlInput');
+      const debugDiv = document.getElementById('debug');
+
+      function log(message, isError = false) {
+        const timestamp = new Date().toLocaleTimeString();
+        const color = isError ? '#ff4444' : '#44ff44';
+        debugDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+        console.log(message);
+      }
+
+      async function loadVideo() {
+        debugDiv.innerHTML = '';
+        const masterUrl = urlInput.value.trim();
+
+        if (!masterUrl) {
+          alert('Please enter a valid HLS master URL');
+          return;
+        }
+
+        log('Starting video load: ' + masterUrl);
+
+        // Clear previous source
+        if (video.src) video.src = '';
+        if (video.hlsInstance) {
+          video.hlsInstance.destroy();
+          video.hlsInstance = null;
+        }
+
+        // Native HLS support (Safari, iOS, macOS)
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          log('Using native HLS support');
+          video.src = masterUrl;
+          video.play().catch(err => log('Play error: ' + err, true));
+        }
+        // Use HLS.js for other browsers
+        else if (Hls.isSupported()) {
+          log('Using HLS.js');
+          
+          const hls = new Hls({
+            debug: false,
+            enableWorker: true,
+            loader: class CustomLoader extends Hls.DefaultConfig.loader {
+              constructor(config) {
+                super(config);
+                const load = this.load.bind(this);
+                
+                this.load = function(context, config, callbacks) {
+                  const s3Domain = 'la-propulserie-media.s3.eu-west-3.amazonaws.com';
+                  const cloudfrontDomain = 'd4k0cugb067ei.cloudfront.net';
+                  
+                  if (context.url.includes(s3Domain)) {
+                    const originalUrl = context.url;
+                    context.url = context.url.replace(s3Domain, cloudfrontDomain);
+                    log(`🔄 Rewriting URL:<br/>FROM: ${originalUrl}<br/>TO: ${context.url}`);
+                  } else {
+                    log(`✅ Loading: ${context.url}`);
+                  }
+                  
+                  return load(context, config, callbacks);
+                };
+              }
+            }
+          });
+
+          video.hlsInstance = hls;
+          hls.loadSource(masterUrl);
+          hls.attachMedia(video);
+
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            log('✅ Manifest parsed successfully');
+            video.play().catch(err => log('Play error: ' + err, true));
+          });
+
+          hls.on(Hls.Events.LEVEL_LOADED, (event, data) => {
+            log(`📊 Level loaded: ${data.level}`);
+          });
+
+          hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+            log(`📦 Fragment loaded: ${data.frag.relurl}`);
+          });
+
+          hls.on(Hls.Events.ERROR, (event, data) => {
+            const errorMsg = `❌ ${data.type} error: ${data.details}`;
+            log(errorMsg, true);
+            
+            if (data.fatal) {
+              switch(data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  log('🔄 Attempting to recover from network error...', true);
+                  hls.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  log('🔄 Attempting to recover from media error...', true);
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  log('💀 Fatal error, cannot recover', true);
+                  break;
+              }
+            }
+            
+            if (data.response) {
+              log(`Response details: ${JSON.stringify(data.response)}`, true);
+            }
+          });
+
+          hls.on(Hls.Events.KEY_LOADING, (event, data) => {
+            log(`🔑 Loading encryption key: ${data.frag.decryptdata.uri}`);
+          });
+
+          hls.on(Hls.Events.KEY_LOADED, (event, data) => {
+            log(`🔑 Encryption key loaded successfully`);
+          });
+
+        } else {
+          alert('Your browser does not support HLS video playback.');
+        }
+      }
+
+      // Load default video when page loads
+      window.onload = () => {
+        loadVideo();
+      };
+    </script>
+  </body>
+</html>

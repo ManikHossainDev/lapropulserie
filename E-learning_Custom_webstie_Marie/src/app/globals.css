@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #131313;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+}
+
+.ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.customSignUpButton {
+  background: radial-gradient(circle at center, #2d2a71 30%, #171636 100%);
+}
+
+.customSignUpButtonHover:hover {
+  background: radial-gradient(circle, #2d2a71 30%, #171636 100%) !important;
+  color: #ffffff !important;
+  transition: 0.6s ease !important;
+  border: 1px solid transparent;
+}
+
+
+.mycertificateFont {
+  font-family: "Great Vibes", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: #e54646;
+}
+
+.background-userFull_landingPage {
+  background-image: url("/Images/Home/Full_screen_banner.png");
+  background-size: cover;
+  background-position: center;
+}

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta name="color-scheme" content="light" />
+  <title>New Support Message</title>
+
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <style>table { border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; } td { font-family: Arial, sans-serif; }</style>
+  <![endif]-->
+
+  <style>
+    body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    body { margin:0 !important; padding:0 !important; width:100% !important; background-color:#f0f2f5; }
+    a[x-apple-data-detectors] { color:inherit !important; text-decoration:none !important; }
+
+    /* Mobile-first */
+    .email-container { width:100% !important; }
+    .content-padding { padding:24px 18px !important; }
+    .header-cell { padding:28px 18px !important; }
+    .footer-cell { padding:18px 18px 22px !important; }
+    .header-title { font-size:20px !important; }
+    .header-subtitle { font-size:13px !important; }
+    .divider-pad { padding:0 18px !important; }
+    .sub-footer { padding:20px 18px 0 !important; }
+    .ticket-box { padding:16px 18px !important; }
+    .ticket-label { font-size:11px !important; }
+    .ticket-value { font-size:14px !important; }
+
+    @media only screen and (min-width: 620px) {
+      .email-container { width:600px !important; max-width:600px !important; }
+      .content-padding { padding:36px 40px !important; }
+      .header-cell { padding:36px 40px !important; }
+      .footer-cell { padding:24px 40px 28px !important; }
+      .header-title { font-size:24px !important; }
+      .header-subtitle { font-size:14px !important; }
+      .divider-pad { padding:0 40px !important; }
+      .sub-footer { padding:24px 16px 0 !important; }
+      .ticket-box { padding:20px 24px !important; }
+      .ticket-label { font-size:12px !important; }
+      .ticket-value { font-size:15px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f2f5; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+
+  <!-- Preheader -->
+  <div style="display:none; max-height:0; overflow:hidden; font-size:1px; color:#f0f2f5;">
+    New support request from <%= userName %>
+    &#847; &#847; &#847; &#847; &#847; &#847;
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f2f5;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+
+        <!-- Brand -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+          <tr>
+            <td align="center" style="font-size:18px; font-weight:700; color:#1a1a2e; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+              &#9679;&nbsp; <%= appName %>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Card -->
+        <table role="presentation" class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);">
+
+          <!-- Header -->
+          <tr>
+            <td>
+              <%- include("partials/header", { title: "New Support Message", subtitle: "You have a new support request" }) %>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td class="content-padding" style="padding:24px 18px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; line-height:1.65; color:#3d3d4e;">
+
+              <p style="margin:0 0 14px;">
+                A new support message has been received. Please review the details below:
+              </p>
+
+              <!-- Ticket Info -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+                <tr>
+                  <td class="ticket-box" style="background:#f8f9ff; border-radius:12px; padding:16px 18px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="ticket-label" style="padding:4px 0; font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px;">From</td>
+                        <td class="ticket-value" style="padding:4px 0; font-size:14px; color:#1a1a2e; font-weight:600;"><%= userName %> (<%= userEmail %>)</td>
+                      </tr>
+                      <tr>
+                        <td class="ticket-label" style="padding:8px 0 4px; font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px;">Subject</td>
+                        <td class="ticket-value" style="padding:8px 0 4px; font-size:14px; color:#1a1a2e; font-weight:600;"><%= subject %></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Message -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+                <tr>
+                  <td style="background:#f9fafb; border-radius:12px; padding:16px 18px;">
+                    <p class="ticket-label" style="margin:0 0 8px; font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px;">Message</p>
+                    <p style="margin:0; font-size:14px; color:#3d3d4e; line-height:1.6; white-space:pre-wrap;"><%= message %></p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Priority Note -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="background:#fefce8; border-left:4px solid #facc15; border-radius:0 8px 8px 0; padding:12px 14px;">
+                    <p style="margin:0; font-size:13px; color:#854d0e; line-height:1.5;">
+                      &#9200;&nbsp; Please respond to the user as soon as possible.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td class="divider-pad" style="padding:0 18px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td style="border-top:1px solid #eef0f3; font-size:0; line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td><%- include("partials/footer") %></td>
+          </tr>
+
+        </table>
+
+        <!-- Sub-footer -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; margin:0 auto;">
+          <tr>
+            <td class="sub-footer" align="center" style="padding:20px 18px 0; font-size:11px; color:#9ca3af; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+               <p style="margin:0;">&copy; <%= new Date().getFullYear() %> <%= appName %>. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

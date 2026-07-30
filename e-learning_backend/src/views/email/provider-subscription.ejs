@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscription Started</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6fb; margin: 0; padding: 0; color: #1f2933; }
+    .wrapper { max-width: 620px; margin: 32px auto; background: #ffffff; border-radius: 14px; box-shadow: 0 10px 40px rgba(17, 23, 39, 0.08); overflow: hidden; }
+    .header { padding: 26px 28px 10px; border-bottom: 1px solid #eef1f7; }
+    .brand { font-weight: 700; letter-spacing: -0.3px; color: #0f172a; }
+    .content { padding: 26px 28px 32px; }
+    .title { font-size: 20px; margin: 0 0 10px; }
+    .muted { color: #4b5563; margin: 0 0 22px; line-height: 1.6; }
+    .card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; margin-bottom: 18px; }
+    .card strong { color: #111827; }
+    .btn { display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600; margin-top: 8px; }
+    .footer { padding: 18px 28px 26px; color: #6b7280; font-size: 13px; border-top: 1px solid #eef1f7; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="brand"><%= appName %></div>
+    </div>
+
+    <div class="content">
+      <p class="title">Your subscription is live</p>
+      <p class="muted">Hi <strong><%= name %></strong>, thanks for subscribing to the <strong><%= planName %></strong> plan.</p>
+
+      <% if (trialEndsOn) { %>
+        <div class="card">
+          <strong>Free trial</strong><br />
+          Starts: <%= trialStartsOn %><br />
+          Ends: <%= trialEndsOn %><br />
+          Duration: <%= trialDays %> days
+        </div>
+        <p class="muted" style="margin-top:0;">Enjoy full access during your trial. We will keep your account running seamlessly; you can add a payment method anytime before the trial ends.</p>
+      <% } else { %>
+        <div class="card">
+          <strong>Status</strong><br />
+          Your subscription is active and billing has started.
+        </div>
+      <% } %>
+
+      <% if (dashboardUrl) { %>
+        <a class="btn" href="<%= dashboardUrl %>">Open dashboard</a>
+      <% } %>
+    </div>
+
+    <div class="footer">
+      You are receiving this email because you subscribed as a provider on <%= appName %>.
+    </div>
+  </div>
+</body>
+</html>

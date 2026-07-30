@@ -1,0 +1,17 @@
+export const mentionsLegalesParagraphs = [
+    'MENTIONS LÉGALES',
+    'Éditeur du site',
+    'Le site est édité par La Propulserie, société par actions simplifiée unipersonnelle (SASU), au capital de 3000 euros, immatriculée au Registre du Commerce et des Sociétés de Colmar sous le numéro 104 483 615.',
+    'Siège social : 8 rue Currie, 68000 Colmar, France',
+    'Adresse e-mail : contact@lapropulserie.fr',
+    'Sites : www.lapropulserie.fr ; www.lapropulserie.com ; www.propulserie.fr ; www.propulserie.com',
+    'Directeur de la publication',
+    'Le directeur de la publication est le représentant légal de La Propulserie.',
+    'Hébergement',
+    'Pour toute information relative à l’hébergement du site, vous pouvez contacter La Propulserie à l’adresse contact@lapropulserie.fr.',
+    'Propriété intellectuelle',
+    'L’ensemble des éléments du site (textes, graphismes, logos, marques, logiciels, bases de données, etc.) est protégé par le droit de la propriété intellectuelle. Toute reproduction, représentation ou exploitation non autorisée est interdite.',
+    'Contact',
+    'Pour toute question relative aux présentes mentions légales : contact@lapropulserie.fr',
+    'Dernière mise à jour : 2026',
+];

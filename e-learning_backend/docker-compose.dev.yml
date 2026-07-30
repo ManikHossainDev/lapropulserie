@@ -1,0 +1,95 @@
+# Development Docker Compose file
+# Run with: docker-compose -f docker-compose.dev.yml up
+
+services:
+  api:
+    build: .
+    container_name: e-learning-api
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    depends_on:
+      - redis
+      - mongo
+      - mailhog
+    volumes:
+      - /tmp/videos:/tmp/videos
+    command: node dist/serverV2.js
+    networks:
+      - e-learning-dev-network
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      MONGODB_URI: mongodb://mongo:27017/e-learning
+      BACKEND_IP: 0.0.0.0
+  mongo:
+    image: mongo:7
+    container_name: e-learning-mongo-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", 'echo ''db.runCommand("ping").ok'' | mongosh --quiet']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - e-learning-dev-network
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: e-learning-mongo-express-dev
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-admin123}
+    ports:
+      - "${MONGO_EXPRESS_PORT:-8082}:8081"
+    restart: unless-stopped
+    networks:
+      - e-learning-dev-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: e-learning-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - e-learning-dev-network
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: e-learning-mailhog-dev
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: unless-stopped
+    networks:
+      - e-learning-dev-network
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  e-learning-dev-network:
+    driver: bridge
