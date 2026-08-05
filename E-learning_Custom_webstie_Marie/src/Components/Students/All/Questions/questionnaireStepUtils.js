@@ -5,14 +5,18 @@ export const getQuestionKey = (question, index) =>
 export const normalizeSingleSelectAnswer = (question, savedAnswer) => {
     if (savedAnswer === '' || savedAnswer == null) return '';
 
+    // Legacy: question was Multiple Select → answer may be an array; keep first pick.
+    const value = Array.isArray(savedAnswer) ? savedAnswer[0] : savedAnswer;
+    if (value === '' || value == null) return '';
+
     const options = question?.options || [];
     const bySl = options.find(
-        (opt) => opt.sl === savedAnswer || opt.sl === Number(savedAnswer)
+        (opt) => opt.sl === value || opt.sl === Number(value)
     );
     if (bySl) return bySl.sl;
 
-    const byDetails = options.find((opt) => opt.details === savedAnswer);
-    return byDetails?.sl ?? savedAnswer;
+    const byDetails = options.find((opt) => opt.details === value);
+    return byDetails?.sl ?? value;
 };
 
 const EN_VALUE_ALIASES = {

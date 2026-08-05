@@ -25,7 +25,10 @@ const IndividualCapsulesEdit = () => {
   const [updateCapsule, { isLoading }] = useUpdateIndividualcapsuleMutation();
 
   const { data } = useGetAllcapsuleQuery(id);
-  const capsules = data?.data?.results;
+  // sendResponse flattens paginateResults → data is the array (meta at top level)
+  const capsules = Array.isArray(data?.data)
+    ? data.data
+    : data?.data?.results || [];
   const [deleteCapsule] = useDeleteCapsuleMutation();
 
   const [title, setTitle] = useState('');

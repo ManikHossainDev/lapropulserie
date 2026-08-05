@@ -46,11 +46,13 @@ const getCapsuleCategories = catchAsync(async (req: Request, res: Response) => {
 
 const getCapsules = catchAsync(async (req: Request, res: Response) => {
   const { categoryId, rating, page = 1, limit = 10 } = req.query;
+  const studentId = getUserId(req);
   const result = await StudentDashboardService.getCapsules(
     categoryId as string,
     rating ? Number(rating) : undefined,
     Number(page),
     Number(limit),
+    studentId,
   );
 
   sendResponse(res, {

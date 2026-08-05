@@ -210,6 +210,7 @@ const getCapsules = async (
   ratingFilter?: number,
   page: number = 1,
   limit: number = 10,
+  studentId?: string,
 ): Promise<IGenericResponse<any>> => {
   const query: any = { isDeleted: false };
 
@@ -220,8 +221,8 @@ const getCapsules = async (
   const total = await IndividualCapsule.countDocuments(query);
 
   let capsules = await IndividualCapsule.find(query)
-    .select('title thumbnail capsuleCategoryId')
-    .populate('capsuleCategoryId', 'title price estimatedDuration')
+    .select('title thumbnail capsuleCategoryId price capsuleType')
+    .populate('capsuleCategoryId', 'title price estimatedDuration sellIndividually capsuleType')
     .sort({ title: 1 })
     .skip((page - 1) * limit)
     .limit(limit)
@@ -231,7 +232,35 @@ const getCapsules = async (
     capsules = capsules.filter(c => (c as any).averageRating >= ratingFilter);
   }
 
-  return paginateResults(capsules as CapsuleListItem[], total, page, limit);
+  let purchasedIds = new Set<string>();
+  if (studentId) {
+    const purchases = await PurchasedIndividualCapsule.find({
+      studentId: ensureObjectId(studentId, 'studentId'),
+      capsuleId: { $in: capsules.map(c => c._id) },
+      paymentStatus: TPaymentStatus.completed,
+      isDeleted: false,
+    })
+      .select('capsuleId')
+      .lean();
+    purchasedIds = new Set(purchases.map(p => String(p.capsuleId)));
+  }
+
+  const enriched = capsules.map(cap => {
+    const category = cap.capsuleCategoryId as any;
+    const effectivePrice =
+      cap.price != null ? Number(cap.price) : Number(category?.price ?? 0);
+    const isFree = !Number.isFinite(effectivePrice) || effectivePrice <= 0;
+    const isPurchased = purchasedIds.has(String(cap._id));
+    return {
+      ...cap,
+      price: Number.isFinite(effectivePrice) ? effectivePrice : 0,
+      isFree,
+      isPurchased,
+      canAccessContent: isFree || isPurchased,
+    };
+  });
+
+  return paginateResults(enriched, total, page, limit);
 };
 
 const getStudentProgress = async (studentId: string) => {

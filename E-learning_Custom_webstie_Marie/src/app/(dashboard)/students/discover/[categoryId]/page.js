@@ -14,10 +14,13 @@ export default function DiscoverCategoryPage() {
   const { categoryId } = useParams();
   const { data: categoryRes, isLoading } = useGetCategoryByIdQuery(categoryId);
   const { data: capsulesRes } = useGetCapsulesByCategoryQuery(categoryId);
-  const [purchaseCapsule] = usePurchaseCapsuleMutation();
+  const [purchaseCapsule, { isLoading: purchasing }] = usePurchaseCapsuleMutation();
 
   const category = categoryRes?.data;
-  const capsules = capsulesRes?.data?.results || [];
+  // sendResponse flattens paginateResults → data is the array (meta at top level)
+  const capsules = Array.isArray(capsulesRes?.data)
+    ? capsulesRes.data
+    : capsulesRes?.data?.results || [];
   const canPurchaseIndividually = category?.sellIndividually !== false;
 
   const handlePurchase = async (capsuleId) => {
@@ -77,28 +80,50 @@ export default function DiscoverCategoryPage() {
           <div className="grid gap-4 md:grid-cols-2">
             {capsules.map((cap) => {
               const id = cap.id || cap._id;
+              const price = Number(cap.price ?? category?.price ?? 0);
+              const isFree = cap.isFree === true || price <= 0;
+              const isPurchased = cap.isPurchased === true;
+              const canStart =
+                isFree || isPurchased || cap.canAccessContent === true;
+              const needsPurchase =
+                canPurchaseIndividually && !isFree && !isPurchased;
+
               return (
                 <div key={id} className="border rounded-xl p-4 flex flex-col gap-3">
                   {cap.thumbnail && (
                     <img src={cap.thumbnail} alt="" className="h-32 w-full object-cover rounded-lg" />
                   )}
                   <h3 className="font-semibold">{cap.title}</h3>
+                  <p className="text-xs text-gray-500">
+                    {isFree
+                      ? 'Gratuit'
+                      : isPurchased
+                        ? 'Déjà achetée'
+                        : `${price} €`}
+                  </p>
                   <div className="flex gap-2 mt-auto">
-                    {canPurchaseIndividually && (
+                    {needsPurchase && (
                       <button
                         type="button"
+                        disabled={purchasing}
                         onClick={() => handlePurchase(id)}
-                        className="px-4 py-2 text-sm border rounded-lg"
+                        className="px-4 py-2 text-sm bg-[#2d2a71] text-white rounded-lg disabled:opacity-60"
                       >
                         Acheter
                       </button>
                     )}
-                    <Link
-                      href={`/students/individual-capsule/${id}`}
-                      className="px-4 py-2 text-sm bg-[#2d2a71] text-white rounded-lg"
-                    >
-                      Commencer
-                    </Link>
+                    {canStart ? (
+                      <Link
+                        href={`/students/individual-capsule/${id}`}
+                        className="px-4 py-2 text-sm bg-[#2d2a71] text-white rounded-lg"
+                      >
+                        Commencer
+                      </Link>
+                    ) : (
+                      <span className="px-4 py-2 text-sm border rounded-lg text-gray-400 cursor-not-allowed">
+                        Verrouillé
+                      </span>
+                    )}
                   </div>
                 </div>
               );

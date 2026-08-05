@@ -109,8 +109,8 @@ export function buildExpeditionSynthesisPrompt(input: {
       return (
         `Capsule ${i + 1} — ${c.title}\n` +
         `Thème: ${c.mainTheme}\n` +
-        `Synthèse: ${c.observations}\n` +
-        `Réponses de l'apprenant (parties 3–4): ${answers}`
+        `Synthèse individuelle: ${c.observations}\n` +
+        `Réponses brutes de l'apprenant (Partie 3 réflexion + Partie 4 exercices): ${answers}`
       );
     })
     .join('\n\n');
@@ -119,8 +119,9 @@ export function buildExpeditionSynthesisPrompt(input: {
 Expédition : "${input.journeyTitle}"
 Apprenant : ${input.studentName}
 
-L'apprenant a complété toutes les capsules. Voici les rapports individuels
-ET les réponses brutes (y compris capsules 4 et 5) — utilise les deux :
+L'apprenant a complété toutes les capsules du parcours (1 à ${input.capsuleSummaries.length}).
+Voici les rapports individuels ET les réponses brutes pour CHAQUE capsule —
+y compris les capsules 4 et 5 / étapes finales. Tu DOIS les utiliser toutes :
 
 ${capsulesBlock}
 
@@ -129,7 +130,7 @@ ${input.resourceLibraryJson}
 
 Produis une synthèse globale JSON (même structure que rapport capsule) qui :
 - Identifie le fil conducteur de TOUTE l'expédition
-- Intègre les réponses des capsules (surtout les étapes finales)
+- Intègre explicitement les réponses des capsules finales (4 et 5 si présentes)
 - Croise les thèmes des capsules
 - Propose des recommandations pour la suite du parcours
 - Utilise UNIQUEMENT la bibliothèque pour les ressources`;

@@ -95,10 +95,15 @@ export default function RecommendationPanel({
           <div className="grid gap-3 sm:grid-cols-2">
             {rec.capsules.map((cap) => {
               const id = cap.id || cap._id;
+              const categoryId = cap.categoryId || cap.capsuleCategoryId;
+              // Route via Discover so unpaid capsules hit purchase/lock UI (#50)
+              const href = categoryId
+                ? `/students/discover/${categoryId}`
+                : `/students/discover`;
               return (
                 <Link
                   key={id}
-                  href={`/students/individual-capsule/${id}`}
+                  href={href}
                   className="flex gap-3 bg-white rounded-xl p-3 border hover:shadow-md transition"
                 >
                   {cap.thumbnail && (

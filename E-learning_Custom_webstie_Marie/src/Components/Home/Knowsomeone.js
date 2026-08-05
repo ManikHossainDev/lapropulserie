@@ -4,11 +4,16 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import url from '@/redux/api/baseUrl';
 
+const DEFAULT_PERSONAL_MESSAGE =
+    'J’ai pensé à toi et je voulais te partager ce bilan gratuit de La Propulserie. C’est un moment pour faire le point sur sa vie professionnelle, mieux comprendre ce que l’on ressent et prendre un peu de recul. Libre à toi de le découvrir si tu en as envie.';
+
 const Knowsomeone = () => {
     const [open, setOpen] = useState(false);
+    const [sent, setSent] = useState(false);
     const [friendName, setFriendName] = useState('');
     const [friendEmail, setFriendEmail] = useState('');
     const [senderName, setSenderName] = useState('');
+    const [personalMessage, setPersonalMessage] = useState(DEFAULT_PERSONAL_MESSAGE);
     const [submitting, setSubmitting] = useState(false);
 
     const features = [
@@ -51,12 +56,23 @@ const Knowsomeone = () => {
         setFriendName('');
         setFriendEmail('');
         setSenderName('');
+        setPersonalMessage(DEFAULT_PERSONAL_MESSAGE);
+    };
+
+    const closeModal = () => {
+        setOpen(false);
+        setSent(false);
+        resetForm();
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!friendName.trim() || !friendEmail.trim()) {
-            toast.error('Indique le prénom et l’e-mail de ton ami·e.');
+            toast.error('Indique le prénom et l’e-mail de ton proche.');
+            return;
+        }
+        if (!personalMessage.trim()) {
+            toast.error('Ajoute un petit message personnel.');
             return;
         }
 
@@ -69,15 +85,15 @@ const Knowsomeone = () => {
                     friendName: friendName.trim(),
                     friendEmail: friendEmail.trim(),
                     senderName: senderName.trim() || undefined,
+                    personalMessage: personalMessage.trim(),
                 }),
             });
             const data = await res.json().catch(() => ({}));
             if (!res.ok || data?.success === false) {
                 throw new Error(data?.message || 'Impossible d’envoyer l’invitation.');
             }
-            toast.success('Invitation envoyée ! Ton ami·e recevra un e-mail avec le lien du bilan gratuit.');
             resetForm();
-            setOpen(false);
+            setSent(true);
         } catch (err) {
             toast.error(err?.message || 'Impossible d’envoyer l’invitation.');
         } finally {
@@ -134,90 +150,125 @@ const Knowsomeone = () => {
 
                     <button
                         type="button"
-                        onClick={() => setOpen(true)}
+                        onClick={() => {
+                            setSent(false);
+                            setOpen(true);
+                        }}
                         className="w-3/4 py-3.5 rounded-md font-semibold text-white text-sm transition-opacity hover:opacity-90 active:scale-95"
                         style={{
                             background: 'linear-gradient(135deg, #f5a623 0%, #e8870a 100%)',
                             boxShadow: '0 4px 20px rgba(245,166,35,0.35)',
                         }}
                     >
-                        Envoyez-lui le bilan gratuit
+                        Offre-lui le bilan gratuit
                     </button>
                 </div>
             </div>
 
             {open && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
-                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-                        <div className="flex items-start justify-between gap-3 mb-4">
-                            <div>
-                                <h2 className="text-lg font-bold text-[#2d2a71]">Envoyer le bilan gratuit</h2>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Ton ami·e recevra un e-mail avec le lien pour créer un compte et commencer.
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+                        {sent ? (
+                            <div className="text-center py-4">
+                                <p className="text-2xl font-bold text-[#2d2a71]">Merci ❤️</p>
+                                <p className="mt-3 text-base text-gray-700">
+                                    Ton invitation a bien été envoyée.
                                 </p>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => setOpen(false)}
-                                className="text-gray-400 hover:text-gray-600 text-xl leading-none"
-                                aria-label="Fermer"
-                            >
-                                ×
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                            <label className="text-sm font-medium text-gray-700">
-                                Prénom de ton ami·e *
-                                <input
-                                    type="text"
-                                    value={friendName}
-                                    onChange={(e) => setFriendName(e.target.value)}
-                                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30"
-                                    placeholder="Alex"
-                                    required
-                                />
-                            </label>
-                            <label className="text-sm font-medium text-gray-700">
-                                E-mail de ton ami·e *
-                                <input
-                                    type="email"
-                                    value={friendEmail}
-                                    onChange={(e) => setFriendEmail(e.target.value)}
-                                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30"
-                                    placeholder="alex@email.com"
-                                    required
-                                />
-                            </label>
-                            <label className="text-sm font-medium text-gray-700">
-                                Ton prénom (optionnel)
-                                <input
-                                    type="text"
-                                    value={senderName}
-                                    onChange={(e) => setSenderName(e.target.value)}
-                                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30"
-                                    placeholder="Marie"
-                                />
-                            </label>
-
-                            <div className="flex gap-2 mt-2">
+                                <p className="mt-3 text-sm text-gray-500 leading-relaxed">
+                                    Un simple geste peut parfois faire toute la différence. Merci de l’avoir fait.
+                                </p>
                                 <button
                                     type="button"
-                                    onClick={() => setOpen(false)}
-                                    className="flex-1 py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600"
-                                >
-                                    Annuler
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60"
+                                    onClick={closeModal}
+                                    className="mt-6 w-full py-2.5 rounded-lg text-sm font-semibold text-white"
                                     style={{ background: 'linear-gradient(135deg, #f5a623 0%, #e8870a 100%)' }}
                                 >
-                                    {submitting ? 'Envoi…' : 'Envoyer'}
+                                    Fermer
                                 </button>
                             </div>
-                        </form>
+                        ) : (
+                            <>
+                                <div className="flex items-start justify-between gap-3 mb-4">
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#2d2a71]">Offrir le bilan gratuit</h2>
+                                        <p className="text-sm text-gray-500 mt-1 leading-relaxed">
+                                            Invite un proche à découvrir gratuitement La Propulserie. Il recevra ton invitation ainsi que le lien pour réaliser le bilan gratuit.
+                                        </p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={closeModal}
+                                        className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+                                        aria-label="Fermer"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Prénom de ton proche *
+                                        <input
+                                            type="text"
+                                            value={friendName}
+                                            onChange={(e) => setFriendName(e.target.value)}
+                                            className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30"
+                                            placeholder="Alex"
+                                            required
+                                        />
+                                    </label>
+                                    <label className="text-sm font-medium text-gray-700">
+                                        E-mail de ton proche *
+                                        <input
+                                            type="email"
+                                            value={friendEmail}
+                                            onChange={(e) => setFriendEmail(e.target.value)}
+                                            className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30"
+                                            placeholder="alex@email.com"
+                                            required
+                                        />
+                                    </label>
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Ton prénom (optionnel)
+                                        <input
+                                            type="text"
+                                            value={senderName}
+                                            onChange={(e) => setSenderName(e.target.value)}
+                                            className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30"
+                                            placeholder="Marie"
+                                        />
+                                    </label>
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Ton message *
+                                        <textarea
+                                            value={personalMessage}
+                                            onChange={(e) => setPersonalMessage(e.target.value)}
+                                            rows={5}
+                                            className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d2a71]/30 resize-y"
+                                            required
+                                        />
+                                    </label>
+
+                                    <div className="flex gap-2 mt-2">
+                                        <button
+                                            type="button"
+                                            onClick={closeModal}
+                                            className="flex-1 py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600"
+                                        >
+                                            Annuler
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={submitting}
+                                            className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60"
+                                            style={{ background: 'linear-gradient(135deg, #f5a623 0%, #e8870a 100%)' }}
+                                        >
+                                            {submitting ? 'Envoi…' : 'Envoyer'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

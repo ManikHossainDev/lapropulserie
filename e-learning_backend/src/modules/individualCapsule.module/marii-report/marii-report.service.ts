@@ -268,18 +268,28 @@ export class MariiReportService extends GenericService<typeof MariiReport, IMari
 
     const formatAnswersExcerpt = (doc: (typeof learnerAnswerDocs)[number] | undefined) => {
       if (!doc) return '';
-      const parts = [
-        ...(doc.reflectionAnswers || []),
-        ...(doc.exerciseAnswers || []),
-      ]
+      const reflection = (doc.reflectionAnswers || [])
         .map((item) => String(item?.answer || '').trim())
         .filter(Boolean);
-      if (!parts.length) return '';
-      const text = parts.join(' | ');
-      return text.length > 1200 ? `${text.slice(0, 1200)}…` : text;
+      const exercises = (doc.exerciseAnswers || [])
+        .map((item) => String(item?.answer || '').trim())
+        .filter(Boolean);
+
+      const chunks: string[] = [];
+      if (reflection.length) {
+        chunks.push(`Partie 3 (réflexion): ${reflection.join(' // ')}`);
+      }
+      if (exercises.length) {
+        chunks.push(`Partie 4 (exercices): ${exercises.join(' // ')}`);
+      }
+      if (!chunks.length) return '';
+
+      const text = chunks.join(' | ');
+      // Keep enough of late journey capsules (4–5) for the final synthèse.
+      return text.length > 2500 ? `${text.slice(0, 2500)}…` : text;
     };
 
-    // Preserve journey order (Steps 1→5) and pull raw Parts 3–4 answers into the synthèse.
+    // Preserve journey order (capsules 1→5) and pull raw Parts 3–4 answers into the synthèse.
     const capsuleSummaries = journeyCapsules.map((jc, index) => {
       const id = String(jc.individualCapsuleId);
       const reportDoc = reportByCapsuleId.get(id);

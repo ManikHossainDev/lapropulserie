@@ -11,9 +11,10 @@ import { IUser } from '../user.module/user/user.interface';
 import { UserProfile } from '../user.module/userProfile/userProfile.model';
 import { UserDevices } from '../user.module/userDevices/userDevices.model';
 import { IUserDevices } from '../user.module/userDevices/userDevices.interface';
-import { UserRoleDataService } from '../user.module/userRoleData/userRoleData.service';
+import { UserRoleData } from '../user.module/userRoleData/userRoleData.model';
 import { MentorProfile } from '../mentor.module/mentorProfile/mentorProfile.model';
 import { WalletService } from '../wallet.module/wallet/wallet.service';
+import { Wallet } from '../wallet.module/wallet/wallet.model';
 import { TokenService } from '../token/token.service';
 import { TokenType } from '../token/token.interface';
 import { OtpService } from '../otp/otp.service';
@@ -34,7 +35,6 @@ import { TStatusType } from '../user.module/user/user.constant';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const walletService = new WalletService();
-const userRoleDataService = new UserRoleDataService();
 const validateUserStatus = (user: IUser) => {
   if (user.isDeleted) {
     throw new ApiError(
@@ -80,11 +80,15 @@ const ensureMentorSideEffects = async (
     return;
   }
 
-  const wallet = await walletService.create({
-    userId,
-    amount: 0,
-    currency: TCurrency.eur,
-  });
+  // Idempotent: safe on re-register of unverified mentors (no duplicate wallet/profile).
+  let wallet = await Wallet.findOne({ userId, isDeleted: false });
+  if (!wallet) {
+    wallet = await walletService.create({
+      userId,
+      amount: 0,
+      currency: TCurrency.eur,
+    });
+  }
 
   await Promise.all([
     User.findByIdAndUpdate(userId, { walletId: wallet._id }),
@@ -93,7 +97,11 @@ const ensureMentorSideEffects = async (
       { userId },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     ),
-    userRoleDataService.create({ userId }),
+    UserRoleData.findOneAndUpdate(
+      { userId },
+      { userId },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    ),
   ]);
 
   // Notify admin — never block mentor registration if queue/redis is down
@@ -212,6 +220,11 @@ const createUser = async (userData: ICreateUser, userProfileId: string) => {
     existingUser.profileId = userData.profileId;
     await existingUser.save();
     await ensureProfileLink(userProfileId, existingUser._id);
+    await ensureMentorSideEffects(
+      existingUser._id,
+      userData.role,
+      `A ${userData.role} re-registered (unverified). Please review the account.`,
+    );
 
     const verificationToken = await TokenService.createVerifyEmailToken(
       existingUser as unknown as IUser,

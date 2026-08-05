@@ -55,6 +55,7 @@ router.route('/').post(
 );
 
 router.route('/:id').get(
+  auth(TRole.student, TRole.admin),
   (req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');

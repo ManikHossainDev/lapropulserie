@@ -86,6 +86,12 @@ const mentorOnboarding = apiSlice.injectEndpoints({
                 body: { subscriptionPlanId },
             }),
         }),
+        requestAdminApproval: builder.mutation({
+            query: () => ({
+                url: `/mentor-profiles/onboarding/request-approval`,
+                method: "PUT",
+            }),
+        }),
         goLive: builder.mutation({
             query: (data) => ({
                 url: `/mentor-profiles/onboarding/profile`,
@@ -109,5 +115,6 @@ export const {
     useUpdateInnerFuelMutation,
     useUpdateMethodsMutation,
     useSubscribeToPlanMutation,
+    useRequestAdminApprovalMutation,
     useGoLiveMutation,
 } = mentorOnboarding;

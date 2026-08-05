@@ -7,8 +7,18 @@ const capsuleJourneyApi = apiSlice.injectEndpoints({
       query: (id) => `/individual-capsule-category/${id}`,
     }),
     getCapsuleJourneyById: builder.query({
-      query: (id) => `/individual-capsule/${id}`,
-      providesTags: (result, error, id) => [{ type: "CapsuleJourney", id }],
+      query: (arg) => {
+        const id = typeof arg === 'string' ? arg : arg?.id || arg?.capsuleId;
+        const journeyId = typeof arg === 'string' ? undefined : arg?.journeyId;
+        const params = new URLSearchParams();
+        if (journeyId) params.set('journeyId', journeyId);
+        const qs = params.toString();
+        return `/individual-capsule/${id}${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: (result, error, arg) => {
+        const id = typeof arg === 'string' ? arg : arg?.id || arg?.capsuleId;
+        return [{ type: 'CapsuleJourney', id }];
+      },
       keepUnusedDataFor: 0,
       refetchOnMountOrArgChange: true,
       refetchOnFocus: true,

@@ -6,7 +6,10 @@ import { toast } from "sonner";
 
 const IndividualCapsules = () => {
   const { data, isLoading  , refetch} = useGetIndividualcapsuleQuery();
-  const categories = data?.data?.results || [];
+  // sendResponse flattens paginateResults → data is the array (meta at top level)
+  const categories = Array.isArray(data?.data)
+    ? data.data
+    : data?.data?.results || [];
   const [deleteIndividual] = useDeleteIndividualcapsuleMutation();
 
   const [search, setSearch] = useState("");

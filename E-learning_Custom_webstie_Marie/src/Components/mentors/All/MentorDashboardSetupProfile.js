@@ -44,7 +44,9 @@ const MentorDashboardSetupProfile = () => {
     const handleBack = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
     const handleComplete = () => {
-        toast.success('Configuration du profil terminée avec succès !');
+        toast.success(
+            'Demande de validation envoyée. Ton profil est en attente de revue.'
+        );
         router.push('/mentor');
     };
 

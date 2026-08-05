@@ -182,7 +182,10 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
     return Number.isFinite(n) && n >= 1 && n <= 6 ? n : 1;
   });
   const { data: capsuleRes, isLoading, isError: capsuleError } =
-    useGetCapsuleJourneyByIdQuery(capsuleId);
+    useGetCapsuleJourneyByIdQuery(
+      { id: capsuleId, journeyId: journeyId || undefined },
+      { skip: !capsuleId },
+    );
   const { data: answersRes, refetch: refetchAnswers } =
     useGetLearnerAnswersQuery(
       { capsuleId, journeyId: journeyId || undefined },
@@ -250,16 +253,16 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
     refetchAnswers();
   };
 
-  /** Flush in-memory drafts so Part 6 / synthèse never miss unblurred answers. */
+  /** Flush in-memory drafts so Parts 3–4 / synthèse never miss unblurred answers. */
   const flushDraftAnswers = async () => {
     const reflectionAnswers = Object.entries(reflectionDraft)
-      .filter(([, answer]) => answer != null && String(answer).length > 0)
+      .filter(([, answer]) => answer != null && String(answer).trim().length > 0)
       .map(([orderNumber, answer]) => ({
         orderNumber: Number(orderNumber),
         answer: String(answer),
       }));
     const exerciseAnswers = Object.entries(exerciseDraft)
-      .filter(([, answer]) => answer != null && String(answer).length > 0)
+      .filter(([, answer]) => answer != null && String(answer).trim().length > 0)
       .map(([orderNumber, answer]) => ({
         orderNumber: Number(orderNumber),
         answer: String(answer),
@@ -274,6 +277,20 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
       ...(exerciseAnswers.length ? { exerciseAnswers } : {}),
     });
     await refetchAnswers();
+  };
+
+  /** Persist answer steps before leaving them (Suivant / tabs / Précédent). */
+  const navigateToStep = async (nextStep) => {
+    const target = Number(nextStep);
+    if (!Number.isFinite(target) || target < 1 || target > 6 || target === step) return;
+    if (step === 3 || step === 4) {
+      try {
+        await flushDraftAnswers();
+      } catch (error) {
+        console.error('Failed to save answers before navigation:', error);
+      }
+    }
+    setStep(target);
   };
 
   useEffect(() => {
@@ -335,7 +352,7 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
   };
 
   const goNext = () => {
-    if (step < 6) setStep((s) => s + 1);
+    if (step < 6) navigateToStep(step + 1);
   };
 
   const content = useMemo(() => {
@@ -511,15 +528,26 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
   if (capsuleError || !capsule) {
     return (
       <div className="p-8 text-center text-red-500 space-y-3">
-        <p>Capsule introuvable ou inaccessible.</p>
-        {journeyId && (
+        <p>
+          Capsule introuvable, inaccessible, ou verrouillée (achat / expédition
+          requis).
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
           <Link
-            href={`/students/exploration-journey/${journeyId}`}
+            href="/students/discover"
             className="inline-block text-[#2d2a71] underline"
           >
-            Retour à l&apos;expédition
+            Retour à Discover
           </Link>
-        )}
+          {journeyId && (
+            <Link
+              href={`/students/exploration-journey/${journeyId}`}
+              className="inline-block text-[#2d2a71] underline"
+            >
+              Retour à l&apos;expédition
+            </Link>
+          )}
+        </div>
       </div>
     );
   }
@@ -540,7 +568,7 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
             <button
               key={p.id}
               type="button"
-              onClick={() => setStep(p.id)}
+              onClick={() => navigateToStep(p.id)}
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
                 step === p.id ? 'bg-[#2d2a71] text-white' : 'bg-gray-100 text-gray-600'
               }`}
@@ -556,7 +584,7 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
           <button
             type="button"
             disabled={step <= 1}
-            onClick={() => setStep((s) => s - 1)}
+            onClick={() => navigateToStep(step - 1)}
             className="px-4 py-2 rounded-lg border disabled:opacity-40"
           >
             Précédent

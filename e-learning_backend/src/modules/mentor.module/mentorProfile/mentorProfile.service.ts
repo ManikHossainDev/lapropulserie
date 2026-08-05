@@ -98,9 +98,17 @@ export class MentorProfileService extends GenericService<
       {
         step: 5,
         key: 'goLive',
-        isCompleted: profile.isLive === true,
+        // Approval request (or later go-live) completes this step — do not require isLive for #43.
+        isCompleted:
+          profile.isLive === true ||
+          [
+            THaveAdminApproval.inRequest,
+            THaveAdminApproval.interviewScheduled,
+            THaveAdminApproval.approved,
+          ].includes(profile.haveAdminApproval),
         data: {
           isLive: profile.isLive,
+          approvalStatus: profile.haveAdminApproval,
         },
       },
     ];

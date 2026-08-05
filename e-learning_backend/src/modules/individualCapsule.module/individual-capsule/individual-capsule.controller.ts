@@ -15,6 +15,8 @@ import {
   VideoUploadTokenMap,
 } from '../../../services/video-processing-queue.service';
 import { logger } from '../../../shared/logger';
+import { TRole } from '../../../middlewares/roles';
+import { assertStudentCapsuleAccess } from '../shared/capsule-access.helper';
 
 function videoDebug(step: string, payload: unknown) {
   logger.info(`[VIDEO DEBUG] ${step} ${JSON.stringify(payload)}`);
@@ -163,6 +165,41 @@ export class IndividualCapsuleController extends GenericController<
   constructor() {
     super(new IndividualCapsuleService(), 'IndividualCapsule');
   }
+
+  /**
+   * Student must own / unlock the capsule (#50). Admins keep full access for CMS.
+   * Optional `?journeyId=` scopes expedition unlock.
+   */
+  getById = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id as string;
+    const role = req.user?.role;
+    const userId = (req.user?.userId || req.user?._id) as string | undefined;
+
+    if (role === TRole.student) {
+      if (!userId) {
+        throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
+      }
+      const journeyId =
+        typeof req.query.journeyId === 'string' ? req.query.journeyId : undefined;
+      await assertStudentCapsuleAccess(userId, id, { journeyId });
+    } else if (role !== TRole.admin) {
+      throw new ApiError(StatusCodes.FORBIDDEN, 'You are not authorized');
+    }
+
+    const result = await this.service.getById(id);
+    if (!result) {
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        `Object with ID ${id} not found`,
+      );
+    }
+
+    sendResponse(res, {
+      code: StatusCodes.OK,
+      data: result,
+      message: 'IndividualCapsule retrieved successfully',
+    });
+  });
 
   create = catchAsync(async (req: Request, res: Response) => {
     let data: IIndividualCapsule = req.body;

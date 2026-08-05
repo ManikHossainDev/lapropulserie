@@ -151,6 +151,7 @@ const MentorProfileSchema = new Schema<IMentorProfile>(
       enum: [
         THaveAdminApproval.none,
         THaveAdminApproval.inRequest,
+        THaveAdminApproval.interviewScheduled,
         THaveAdminApproval.approved,
         THaveAdminApproval.rejected,
       ],

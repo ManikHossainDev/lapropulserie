@@ -5,6 +5,7 @@ import sendResponse from '../../shared/sendResponse';
 import ApiError from '../../errors/ApiError';
 import { chatWithLuna } from './luna.service';
 import { IndividualCapsule } from '../individualCapsule.module/individual-capsule/individual-capsule.model';
+import { assertStudentCapsuleAccess } from '../individualCapsule.module/shared/capsule-access.helper';
 
 export const lunaChat = catchAsync(async (req: Request, res: Response) => {
   const studentId = req.user?.userId as string;
@@ -12,7 +13,11 @@ export const lunaChat = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'User not authenticated');
   }
 
-  const { capsuleId, step, message } = req.body;
+  const { capsuleId, step, message, journeyId } = req.body;
+
+  await assertStudentCapsuleAccess(studentId, capsuleId, {
+    journeyId: typeof journeyId === 'string' ? journeyId : undefined,
+  });
 
   const capsule = await IndividualCapsule.findById(capsuleId)
     .select('title introduction inspiration reflection science')

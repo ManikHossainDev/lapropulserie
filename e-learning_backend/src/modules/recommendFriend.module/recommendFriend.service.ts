@@ -8,6 +8,7 @@ type RecommendFriendInput = {
   friendName: string;
   friendEmail: string;
   senderName?: string;
+  personalMessage: string;
 };
 
 const renderTemplate = async (templateName: string, data: Record<string, unknown>) => {
@@ -21,10 +22,15 @@ const renderTemplate = async (templateName: string, data: Record<string, unknown
 export const sendRecommendFriendInvite = async (input: RecommendFriendInput) => {
   const friendName = input.friendName.trim();
   const friendEmail = input.friendEmail.trim().toLowerCase();
-  const senderName = (input.senderName || '').trim() || 'Un ami';
+  const senderName = (input.senderName || '').trim() || 'Un proche';
+  const personalMessage = (input.personalMessage || '').trim();
 
   if (!friendEmail || !friendName) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Friend name and email are required');
+  }
+
+  if (!personalMessage) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Personal message is required');
   }
 
   const clientBase = (config.client.url || 'http://localhost:8002').replace(/\/$/, '');
@@ -34,6 +40,7 @@ export const sendRecommendFriendInvite = async (input: RecommendFriendInput) => 
   const html = await renderTemplate('recommend-friend', {
     friendName,
     senderName,
+    personalMessage,
     bilanUrl,
   });
 

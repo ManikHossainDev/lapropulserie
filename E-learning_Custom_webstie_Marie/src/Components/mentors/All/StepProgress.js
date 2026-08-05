@@ -5,7 +5,7 @@ const steps = [
     { number: 2, label: 'Mission' },
     { number: 3, label: 'Énergie intérieure' },
     { number: 4, label: 'Méthodes' },
-    { number: 5, label: 'Mise en ligne' },
+    { number: 5, label: 'Validation' },
 ];
 
 const StepProgress = ({ currentStep = 1, onStepClick }) => {

@@ -14,6 +14,27 @@ const isFreeJourneyDoc = (journey?: { journeyType?: string; price?: number } | n
   return journey.price === 0 || journey.price == null;
 };
 
+/** Effective commercial price: capsule field first, then category. */
+const resolveEffectivePrice = (
+  capsule: { price?: number | null },
+  category?: { price?: number | null } | null,
+) => {
+  const raw =
+    capsule.price != null && capsule.price !== undefined
+      ? capsule.price
+      : category?.price;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 0;
+};
+
+/**
+ * Gate learner access to individual-capsule content (#50 paywall).
+ *
+ * Free: effective price <= 0.
+ * Paid Discover: requires completed individual purchase (or gifted).
+ * Expedition: requires matching journeyId + free journey OR completed journey purchase.
+ * Capsules linked to a free expedition must NOT unlock Discover-only access without journey context.
+ */
 export async function assertStudentCapsuleAccess(
   studentId: string,
   capsuleId: string,
@@ -33,10 +54,6 @@ export async function assertStudentCapsuleAccess(
     throw new ApiError(StatusCodes.NOT_FOUND, 'Capsule not found');
   }
 
-  if (capsule.capsuleType === 'free') {
-    return;
-  }
-
   const category = capsule.capsuleCategoryId
     ? await IndividualCapsuleCategory.findOne({
         _id: capsule.capsuleCategoryId,
@@ -45,6 +62,8 @@ export async function assertStudentCapsuleAccess(
         .select('sellIndividually price capsuleType')
         .lean()
     : null;
+
+  const effectivePrice = resolveEffectivePrice(capsule, category);
 
   // Explicit journey from the student URL — strongest signal.
   if (options?.journeyId && mongoose.isValidObjectId(options.journeyId)) {
@@ -69,56 +88,52 @@ export async function assertStudentCapsuleAccess(
         return;
       }
 
-      // Completed payment, or a started checkout (pending) for this journey
       const journeyPurchase = await PurchasedJourney.findOne({
         studentId: studentObjectId,
         journeyId: journeyObjectId,
         isDeleted: false,
-        paymentStatus: { $in: ['completed', 'pending'] },
+        paymentStatus: 'completed',
       }).lean();
       if (journeyPurchase) return;
+
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        'You need to purchase this expedition before continuing',
+      );
     }
   }
 
-  const journeyLinks = await JourneyCapsule.find({
-    individualCapsuleId: capsuleObjectId,
+  // Free individual capsules (no price) — still block journey-only catalogue items without journey context.
+  if (effectivePrice <= 0) {
+    if (category?.sellIndividually === false) {
+      const linkedFreeUnlock = await hasCompletedOrFreeJourneyAccess(
+        studentObjectId,
+        capsuleObjectId,
+      );
+      if (linkedFreeUnlock) return;
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        'This capsule is only available through an Expedition Journey',
+      );
+    }
+    return;
+  }
+
+  // Paid individual purchase
+  const individualPurchase = await PurchasedIndividualCapsule.findOne({
+    studentId: studentObjectId,
+    capsuleId: capsuleObjectId,
     isDeleted: false,
-  })
-    .select('journeyId')
-    .lean();
+    paymentStatus: 'completed',
+  }).lean();
+  if (individualPurchase) return;
 
-  if (journeyLinks.length) {
-    const journeyIds = journeyLinks.map(link => link.journeyId);
-
-    const journeyPurchase = await PurchasedJourney.findOne({
-      studentId: studentObjectId,
-      journeyId: { $in: journeyIds },
-      isDeleted: false,
-      paymentStatus: { $in: ['completed', 'pending'] },
-    }).lean();
-    if (journeyPurchase) return;
-
-    // Free expeditions: journeyType "free" OR price 0 (price alone was missing free gifts)
-    const freeJourneys = await Journey.find({
-      _id: { $in: journeyIds },
-      isDeleted: false,
-      $or: [{ journeyType: 'free' }, { price: 0 }, { price: { $exists: false } }],
-    })
-      .select('_id')
-      .lean();
-
-    if (freeJourneys.length) {
-      const freeClaim = await PurchasedJourney.findOne({
-        studentId: studentObjectId,
-        journeyId: { $in: freeJourneys.map(j => j._id) },
-        isDeleted: false,
-      }).lean();
-      if (freeClaim) return;
-
-      // Authenticated learner opening a free-journey capsule: allow without prior claim
-      return;
-    }
-  }
+  // Paid capsule unlocked via a completed paid expedition that includes it
+  const expeditionUnlock = await hasCompletedPaidJourneyAccess(
+    studentObjectId,
+    capsuleObjectId,
+  );
+  if (expeditionUnlock) return;
 
   if (category?.sellIndividually === false) {
     throw new ApiError(
@@ -127,21 +142,76 @@ export async function assertStudentCapsuleAccess(
     );
   }
 
-  if (capsule.price === 0 && category?.capsuleType === 'free') {
-    return;
-  }
-
-  const individualPurchase = await PurchasedIndividualCapsule.findOne({
-    studentId: studentObjectId,
-    capsuleId: capsuleObjectId,
-    isDeleted: false,
-    paymentStatus: 'completed',
-  }).lean();
-
-  if (individualPurchase) return;
-
   throw new ApiError(
     StatusCodes.FORBIDDEN,
     'You need to purchase this capsule or expedition before continuing',
   );
+}
+
+async function hasCompletedPaidJourneyAccess(
+  studentObjectId: mongoose.Types.ObjectId,
+  capsuleObjectId: mongoose.Types.ObjectId,
+) {
+  const journeyLinks = await JourneyCapsule.find({
+    individualCapsuleId: capsuleObjectId,
+    isDeleted: false,
+  })
+    .select('journeyId')
+    .lean();
+
+  if (!journeyLinks.length) return false;
+
+  const journeyIds = journeyLinks.map(link => link.journeyId);
+
+  const journeyPurchase = await PurchasedJourney.findOne({
+    studentId: studentObjectId,
+    journeyId: { $in: journeyIds },
+    isDeleted: false,
+    paymentStatus: 'completed',
+  }).lean();
+
+  return Boolean(journeyPurchase);
+}
+
+async function hasCompletedOrFreeJourneyAccess(
+  studentObjectId: mongoose.Types.ObjectId,
+  capsuleObjectId: mongoose.Types.ObjectId,
+) {
+  const journeyLinks = await JourneyCapsule.find({
+    individualCapsuleId: capsuleObjectId,
+    isDeleted: false,
+  })
+    .select('journeyId')
+    .lean();
+
+  if (!journeyLinks.length) return false;
+
+  const journeyIds = journeyLinks.map(link => link.journeyId);
+
+  const completedPurchase = await PurchasedJourney.findOne({
+    studentId: studentObjectId,
+    journeyId: { $in: journeyIds },
+    isDeleted: false,
+    paymentStatus: 'completed',
+  }).lean();
+  if (completedPurchase) return true;
+
+  // Claimed free expedition (gift claim row may exist without "completed" payment semantics)
+  const freeJourneys = await Journey.find({
+    _id: { $in: journeyIds },
+    isDeleted: false,
+    $or: [{ journeyType: 'free' }, { price: 0 }, { price: { $exists: false } }],
+  })
+    .select('_id')
+    .lean();
+
+  if (!freeJourneys.length) return false;
+
+  const freeClaim = await PurchasedJourney.findOne({
+    studentId: studentObjectId,
+    journeyId: { $in: freeJourneys.map(j => j._id) },
+    isDeleted: false,
+  }).lean();
+
+  return Boolean(freeClaim);
 }

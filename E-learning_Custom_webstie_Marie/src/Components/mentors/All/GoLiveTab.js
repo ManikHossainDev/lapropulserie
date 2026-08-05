@@ -1,125 +1,128 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
-import { CheckCircleFilled, WarningFilled } from '@ant-design/icons';
-import { useGetSubscriptionPlansQuery, useSubscribeToPlanMutation, useGoLiveMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { CheckCircleFilled, ClockCircleFilled } from '@ant-design/icons';
+import { useRequestAdminApprovalMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
 import { toast } from 'react-toastify';
 
+/**
+ * Step 5 of mentor onboarding (#43):
+ * Request admin validation — do NOT subscribe / set isLive here.
+ * Subscription / go-live stays separate (see #40 / post-approval).
+ */
 const GoLiveTab = ({ onBack, onComplete, initialData }) => {
-    const [selectedPlan, setSelectedPlan] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [requestAdminApproval] = useRequestAdminApprovalMutation();
 
-    const { data: plansData, isLoading: plansLoading } = useGetSubscriptionPlansQuery();
-    const [subscribeToPlan] = useSubscribeToPlanMutation();
-    const [goLive] = useGoLiveMutation();
-
-    useEffect(() => {
-        if (initialData?.isLive) {
-            setSelectedPlan(initialData.subscriptionPlanId || null);
-        }
-    }, [initialData]);
-
-    const handlePlanSelect = (plan) => {
-        const planId = plan._id || plan.id || plan;
-        setSelectedPlan(planId);
-    };
+    const approvalStatus = initialData?.approvalStatus || 'none';
+    const alreadyRequested = ['inRequest', 'interviewScheduled', 'approved'].includes(
+        approvalStatus
+    );
 
     const handleSubmit = async () => {
-        if (!selectedPlan) {
-            toast.warning('Veuillez sélectionner une formule d’abonnement');
-            return;
-        }
-
         try {
             setLoading(true);
-
-            await subscribeToPlan({ subscriptionPlanId: selectedPlan }).unwrap();
-
-            await goLive({ isLive: true }).unwrap();
-
-            toast.success('Vous êtes maintenant en ligne ! Votre profil est visible pour les mentorés.');
+            await requestAdminApproval().unwrap();
+            toast.success(
+                'Demande envoyée. Ton profil est en attente de validation par l’équipe.'
+            );
             onComplete?.();
         } catch (error) {
-            console.error('Error going live:', error);
-            toast.error(error?.data?.message || 'Échec de la mise en ligne');
+            console.error('Error requesting approval:', error);
+            toast.error(
+                error?.data?.message ||
+                    'Impossible d’envoyer la demande de validation'
+            );
         } finally {
             setLoading(false);
         }
     };
 
-    const plans = plansData?.data || [];
+    if (alreadyRequested) {
+        const isApproved = approvalStatus === 'approved';
+        return (
+            <div className="space-y-4">
+                <div className="flex gap-3 border border-indigo-200 bg-indigo-50 rounded-xl px-4 py-4">
+                    {isApproved ? (
+                        <CheckCircleFilled
+                            style={{ color: '#3730a3', fontSize: 20, marginTop: 2, flexShrink: 0 }}
+                        />
+                    ) : (
+                        <ClockCircleFilled
+                            style={{ color: '#f59e0b', fontSize: 20, marginTop: 2, flexShrink: 0 }}
+                        />
+                    )}
+                    <div>
+                        <p className="text-sm font-semibold text-gray-800 mb-1">
+                            {isApproved
+                                ? 'Profil validé'
+                                : 'Demande en attente de validation'}
+                        </p>
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                            {isApproved
+                                ? 'Ton profil mentor a été approuvé par l’équipe.'
+                                : 'Nous avons bien reçu ta demande. L’équipe La Propulserie va l’examiner. Tu seras informé(e) dès qu’une décision sera prise.'}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                    {onBack && (
+                        <Button
+                            onClick={onBack}
+                            size="large"
+                            block
+                            className="bg-primary text-white h-12"
+                        >
+                            Retour
+                        </Button>
+                    )}
+                    <Button
+                        type="primary"
+                        size="large"
+                        onClick={() => onComplete?.()}
+                        block
+                        className="bg-primary text-white h-12"
+                    >
+                        Continuer vers mon espace
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className=" space-y-4">
-
-            <div className="flex gap-3 border border-yellow-200 bg-yellow-50 rounded-xl px-4 py-3">
-                <WarningFilled style={{ color: '#f59e0b', fontSize: 18, marginTop: 2, flexShrink: 0 }} />
+        <div className="space-y-4">
+            <div className="flex gap-3 border border-indigo-200 bg-indigo-50 rounded-xl px-4 py-4">
+                <ClockCircleFilled
+                    style={{ color: '#3730a3', fontSize: 18, marginTop: 2, flexShrink: 0 }}
+                />
                 <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">
-                        Abonnement requis pour la visibilité
+                        Dernière étape : demander la validation
                     </p>
                     <p className="text-xs text-gray-500 leading-relaxed">
-                        Pour garantir un mentorat de qualité, tous les mentors doivent disposer d’un abonnement actif.
-                        Sans formule, votre profil restera masqué du répertoire, des recommandations et des résultats de recherche.
+                        Vérifie que les étapes 1 à 4 sont complètes, puis envoie ta demande.
+                        Ton profil apparaîtra ensuite « en attente de validation » côté
+                        administration. Tu ne seras visible des mentorés qu’après approbation.
                     </p>
                 </div>
             </div>
 
-            <div className="space-y-3">
-                {plansLoading ? (
-                    <div className="text-center py-8 text-gray-500">Chargement des formules...</div>
-                ) : plans.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">Aucune formule d’abonnement disponible</div>
-                ) : (
-                    plans.map((plan) => {
-                        const planId = plan._id || plan.id;
-                        const isSelected = selectedPlan === planId;
-                        return (
-                            <div
-                                key={planId}
-                                onClick={() => handlePlanSelect(plan)}
-                                className={`relative cursor-pointer border-2 rounded-2xl p-5 transition-all
-                                    ${isSelected
-                                        ? 'border-indigo-500 bg-white shadow-md'
-                                        : 'border-gray-200 bg-white hover:border-indigo-200'
-                                    }`}
-                            >
-                                {plan.isPopular && (
-                                    <span className="absolute -top-3 left-5 bg-red-500 text-white text-xs font-semibold px-3 py-0.5 rounded-full">
-                                        Populaire
-                                    </span>
-                                )}
-
-                                <div className="flex gap-5">
-                                    <div className="w-36 flex-shrink-0">
-                                        <h3 className="text-lg font-bold text-indigo-800 leading-tight mb-1">
-                                            {plan.name}
-                                        </h3>
-                                        <p className="text-xs text-gray-400 mb-3 leading-relaxed">
-                                            {plan.description}
-                                        </p>
-                                        <div className="flex items-baseline gap-0.5">
-                                            <span className="text-2xl font-bold text-gray-900">${plan.price}</span>
-                                            <span className="text-xs text-gray-400">/mois</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="w-px bg-gray-100 self-stretch" />
-
-                                    <div className="flex-1 space-y-2.5 pt-1">
-                                        {plan.features?.map((feature, idx) => (
-                                            <div key={idx} className="flex items-center gap-2">
-                                                <CheckCircleFilled style={{ color: '#3730a3', fontSize: 16 }} />
-                                                <span className="text-xs text-gray-700">{feature}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-            </div>
+            <ul className="text-xs text-gray-600 space-y-2 px-1">
+                <li className="flex items-start gap-2">
+                    <CheckCircleFilled style={{ color: '#3730a3', fontSize: 14, marginTop: 2 }} />
+                    <span>Informations de base, mission, valeurs et méthodes enregistrées</span>
+                </li>
+                <li className="flex items-start gap-2">
+                    <CheckCircleFilled style={{ color: '#3730a3', fontSize: 14, marginTop: 2 }} />
+                    <span>Lien Calendly renseigné pour les sessions</span>
+                </li>
+                <li className="flex items-start gap-2">
+                    <CheckCircleFilled style={{ color: '#3730a3', fontSize: 14, marginTop: 2 }} />
+                    <span>Validation manuelle par un administrateur (pas de paiement à cette étape)</span>
+                </li>
+            </ul>
 
             <div className="flex gap-3 pt-2">
                 {onBack && (
@@ -127,7 +130,7 @@ const GoLiveTab = ({ onBack, onComplete, initialData }) => {
                         onClick={onBack}
                         size="large"
                         block
-                        className='bg-primary text-white h-12'
+                        className="bg-primary text-white h-12"
                     >
                         Retour
                     </Button>
@@ -138,12 +141,11 @@ const GoLiveTab = ({ onBack, onComplete, initialData }) => {
                     onClick={handleSubmit}
                     block
                     loading={loading}
-                    className='bg-primary text-white h-12'
+                    className="bg-primary text-white h-12"
                 >
-                    Passer en ligne
+                    Demander la validation
                 </Button>
             </div>
-
         </div>
     );
 };
