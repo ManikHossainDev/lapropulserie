@@ -1,9 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NextTopLoader from "nextjs-toploader";
+import ClientProviders from "@/Components/Common/ClientProviders";
 import Providers from "@/redux/Providers";
 import { PrimeReactProvider } from 'primereact/api';
-import { ToastContainer } from "react-toastify";
 import OffInspect from "@/Components/Common/OffInspect"; 
 import NovaChatbot from "@/Components/Common/NovaChatbot";
 import CookieConsentBanner from "@/Components/Common/CookieConsentBanner";
@@ -25,17 +24,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning translate="no">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <OffInspect />
-        <NextTopLoader
-          color="#1d2a65"
-          height={6}
-          speed={800}
-          showSpinner={false}
-          easing="ease"
-        />
-        <ToastContainer />
+        <ClientProviders />
         <Providers>
           <PrimeReactProvider>
             {children}

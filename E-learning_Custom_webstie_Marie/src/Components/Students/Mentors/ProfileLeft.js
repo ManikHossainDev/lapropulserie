@@ -5,8 +5,24 @@ import { CiLocationOn } from 'react-icons/ci';
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { GrLanguage } from 'react-icons/gr';
 import { LuLanguages } from "react-icons/lu";
+import { toast } from 'react-toastify';
+import { mentorOptionFr, mentorOptionsFrJoin } from '@/Components/mentors/All/mentorOptionLabels';
+import { useBookingMentorMutation } from '@/redux/fetures/Mentors/Mentors';
+import { startMentorSessionCheckout } from './bookMentorSession';
 
-const ProfileLeft = ({ mentor }) => {
+const ProfileLeft = ({ mentor, mentorId }) => {
+    const [bookMentor, { isLoading }] = useBookingMentorMutation();
+
+    const handleBooking = async () => {
+        try {
+            await startMentorSessionCheckout(
+                bookMentor,
+                mentorId || mentor?.mentorId,
+            );
+        } catch (error) {
+            toast.error(error?.message || 'Impossible de réserver ce mentor. Réessayez plus tard.');
+        }
+    };
 
     return (
         <div className="space-y-5">
@@ -23,19 +39,19 @@ const ProfileLeft = ({ mentor }) => {
                 </div>
 
                 <h2 className="text-xl font-semibold text-gray-800">
-                    {mentor?.name || "Unknown Mentor"}
+                    {mentor?.name || "Mentor"}
                 </h2>
 
                 <p className="text-sm text-gray-500">
-                    {mentor?.currentJobTitle} at <br />
+                    {mentor?.currentJobTitle} chez <br />
                     <span className="text-blue-600 cursor-pointer">
                         {mentor?.companyName}
                     </span>
                 </p>
 
                 <p className="mt-3 font-semibold text-gray-800">
-                    ${mentor?.sessionPrice}/Session{" "}
-                    <span className="text-sm text-gray-400">(60min)</span>
+                    {mentor?.sessionPrice} €/séance{" "}
+                    <span className="text-sm text-gray-400">(60 min)</span>
                 </p>
 
                 {/* Rating */}
@@ -48,34 +64,39 @@ const ProfileLeft = ({ mentor }) => {
                 </div>
 
                 {/* Buttons */}
-                <button className="w-full customSignUpButton text-white py-4 rounded-lg font-medium mt-4 hover:bg-indigo-900">
-                    Book a Session
+                <button
+                    type="button"
+                    onClick={handleBooking}
+                    disabled={isLoading}
+                    className="w-full customSignUpButton text-white py-4 rounded-lg font-medium mt-4 hover:bg-indigo-900 disabled:opacity-60"
+                >
+                    {isLoading ? 'Redirection…' : 'Réserver une séance'}
                 </button>
 
                 <button className="w-full cursor-pointer border py-3 rounded-lg mt-3 text-gray-700 hover:bg-gray-50">
-                    Add to Favorite
+                    Ajouter aux favoris
                 </button>
             </div>
 
             {/* INFO CARD */}
             <div className="bg-white/90 backdrop-blur rounded-2xl p-6 shadow border">
-                <h3 className="font-semibold text-gray-800 mb-4">Information</h3>
+                <h3 className="font-semibold text-gray-800 mb-4">Informations</h3>
 
                 <div className="space-y-3 text-sm text-gray-600">
 
                     <p className='flex items-center gap-2'>
                         <CiLocationOn />
-                        {mentor?.location || "N/A"}
+                        {mentor?.location || "—"}
                     </p>
 
                     <p className='flex items-center gap-2'>
                         <LuLanguages />
-                        {mentor?.language?.join(", ") || "N/A"}
+                        {mentorOptionsFrJoin(mentor?.language, ', ') || "—"}
                     </p>
 
                     <p className='flex items-center gap-2'>
                         <GrLanguage />
-                        {mentor?.availableIn || "Online"}
+                        {mentorOptionFr(mentor?.availableIn) || "En ligne"}
                     </p>
 
                 </div>

@@ -7,7 +7,18 @@ import { useGetAllCapsulesCategoryQuery } from '@/redux/fetures/capsules/capsule
 
 export default function DiscoverIndexPage() {
   const { data, isLoading } = useGetAllCapsulesCategoryQuery();
-  const categories = data?.data?.results || [];
+  // sendResponse flattens paginateResults → data is the array
+  const categories = Array.isArray(data?.data)
+    ? data.data
+    : data?.data?.results || [];
+  const discoverCategories = categories.filter((cat) => {
+    if (cat?.sellIndividually === false) return false;
+    const title = (cat?.title || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+    return !title.includes('apprendre a se connaitre');
+  });
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -17,7 +28,7 @@ export default function DiscoverIndexPage() {
         <p className="text-gray-500">Chargement...</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map((cat) => {
+          {discoverCategories.map((cat) => {
             const id = cat.id || cat._id;
             return (
               <Link
@@ -26,7 +37,7 @@ export default function DiscoverIndexPage() {
                 className="block border rounded-xl overflow-hidden bg-white shadow hover:shadow-md transition"
               >
                 {cat.thumbnail && (
-                  <img src={cat.thumbnail} alt="" className="h-36 w-full object-cover" />
+                  <img src={cat.thumbnail} alt="" className="h-36 w-full object-contain object-center bg-gray-50" />
                 )}
                 <div className="p-4">
                   <h2 className="font-semibold text-[#2d2a71]">{cat.title}</h2>

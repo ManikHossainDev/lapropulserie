@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 
 import Step1Identification from '@/Components/Students/All/Questions/Step1Identification';
 import Step2Identification from '@/Components/Students/All/Questions/Step2Identification';
@@ -28,7 +28,7 @@ const fallbackTitles = [
     'Idea Future', 'Work Conditions', 'Work Style', 'Skills',
 ];
 
-const Page = () => {
+const AllQuestionsContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -142,5 +142,11 @@ const Page = () => {
         </div>
     );
 };
+
+const Page = () => (
+    <Suspense fallback={<IsLoading />}>
+        <AllQuestionsContent />
+    </Suspense>
+);
 
 export default Page;

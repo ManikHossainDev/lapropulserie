@@ -166,3 +166,30 @@ npm run preview
 - Configure Stripe webhook URL to the backend payment webhook endpoint.
 - Set `CLIENT_URL` and Stripe success/cancel URLs in backend `.env`.
 - Ensure CORS and allowed hosts match your public domains.
+
+### Backend CI/CD (monorepo → EC2)
+
+- **CI:** `.github/workflows/ci-backend.yml` — builds `e-learning_backend` on PRs/pushes that touch that folder.
+- **CD:** `.github/workflows/deploy-backend.yml` — on `main` (backend paths only): build/push image to GHCR, SSH to EC2, `docker compose pull && up`.
+- Health: `GET /health` (liveness), `GET /ready` (Mongo + Redis).
+- On EC2: keep prod secrets in `e-learning_backend/.env`; set `API_IMAGE` via `.env.deploy` (see `e-learning_backend/.env.deploy.example`).
+
+### Website CI/CD (Next.js → same EC2)
+
+- **CI:** `.github/workflows/ci-website.yml` — builds `E-learning_Custom_webstie_Marie`.
+- **CD:** `.github/workflows/deploy-website.yml` — on `main` (website paths only): Docker image → GHCR → EC2 `docker compose up`.
+- `NEXT_PUBLIC_API_BASE_URL` is baked at **image build** time — set GitHub Actions **variable** `NEXT_PUBLIC_API_BASE_URL` (Settings → Variables).
+- On EC2: app dir + `.env.deploy` (see `E-learning_Custom_webstie_Marie/.env.deploy.example`); Nginx → host port `8002`.
+
+### Shared GitHub secrets / vars (EC2)
+
+| Name | Type | Used by |
+|------|------|---------|
+| `EC2_HOST` | secret | backend + website deploy |
+| `EC2_USER` | secret | backend + website deploy |
+| `EC2_SSH_KEY` | secret | backend + website deploy |
+| `EC2_APP_DIR` | secret | backend compose path |
+| `EC2_WEB_APP_DIR` | secret | website compose path |
+| `GHCR_USERNAME` | secret | docker login on EC2 |
+| `GHCR_PULL_TOKEN` | secret | PAT with `read:packages` |
+| `NEXT_PUBLIC_API_BASE_URL` | variable | website image build (API origin, no `/api/v1`) |

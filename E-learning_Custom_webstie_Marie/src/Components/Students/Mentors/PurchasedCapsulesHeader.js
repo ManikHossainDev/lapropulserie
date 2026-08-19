@@ -3,7 +3,7 @@ import React from 'react';
 const PurchasedCapsulesHeader = () => {
     return (
         <div>
-            Purchased Capsules
+            Capsules achetées
         </div>
     );
 }

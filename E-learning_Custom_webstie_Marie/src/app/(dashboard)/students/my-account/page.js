@@ -1,7 +1,8 @@
 'use client';
 
 import url from '@/redux/api/baseUrl';
-import { useGetMyMentorsQuery, useGetStudentMyProfileInfoQuery, useGetStudentProfileProgressQuery } from '@/redux/fetures/profile/profile';
+import { useGetCompletedJourneysQuery, useGetMyMentorsQuery, useGetStudentMyProfileInfoQuery, useGetStudentProfileProgressQuery } from '@/redux/fetures/profile/profile';
+import DownloadCertificate from '@/Components/others/DownloadCertificate';
 import React from 'react';
 
 // --- Circular Progress Component ---
@@ -74,27 +75,27 @@ const MentorCard = ({ name, role, imgSrc }) => (
 );
 
 // --- Course Row (UNCHANGED) ---
-const CourseRow = ({ title, date, imgSrc }) => (
-    <div className="flex items-center justify-between bg-white border border-gray-100 rounded-2xl px-3 lg:px-5 py-2 lg:py-4 shadow-sm">
-        <div className="flex items-center gap-4">
+const CourseRow = ({ title, date, imgSrc, completedDate }) => (
+    <div className="flex items-center justify-between bg-white border border-gray-100 rounded-2xl px-3 lg:px-5 py-2 lg:py-4 shadow-sm gap-3">
+        <div className="flex items-center gap-4 min-w-0">
             <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-indigo-100">
                 <img
                     src={imgSrc || `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=e0e7ff&color=312e81&size=48`}
                     alt={title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain object-center"
                 />
             </div>
-            <div>
-                <p className="text-sm font-semibold text-gray-800">{title}</p>
-                <p className="text-xs text-gray-400 mt-0.5">Finised {date}</p>
+            <div className="min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">{title}</p>
+                <p className="text-xs text-gray-400 mt-0.5">Terminé le {date}</p>
             </div>
         </div>
-        <button className="flex items-center gap-2 border border-indigo-300 text-indigo-800 text-xs font-medium px-4 py-2 rounded-lg hover:bg-indigo-50 transition">
-            Download Certificate
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-        </button>
+        <DownloadCertificate
+            programTitle={title}
+            completedDate={completedDate}
+            fileName="certificat-parcours-exploration.pdf"
+            buttonClassName="flex items-center gap-2 border border-indigo-300 text-indigo-800 text-xs font-medium px-4 py-2 rounded-lg hover:bg-indigo-50 transition shrink-0"
+        />
     </div>
 );
 
@@ -104,23 +105,37 @@ const Page = () => {
     const { data, isLoading } = useGetStudentProfileProgressQuery();
     const progress = data?.data;
     const { data: MyMentors } = useGetMyMentorsQuery();
-    const mentorsData = MyMentors?.data?.mentors || [];
+    const mentorsData = Array.isArray(MyMentors?.data)
+        ? MyMentors.data
+        : MyMentors?.data?.results || MyMentors?.data?.mentors || [];
 
     const { data: profileInfo } = useGetStudentMyProfileInfoQuery();
     const profile = profileInfo?.data;
-    console.log(profile)
+    const { data: completedRes } = useGetCompletedJourneysQuery();
+    const completedJourneys = Array.isArray(completedRes?.data)
+        ? completedRes.data
+        : completedRes?.data?.results || [];
 
     if (isLoading) {
-        return <p className="text-center py-5">Loading...</p>;
+        return <p className="text-center py-5">Chargement...</p>;
     }
 
+    const overallProgress = progress?.overallJourneyProgress || 0;
+    const isJourneyComplete = overallProgress >= 100;
 
+    const formatDate = (value) => {
+        if (!value) return '';
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return value;
+        return d.toLocaleDateString('fr-FR');
+    };
 
-    const courses = [
-        { title: 'Advanced Product Design Mentorship', date: 'Aug 10,2025' },
-        { title: 'Basic UI/UX Design', date: 'Aug 10,2025' },
-        { title: 'Basic Flutter Development', date: 'Aug 10,2025' },
-    ];
+    const courses = completedJourneys.map((journey) => ({
+        title: journey.title,
+        date: formatDate(journey.completedDate || journey.date),
+        completedDate: journey.completedDate || journey.date,
+        imgSrc: journey.thumbnail,
+    }));
 
     return (
         <div
@@ -152,11 +167,17 @@ const Page = () => {
                         <div className="flex items-center justify-between mb-5">
                             <div className="flex items-center gap-2">
                                 <span className="text-lg">📊</span>
-                                <h2 className="font-semibold text-gray-800">Learning Progress</h2>
+                                <h2 className="font-semibold text-gray-800">Progression</h2>
                             </div>
-                            <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-3 py-1 rounded-full font-medium">
-                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full inline-block"></span>
-                                Currently Active
+                            <span className={`flex items-center gap-1.5 text-xs px-3 py-1 rounded-full font-medium ${
+                                isJourneyComplete
+                                    ? 'text-green-700 bg-green-50 border border-green-200'
+                                    : 'text-indigo-700 bg-indigo-50 border border-indigo-200'
+                            }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full inline-block ${
+                                    isJourneyComplete ? 'bg-green-500' : 'bg-indigo-500'
+                                }`}></span>
+                                {isJourneyComplete ? 'Terminé' : 'En cours'}
                             </span>
                         </div>
 
@@ -165,12 +186,12 @@ const Page = () => {
                             {/* Current Capsule */}
                             <div className="border border-gray-100 rounded-xl p-5 flex flex-col items-center gap-3">
                                 <p className="text-xs text-gray-500 font-medium">
-                                    Current Capsule Progress
+                                    Progression de la capsule en cours
                                 </p>
 
                                 <CircularProgress
                                     percentage={progress?.currentCapsuleProgress || 0}
-                                    sublabel={progress?.currentCapsuleName || "No Capsule"}
+                                    sublabel={progress?.currentCapsuleName || "Aucune capsule"}
                                     size={130}
                                     stroke={11}
                                 />
@@ -179,12 +200,12 @@ const Page = () => {
                             {/* Overall */}
                             <div className="border border-gray-100 rounded-xl p-5 flex flex-col items-center gap-3">
                                 <p className="text-xs text-gray-500 font-medium">
-                                    Overall Expedition Progress
+                                    Progression globale du parcours
                                 </p>
 
                                 <CircularProgress
                                     percentage={progress?.overallJourneyProgress || 0}
-                                    sublabel="Capsule Progress"
+                                    sublabel="Progression des capsules"
                                     size={130}
                                     stroke={11}
                                 />
@@ -197,16 +218,29 @@ const Page = () => {
                     <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-sm">
                         <div className="flex items-center gap-2 mb-5">
                             <span className="text-lg">🧑‍🏫</span>
-                            <h2 className="font-semibold text-gray-800">My Mentors</h2>
+                            <h2 className="font-semibold text-gray-800">Mes mentors</h2>
                         </div>
 
                         <div className="space-y-3">
-                            {mentorsData?.map((mentor, i) => (
-                                <MentorCard key={i} name={mentor.name} role={mentor.role} />
-                            ))}
+                            {mentorsData?.map((mentor, i) => {
+                                const avatar = mentor.avatarUrl || mentor.imgSrc || '';
+                                const imgSrc = avatar.startsWith('http')
+                                    ? avatar
+                                    : avatar
+                                        ? url + avatar
+                                        : undefined;
+                                return (
+                                    <MentorCard
+                                        key={mentor.mentorId || i}
+                                        name={mentor.name}
+                                        role={mentor.role || mentor.designation || mentor.currentJobTitle || 'Mentor'}
+                                        imgSrc={imgSrc}
+                                    />
+                                );
+                            })}
                             {
                                 mentorsData.length === 0 && (
-                                    <p className="text-center text-gray-500 py-5">No mentors assigned yet.</p>
+                                    <p className="text-center text-gray-500 py-5">Aucun mentor pour le moment.</p>
                                 )
                             }
                         </div>
@@ -221,13 +255,19 @@ const Page = () => {
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8 15.414l-4.707-4.707a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                         </span>
-                        <h2 className="font-semibold text-gray-800">Learning Progress</h2>
+                        <h2 className="font-semibold text-gray-800">Certificats</h2>
                     </div>
 
                     <div className="space-y-3">
-                        {courses.map((course, i) => (
-                            <CourseRow key={i} title={course.title} date={course.date} />
-                        ))}
+                        {courses.length === 0 ? (
+                            <p className="text-center text-gray-500 py-6">
+                                Aucun certificat pour le moment. Terminez le Parcours Exploration pour le télécharger ici.
+                            </p>
+                        ) : (
+                            courses.map((course, i) => (
+                                <CourseRow key={i} title={course.title} date={course.date} imgSrc={course.imgSrc} completedDate={course.completedDate} />
+                            ))
+                        )}
                     </div>
                 </div>
 

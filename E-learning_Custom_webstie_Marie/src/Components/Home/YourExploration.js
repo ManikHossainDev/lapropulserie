@@ -48,6 +48,9 @@
 
 
 import React from 'react';
+import Link from 'next/link';
+
+const SIGNUP_PARTICULIER = '/signup?role=student';
 
 const YourExploration = () => {
     return (
@@ -77,7 +80,12 @@ const YourExploration = () => {
 
                         </div>
 
-                        <button className='p-2 rounded w-full text-center bg-orange-400 text-white mt-3'>🔍 Découvrir le parcours</button>
+                        <Link
+                            href={SIGNUP_PARTICULIER}
+                            className='p-2 rounded w-full text-center bg-orange-400 text-white mt-3 block'
+                        >
+                            🔍 Découvrir le parcours
+                        </Link>
                     </div>
 
                     <div className='bg-blue-950/25 p-5 rounded-lg border border-orange-400/20 flex flex-col justify-between'>
@@ -93,7 +101,12 @@ const YourExploration = () => {
                             <p className='text-gray-300 mt-5 flex items-center gap-2'><span className='h-1.5 w-1.5 rounded-full inline-block bg-orange-400'></span>gérer un doute</p>
                             <p className='text-gray-300 mt-5 flex items-center gap-2'><span className='h-1.5 w-1.5 rounded-full inline-block bg-orange-400'></span>clarifier une envie de changement</p>
                         </div>
-                        <button className='p-2 rounded w-full text-center bg-orange-400 text-white mt-3'>🎯 Explorer les capsules</button>
+                        <Link
+                            href={SIGNUP_PARTICULIER}
+                            className='p-2 rounded w-full text-center bg-orange-400 text-white mt-3 block'
+                        >
+                            🎯 Explorer les capsules
+                        </Link>
                     </div>
                 </div>
             </div>

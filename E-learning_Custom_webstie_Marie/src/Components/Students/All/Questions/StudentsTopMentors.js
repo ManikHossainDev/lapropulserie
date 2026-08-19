@@ -9,7 +9,9 @@ import React from 'react';
 const StudentsTopMentors = () => { 
 
     const { data, isLoading } = useGetTopMentorsQuery();
-    const fullData = data?.data?.results ?? [];
+    const fullData = Array.isArray(data?.data)
+        ? data.data
+        : data?.data?.results || [];
 
 
 
@@ -18,7 +20,7 @@ const StudentsTopMentors = () => {
 
             <div>
                 {/* <CategoryCarosal /> */}
-                <h2 className='text-center text-4xl font-semibold text-primary  mb-10'>Top Mentors</h2>
+                <h2 className='text-center text-4xl font-semibold text-primary  mb-10'>Meilleurs mentors</h2>
             </div>
             <div>
                 {

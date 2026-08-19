@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 
+import { mentorOptionFr } from './mentorOptionLabels';
+
 const industries = [
     'Technology',
     'Creative & Design',
@@ -41,7 +43,7 @@ const ProfileIndustry = ({ data = [] }) => {
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">🌐</span>
-                        <h1 className="text-lg font-bold text-indigo-800">Industry</h1>
+                        <h1 className="text-lg font-bold text-indigo-800">Secteur</h1>
                     </div>
                     {isEditing ? (
                         <div className="flex gap-2">
@@ -49,13 +51,13 @@ const ProfileIndustry = ({ data = [] }) => {
                                 onClick={handleCancel}
                                 className="border border-gray-300 text-gray-600 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
                             >
-                                Cancel
+                                Annuler
                             </button>
                             <button
                                 onClick={handleSave}
                                 className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
                             >
-                                Save
+                                Enregistrer
                             </button>
                         </div>
                     ) : (
@@ -63,7 +65,7 @@ const ProfileIndustry = ({ data = [] }) => {
                             onClick={() => setIsEditing(true)}
                             className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2 rounded-lg transition"
                         >
-                            Edit
+                            Modifier
                         </button>
                     )}
                 </div>
@@ -94,7 +96,7 @@ const ProfileIndustry = ({ data = [] }) => {
                                         <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
                                     )}
                                 </span>
-                                {industry}
+                                {mentorOptionFr(industry)}
                             </button>
                         );
                     })}

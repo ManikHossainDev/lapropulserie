@@ -1,4 +1,9 @@
 import React from 'react';
+import Link from 'next/link';
+
+const SIGNUP_PARTICULIER = '/signup?role=student';
+const CALENDLY_DEMO =
+    'https://calendly.com/marie-bouleau-lapropulserie/demonstration-la-propulserie';
 
 const ChooseYourMission = () => {
     return (
@@ -27,7 +32,12 @@ const ChooseYourMission = () => {
                                 <li><span className='h-1 w-1 bg-orange-400 rounded-full inline-block mr-2'></span>Comprendre ce qui te freine ou t&apos;épuise</li>
                                 <li><span className='h-1 w-1 bg-orange-400 rounded-full inline-block mr-2'></span>Clarifier ta direction professionnelle</li>
                             </ul>
-                            <button className='py-3 w-full text-center font-semibold bg-orange-500 text-white mt-5 rounded-lg'>🚀 Faire mon bilan gratuit</button>
+                            <Link
+                                href={SIGNUP_PARTICULIER}
+                                className='py-3 w-full text-center font-semibold bg-orange-500 text-white mt-5 rounded-lg block'
+                            >
+                                🚀 Faire mon bilan gratuit
+                            </Link>
                         </div>
 
                         <div className='bg-blue-400/10 p-5 rounded-lg border border-orange-400 flex flex-col justify-between'>
@@ -40,7 +50,14 @@ const ChooseYourMission = () => {
                                 <li><span className='h-1 w-1 bg-orange-400 rounded-full inline-block mr-2'></span>Agir avant les départs et les pertes de motivation</li>
                             </ul>
                             <span className='text-orange-400 my-5 block'>⭐ Déploiement en cours – possibilité d&apos;échanges dès maintenant</span>
-                            <button className='py-3 w-full text-center border font-semibold border-orange-500 bg-orange-400/20 text-orange-400 mt-5 rounded-lg'>🔍 Échanger sur vos enjeux</button>
+                            <a
+                                href={CALENDLY_DEMO}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className='py-3 w-full text-center border font-semibold border-orange-500 bg-orange-400/20 text-orange-400 mt-5 rounded-lg block'
+                            >
+                                🔍 Échanger sur vos enjeux
+                            </a>
                         </div>
                     </div>
                 </div>

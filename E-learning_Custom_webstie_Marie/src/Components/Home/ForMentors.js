@@ -1,5 +1,8 @@
 import React from 'react';
 
+const CALENDLY_DEMO =
+    'https://calendly.com/marie-bouleau-lapropulserie/demonstration-la-propulserie';
+
 const ForMentors = () => {
     const features = [
         {
@@ -95,15 +98,18 @@ const ForMentors = () => {
                 </div>
 
                 {/* CTA Button */}
-                <button
-                    className="w-3/4 py-3.5 rounded-md font-semibold text-white text-sm transition-opacity hover:opacity-90 active:scale-95"
+                <a
+                    href={CALENDLY_DEMO}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-3/4 py-3.5 rounded-md font-semibold text-white text-sm transition-opacity hover:opacity-90 active:scale-95 inline-block text-center"
                     style={{
                         background: 'linear-gradient(135deg, #f5a623 0%, #e8870a 100%)',
                         boxShadow: '0 4px 20px rgba(245,166,35,0.35)',
                     }}
                 >
                     🚀 Postuler pour rejoindre l’écosystème
-                </button>
+                </a>
             </div>
         </div>
     );

@@ -11,7 +11,9 @@ const MyCapsuleCard = ({ item }) => {
     const [purchaseCapsule, { isLoading }] = usePurchasedCapsuleMutation();
 
     const capsuleId = item?.capsuleId || item?.id || item?._id;
+    const categoryId = item?.categoryId || item?.capsuleCategoryId;
     const isOwned = item?.isPurchased || item?.accessType === 'purchased' || item?.accessType === 'gifted';
+    const isSuggested = item?.accessType === 'suggested' || (!isOwned && categoryId);
     const rating = item?.avgRating ?? item?.averageRating ?? 0;
     const reviewCount = item?.totalReviewCount ?? 0;
 
@@ -23,22 +25,28 @@ const MyCapsuleCard = ({ item }) => {
         ? `/students/exploration-journey/${item.journeyId}`
         : '/students/exploration-journey/capsule-journey';
 
+    const discoverHref = categoryId
+        ? `/students/discover/${categoryId}`
+        : '/students/discover';
+
     const handlePurchase = async () => {
         try {
             const res = await purchaseCapsule(capsuleId).unwrap();
-            toast.success('Redirecting to payment...');
-            if (res?.data?.url) {
-                window.open(res.data.url, '_blank');
+            const paymentUrl = res?.data?.url || res?.data?.paymentUrl;
+            if (paymentUrl) {
+                window.location.href = paymentUrl;
+                return;
             }
+            toast.error('Lien de paiement indisponible. Réessayez plus tard.');
         } catch (error) {
-            toast.error(error?.data?.message || 'Purchase failed. Please try again.');
+            toast.error(error?.data?.message || "Impossible de démarrer l'achat. Réessayez plus tard.");
         }
     };
 
     return (
         <div className="border rounded-xl h-full flex flex-col bg-white">
             <img
-                className="rounded-t-xl h-60 object-cover w-full bg-gray-100"
+                className="rounded-t-xl h-60 object-contain object-center w-full bg-gray-100"
                 src={item?.thumbnail || '/Images/StudentsDash/page_bg.png'}
                 alt={item?.title || 'Capsule'}
             />
@@ -48,12 +56,12 @@ const MyCapsuleCard = ({ item }) => {
                     <div className="flex flex-wrap items-center gap-2 mb-2">
                         {item?.purchaseSource === 'expedition' && (
                             <span className="text-xs font-medium bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
-                                Expedition
+                                Parcours
                             </span>
                         )}
                         {item?.accessType === 'gifted' && (
                             <span className="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                                Gift
+                                Offerte
                             </span>
                         )}
                         {item?.category && (
@@ -81,7 +89,7 @@ const MyCapsuleCard = ({ item }) => {
                                 href={learnHref}
                                 className="w-full flex items-center justify-between text-[#2d2a71] font-semibold hover:opacity-80"
                             >
-                                <span>Continue learning</span>
+                                <span>Continuer</span>
                                 <FaArrowRight />
                             </Link>
                             {item?.purchaseSource === 'expedition' && (
@@ -89,10 +97,18 @@ const MyCapsuleCard = ({ item }) => {
                                     href={expeditionHref}
                                     className="block text-sm text-gray-500 hover:text-[#2d2a71]"
                                 >
-                                    View in Expedition Journey →
+                                    Voir dans le Parcours Exploration →
                                 </Link>
                             )}
                         </div>
+                    ) : isSuggested ? (
+                        <Link
+                            href={discoverHref}
+                            className="w-full flex items-center justify-between text-[#2d2a71] font-semibold hover:opacity-80"
+                        >
+                            <span>Découvrir</span>
+                            <FaArrowRight />
+                        </Link>
                     ) : (
                         <button
                             type="button"
@@ -101,7 +117,7 @@ const MyCapsuleCard = ({ item }) => {
                             className="w-full flex items-center justify-between disabled:opacity-60"
                         >
                             <span className="text-xl font-semibold">
-                                {item?.price != null ? `${item.price}€` : 'Buy'}
+                                {item?.price != null ? `${item.price}€` : 'Acheter'}
                             </span>
                             <FaArrowRight className="text-2xl text-primary" />
                         </button>

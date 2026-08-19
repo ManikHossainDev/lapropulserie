@@ -1,26 +1,22 @@
+import { mentorOptionFr, mentorOptionsFrJoin } from '@/Components/mentors/All/mentorOptionLabels';
 import { useBookingMentorMutation } from '@/redux/fetures/Mentors/Mentors';
 import Link from 'next/link';
 import React from 'react';
 import { CiLocationOn } from "react-icons/ci";
 import { GrLanguage } from "react-icons/gr";
 import { HiLanguage } from "react-icons/hi2";
+import { startMentorSessionCheckout } from '@/Components/Students/Mentors/bookMentorSession';
 import { toast } from 'react-toastify';
 
 const RecommendedMentorsCard = ({ mentor }) => {
 
-    const [bookMentor] = useBookingMentorMutation();
+    const [bookMentor, { isLoading }] = useBookingMentorMutation();
 
     const handleBooking = async (mentorId) => {
         try {
-            const res = await bookMentor({ mentorId });
-            console.log(res?.data)
-            if (res?.data?.code === 200) {
-                toast.success(res?.data?.message);
-                window.open(res?.data?.data?.url, '_blank');
-            }
+            await startMentorSessionCheckout(bookMentor, mentorId);
         } catch (error) {
-            console.log(error);
-            toast.error(error?.data?.message || 'Failed to book mentor. Please try again later.');
+            toast.error(error?.message || 'Impossible de réserver ce mentor. Réessayez plus tard.');
         }
     }
 
@@ -59,19 +55,19 @@ const RecommendedMentorsCard = ({ mentor }) => {
 
                         <span className="flex items-center gap-1">
                             <HiLanguage />
-                            {mentor.language?.join(', ')}
+                            {mentorOptionsFrJoin(mentor.language, ', ')}
                         </span>
 
                         <span className="flex items-center gap-1">
                             <GrLanguage />
-                            {mentor.availableIn}
+                            {mentorOptionFr(mentor.availableIn)}
                         </span>
 
                     </div>
                 </div>
 
                 <div className="text-lg font-bold text-primary">
-                    ${mentor.sessionPrice}/hr
+                    {mentor.sessionPrice} €/h
                 </div>
 
             </div>
@@ -85,15 +81,15 @@ const RecommendedMentorsCard = ({ mentor }) => {
             <div className="flex flex-wrap gap-2 text-sm">
 
                 <span className="bg-gray-100 px-3 py-1 rounded">
-                    {mentor.focusArea?.join(' • ')}
+                    {mentorOptionsFrJoin(mentor.focusArea)}
                 </span>
 
                 <span className="bg-gray-100 px-3 py-1 rounded">
-                    {mentor.coreValues?.join(' • ')}
+                    {mentorOptionsFrJoin(mentor.coreValues)}
                 </span>
 
                 <span className="bg-gray-100 px-3 py-1 rounded">
-                    {mentor.specialties?.join(' • ')}
+                    {mentorOptionsFrJoin(mentor.specialties)}
                 </span>
 
             </div>
@@ -102,11 +98,16 @@ const RecommendedMentorsCard = ({ mentor }) => {
             <div className="flex gap-3 pt-2">
 
                 <Link href={`/students/mentors/${mentor?.mentorId}`} className="flex-1 flex items-center justify-center border rounded-lg py-3">
-                    View Details
+                    Voir le profil
                 </Link>
 
-                <button onClick={() => handleBooking(mentor?.mentorId)} className="flex-1 bg-primary text-white rounded-lg py-3">
-                    Book Session
+                <button
+                    type="button"
+                    onClick={() => handleBooking(mentor?.mentorId)}
+                    disabled={isLoading}
+                    className="flex-1 bg-primary text-white rounded-lg py-3 disabled:opacity-60"
+                >
+                    {isLoading ? 'Redirection…' : 'Réserver une séance'}
                 </button>
 
             </div>

@@ -1,0 +1,39 @@
+name: CI — Website
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'E-learning_Custom_webstie_Marie/**'
+      - '.github/workflows/ci-website.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'E-learning_Custom_webstie_Marie/**'
+      - '.github/workflows/ci-website.yml'
+
+defaults:
+  run:
+    working-directory: E-learning_Custom_webstie_Marie
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: E-learning_Custom_webstie_Marie/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8005' }}
+        run: npm run build

@@ -1,14 +1,29 @@
 'use client'
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSignUpMutation } from '@/redux/fetures/auth/signUp';
 import { toast } from 'react-toastify';
 
-const Page = () => {
+const COPY = {
+    student: {
+        title: 'Commencer votre parcours',
+        subtitle:
+            'Créez votre compte pour accéder au bilan gratuit, aux capsules et au Parcours Exploration.',
+    },
+    mentor: {
+        title: 'Devenir mentor La Propulserie',
+        subtitle:
+            'Créez votre compte mentor pour compléter votre profil et demander la validation par notre équipe.',
+    },
+};
+
+const SignupForm = () => {
     const searchParams = useSearchParams();
     const roleFromUrl = searchParams.get('role');
     const defaultRole = roleFromUrl === 'student' || roleFromUrl === 'mentor' ? roleFromUrl : '';
+    const isMentorSignup = defaultRole === 'mentor';
+    const headline = isMentorSignup ? COPY.mentor : COPY.student;
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,22 +44,22 @@ const Page = () => {
         const acceptTOC = formData.get('acceptTOC') === 'on';
 
         if (!name || !email || !role || !password || !confirmPassword) {
-            setErrorMsg('Please fill in all required fields.');
+            setErrorMsg('Veuillez renseigner tous les champs obligatoires.');
             return;
         }
 
         if (password !== confirmPassword) {
-            setErrorMsg('Passwords do not match.');
+            setErrorMsg('Les mots de passe ne correspondent pas.');
             return;
         }
 
         if (password.length < 8) {
-            setErrorMsg('Password must be at least 8 characters long.');
+            setErrorMsg('Le mot de passe doit contenir au moins 8 caractères.');
             return;
         }
 
         if (!acceptTOC) {
-            setErrorMsg('Please accept the terms and conditions.');
+            setErrorMsg('Veuillez accepter les conditions générales d’utilisation.');
             return;
         }
 
@@ -81,8 +96,8 @@ const Page = () => {
 
             <form onSubmit={handleSubmit} className='w-full py-20 bg-slate-100/90 rounded-lg p-10 max-w-xl'>
                 <div>
-                    <h2 className='text-3xl text-center text-[#3b398d] font-semibold'>Begin Your Expedition</h2>
-                    <p className='text-center mt-5'>Discover your professional galaxy—where your talents meet your ambitions</p>
+                    <h2 className='text-3xl text-center text-[#3b398d] font-semibold'>{headline.title}</h2>
+                    <p className='text-center mt-5'>{headline.subtitle}</p>
 
                     {errorMsg && (
                         <div className='mt-4 p-2 bg-red-100 border border-red-400 text-red-600 text-sm rounded-md text-center'>
@@ -91,9 +106,9 @@ const Page = () => {
                     )}
 
                     <div className='mt-5'>
-                        <label className='font-semibold' htmlFor="name">Full Name</label>
+                        <label className='font-semibold' htmlFor="name">Nom et prénom</label>
                         <input
-                            placeholder='Enter your name'
+                            placeholder='Entrez votre nom et prénom'
                             className='mt-2 w-full p-2 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                             type="text"
                             name="name"
@@ -105,7 +120,7 @@ const Page = () => {
                     <div className='mt-5'>
                         <label className='font-semibold' htmlFor="email">Email</label>
                         <input
-                            placeholder='Enter your email'
+                            placeholder='Entrez votre email'
                             className='mt-2 w-full p-2 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                             type="email"
                             name="email"
@@ -115,7 +130,7 @@ const Page = () => {
                     </div>
 
                     <div className='mt-5'>
-                        <label className='font-semibold' htmlFor="role">Select Role</label>
+                        <label className='font-semibold' htmlFor="role">Sélectionnez votre profil</label>
                         <select
                             className='mt-2 w-full p-2 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                             name="role"
@@ -123,17 +138,18 @@ const Page = () => {
                             defaultValue={defaultRole}
                             required
                         >
-                            <option value="" disabled>Choose your role</option>
-                            <option value="student">Student</option>
+                            <option value="" disabled>Choisissez votre profil</option>
+                            {/* value stays "student" for the API; label is Particulier per client */}
+                            <option value="student">Particulier</option>
                             <option value="mentor">Mentor</option>
                         </select>
                     </div>
 
                     <div className='mt-5'>
-                        <label className='font-semibold' htmlFor="password">Password</label>
+                        <label className='font-semibold' htmlFor="password">Mot de passe</label>
                         <div className='relative'>
                             <input
-                                placeholder='Enter your password'
+                                placeholder='Entrez votre mot de passe'
                                 className='mt-2 w-full p-2 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                                 type={showPassword ? "text" : "password"}
                                 name="password"
@@ -152,10 +168,10 @@ const Page = () => {
                     </div>
 
                     <div className='mt-5'>
-                        <label className='font-semibold' htmlFor="confirmPassword">Confirm Password</label>
+                        <label className='font-semibold' htmlFor="confirmPassword">Confirmez votre mot de passe</label>
                         <div className='relative'>
                             <input
-                                placeholder='Confirm your password'
+                                placeholder='Confirmez votre mot de passe'
                                 className='mt-2 w-full p-2 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                                 type={showConfirmPassword ? "text" : "password"}
                                 name="confirmPassword"
@@ -176,7 +192,7 @@ const Page = () => {
                     <div className='flex justify-between items-center my-5'>
                         <label htmlFor="acceptTOC">
                             <input type="checkbox" name="acceptTOC" id="acceptTOC" />
-                            <span className='ml-2 text-gray-600'>I agree to all terms & conditions.</span>
+                            <span className='ml-2 text-gray-600'>J’accepte les conditions générales d’utilisation.</span>
                         </label>
                     </div>
 
@@ -186,15 +202,27 @@ const Page = () => {
                             disabled={isLoading}
                             className='cursor-pointer w-full p-2 bg-[#3b398d] font-semibold text-white rounded-md disabled:opacity-60 disabled:cursor-not-allowed'
                         >
-                            {isLoading ? 'Signing up...' : 'Sign Up'}
+                            {isLoading ? 'Création du compte...' : 'Créer mon compte'}
                         </button>
                     </div>
-                    <p className='text-center mt-5 text-gray-600'>Already have an account? <Link className='text-blue-600' href="/login">Login</Link></p>
+                    <p className='text-center mt-5 text-gray-600'>Vous avez déjà un compte ? <Link className='text-blue-600' href="/login">Connexion</Link></p>
                 </div>
             </form>
 
         </div>
     );
 };
+
+const Page = () => (
+    <Suspense
+        fallback={
+            <div className="flex items-center justify-center min-h-screen text-gray-600">
+                Chargement...
+            </div>
+        }
+    >
+        <SignupForm />
+    </Suspense>
+);
 
 export default Page;

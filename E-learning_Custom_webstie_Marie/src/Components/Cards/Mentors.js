@@ -8,22 +8,18 @@ import { HiLanguage } from "react-icons/hi2";
 import Link from 'next/link';
 import { useBookingMentorMutation } from '@/redux/fetures/Mentors/Mentors';
 import { toast } from 'react-toastify';
+import { mentorOptionFr, mentorOptionsFrJoin } from '@/Components/mentors/All/mentorOptionLabels';
+import { startMentorSessionCheckout } from '@/Components/Students/Mentors/bookMentorSession';
 
 const Mentors = ({ item }) => {
 
-    const [bookMentor] = useBookingMentorMutation();
+    const [bookMentor, { isLoading }] = useBookingMentorMutation();
 
     const handleBooking = async (mentorId) => {
         try {
-            const res = await bookMentor({ mentorId });
-            console.log(res?.data)
-            if (res?.data?.code === 200) {
-                toast.success(res?.data?.message);
-                window.open(res?.data?.data?.url, '_blank');
-            }
+            await startMentorSessionCheckout(bookMentor, mentorId);
         } catch (error) {
-            console.log(error);
-            toast.error(error?.data?.message || 'Failed to book mentor. Please try again later.');
+            toast.error(error?.message || 'Impossible de réserver ce mentor. Réessayez plus tard.');
         }
     }
 
@@ -46,7 +42,7 @@ const Mentors = ({ item }) => {
 
                         {/* BADGE */}
                         <span className="inline-block bg-white/10 px-3 py-1 rounded-full text-xs mb-3">
-                            {item?.availableIn || 'Online'}
+                            {item?.availableIn ? mentorOptionFr(item.availableIn) : 'En ligne'}
                         </span>
 
                         {/* NAME */}
@@ -69,7 +65,7 @@ const Mentors = ({ item }) => {
 
                             <span className="flex items-center gap-1">
                                 <HiLanguage />
-                                {item?.language?.join(', ')}
+                                {mentorOptionsFrJoin(item?.language, ', ')}
                             </span>
 
                             <span>
@@ -77,14 +73,14 @@ const Mentors = ({ item }) => {
                             </span>
 
                             <span>
-                                {item?.yearsOfExperience} yrs exp
+                                {item?.yearsOfExperience} ans d’exp.
                             </span>
 
                         </div>
 
                         {/* FOCUS AREA */}
                         <p className="text-gray-300 text-sm mt-2 line-clamp-1">
-                            {item?.focusArea?.join(' • ')}
+                            {mentorOptionsFrJoin(item?.focusArea)}
                         </p>
 
                     </div>
@@ -94,12 +90,17 @@ const Mentors = ({ item }) => {
 
                         <Link href={`/students/mentors/${item?.mentorId}`} className="flex w-full text-sm items-center justify-center gap-2 border px-3 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition">
                             <FaInfoCircle />
-                            View Details
+                            Voir le profil
                         </Link>
 
-                        <button onClick={() => handleBooking(item?.mentorId)} className="flex w-full text-sm items-center justify-center gap-2 border bg-white text-[#15153a] px-3 py-3 rounded-xl hover:bg-gray-200 transition">
+                        <button
+                            type="button"
+                            onClick={() => handleBooking(item?.mentorId)}
+                            disabled={isLoading}
+                            className="flex w-full text-sm items-center justify-center gap-2 border bg-white text-[#15153a] px-3 py-3 rounded-xl hover:bg-gray-200 transition disabled:opacity-60"
+                        >
                             <FaRocket />
-                            Book Session
+                            {isLoading ? 'Redirection…' : 'Réserver une séance'}
                         </button>
 
                     </div>

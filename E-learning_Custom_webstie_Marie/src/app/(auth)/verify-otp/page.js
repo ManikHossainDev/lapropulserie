@@ -1,12 +1,12 @@
 'use client'
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import OTPInput from 'react-otp-input';
 import { useVerifyEmailMutation } from '@/redux/fetures/auth/varifyEmail';
 import { toast } from 'react-toastify';
 
-const Page = () => {
+const VerifyOtpForm = () => {
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
     const verifyType = typeof window !== 'undefined' ? sessionStorage.getItem('verifyType') : null;
@@ -124,5 +124,17 @@ const Page = () => {
         </div>
     );
 };
+
+const Page = () => (
+    <Suspense
+        fallback={
+            <div className="flex items-center justify-center min-h-screen text-gray-600">
+                Chargement...
+            </div>
+        }
+    >
+        <VerifyOtpForm />
+    </Suspense>
+);
 
 export default Page;

@@ -5,18 +5,25 @@ import jsPDF from "jspdf";
 import moment from "moment";
 import { FaArrowDown } from "react-icons/fa";
 
-const DownloadCertificate = () => {
-    // ✅ Initialize as null — populated only on client after mount
+const DownloadCertificate = ({
+    userName,
+    programTitle = 'Parcours Exploration',
+    completedDate,
+    fileName = 'certificat-parcours-exploration.pdf',
+    buttonClassName = 'customSignUpButton hover:bg-indigo-800 text-white px-5 py-4 rounded-lg text-sm font-medium flex items-center gap-2',
+} = {}) => {
     const [user, setUser] = useState(null);
     const certificateRef = useRef(null);
 
-    // ✅ localStorage only runs in the browser, never during SSR/prerender
     useEffect(() => {
         const stored = localStorage.getItem("user");
         if (stored) {
             setUser(JSON.parse(stored));
         }
     }, []);
+
+    const learnerName = userName || user?.name || 'Apprenant·e';
+    const issuedOn = completedDate ? moment(completedDate) : moment();
 
     const downloadCertificate2 = async () => {
         const element = certificateRef.current;
@@ -36,21 +43,26 @@ const DownloadCertificate = () => {
         });
 
         pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-        pdf.save("certificate.pdf");
+        pdf.save(fileName);
     };
 
     return (
         <>
             <button
+                type="button"
                 onClick={downloadCertificate2}
-                className="customSignUpButton hover:bg-indigo-800 text-white px-5 py-4 rounded-lg text-sm font-medium flex items-center gap-2"
+                className={buttonClassName}
             >
-                Download Certificate <FaArrowDown />
+                Télécharger le certificat <FaArrowDown />
             </button>
 
             <div className="fixed left-[-9999px] top-0">
                 <div ref={certificateRef}>
-                    <CertificateTemplate userName={user?.name} />
+                    <CertificateTemplate
+                        userName={learnerName}
+                        programTitle={programTitle}
+                        issuedOn={issuedOn}
+                    />
                 </div>
             </div>
         </>
@@ -60,7 +72,7 @@ const DownloadCertificate = () => {
 export default DownloadCertificate;
 
 
-function CertificateTemplate({ userName }) {
+function CertificateTemplate({ userName, programTitle, issuedOn }) {
     return (
         <div className="w-[1200px] h-[850px] bg-white flex items-center justify-center p-6">
             <div className="w-full h-full shadow-2xl relative overflow-hidden">
@@ -81,31 +93,32 @@ function CertificateTemplate({ userName }) {
                         </div>
 
                         <h1 className="text-4xl font-bold text-primary tracking-wide mb-2">
-                            Certificate of Achievement
+                            Certificat de réussite
                         </h1>
-                        <p className="text-gray-500 mb-8">This certificate is proudly presented to</p>
+                        <p className="text-gray-500 mb-8">Ce certificat est décerné à</p>
 
                         <h2 className="text-5xl mycertificateFont font-semibold text-gray-900 mb-8 border-b-2 border-dashed border-indigo-300 inline-block px-8 pb-2">
                             {userName}
                         </h2>
 
                         <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-10">
-                            In recognition of outstanding dedication and successful completion of the program.
-                            Your commitment, passion, and effort have demonstrated excellence and perseverance.
+                            Pour avoir mené à bien {programTitle}.
+                            Votre engagement, votre sincérité et votre constance tout au long de
+                            cette exploration méritent d&apos;être reconnus.
                         </p>
 
                         <div className="flex justify-between items-end mt-20">
                             <div className="text-center">
-                                <h3>{moment().format("DD/MM/YYYY")}</h3>
+                                <h3>{issuedOn?.format?.("DD/MM/YYYY") || moment().format("DD/MM/YYYY")}</h3>
                                 <div className="w-40 border-t border-gray-400 mt-4" />
                                 <p className="text-sm text-gray-500">Date</p>
                             </div>
                             <div className="text-center">
                                 <h3 className="mycertificateFont font-semibold text-3xl text-gray-900">
-                                    la~propulserie
+                                    La Propulserie
                                 </h3>
                                 <div className="w-48 border-t border-gray-400 mt-4" />
-                                <p className="text-sm text-gray-500">Authorized Signature</p>
+                                <p className="text-sm text-gray-500">Signature</p>
                             </div>
                         </div>
                     </div>

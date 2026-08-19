@@ -8,7 +8,9 @@ import IsLoading from '@/Components/IsLoading';
 const RecommendedMentors = () => {
     const { data, isLoading, isError } = useGetAllRecommendedMentorsQuery();
    
-    const mentors = data?.data?.results ?? [];
+    const mentors = Array.isArray(data?.data)
+        ? data.data
+        : data?.data?.results || [];
 
     if (isLoading) {
         return <IsLoading row={5} />;
@@ -17,7 +19,7 @@ const RecommendedMentors = () => {
     if (isError) {
         return (
             <p className="text-center text-red-500">
-                Failed to load mentors
+                Impossible de charger les mentors
             </p>
         );
     }
@@ -26,7 +28,7 @@ const RecommendedMentors = () => {
         <div className="relative z-10 max-w-6xl mx-auto bg-white rounded-xl lg:p-10 p-5">
 
             <h2 className="text-xl lg:text-3xl font-semibold mb-6 text-center text-primary">
-                Recommended Mentors
+                Mentors recommandés
             </h2>
 
             <div className="space-y-5">
@@ -40,7 +42,7 @@ const RecommendedMentors = () => {
                     ))
                 ) : (
                     <p className="text-center text-gray-500">
-                        No mentors found
+                        Aucun mentor trouvé
                     </p>
                 )}
             </div>

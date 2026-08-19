@@ -8,14 +8,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
 import { useGetBookMentorsQuery } from '@/redux/fetures/Mentors/Mentors';
+import { mentorOptionFr } from '@/Components/mentors/All/mentorOptionLabels';
 
 const BookSessionAgain = () => {
 
     const { data, isLoading } = useGetBookMentorsQuery();
-    const mentors = data?.data?.results ?? [];
+    const mentors = Array.isArray(data?.data)
+        ? data.data
+        : data?.data?.results || [];
 
     if (isLoading) {
-        return <p className="text-center py-5">Loading...</p>;
+        return <p className="text-center py-5">Chargement...</p>;
     }
 
 
@@ -25,12 +28,12 @@ const BookSessionAgain = () => {
             {/* Title */}
             <h2 className="text-4xl font-semibold text-center text-primary mb-8 flex items-center flex-wrap justify-center gap-2">
                 <span className="text-3xl">🪐</span>
-                Book Session Again
+                Réserver à nouveau
             </h2>
 
             
             {!mentors?.length && (
-                <p className="text-center py-5 ">No mentors found</p>
+                <p className="text-center py-5 ">Aucun mentor trouvé</p>
             )}
 
 
@@ -67,29 +70,29 @@ const BookSessionAgain = () => {
                                 </div>
 
                                 <span className="ml-auto text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
-                                    {mentor.tag || "Top"}
+                                    {mentor.tag ? mentorOptionFr(mentor.tag) : 'Mentor'}
                                 </span>
                             </div>
 
                             {/* Meta */}
                             <div className="text-sm text-gray-600 flex gap-3 flex-wrap mb-3">
                                 <span className="text-primary font-medium">
-                                    ${mentor.sessionPrice}/Session
+                                    {mentor.sessionPrice} €/séance
                                 </span>
                                 <span>⭐ {mentor.avgRating}</span>
-                                <span>🌐 {mentor.availableIn || "Online"}</span>
+                                <span>🌐 {mentorOptionFr(mentor.availableIn) || 'En ligne'}</span>
                             </div>
 
                             {/* Description */}
                             <p className="text-sm text-gray-500 mb-4 line-clamp-3">
-                                {mentor.bio || "No description available."}
+                                {mentor.bio || 'Aucune description pour le moment.'}
                             </p>
 
                             {/* Tags */}
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {mentor.topics?.slice(0, 2)?.map((topic, i) => (
                                     <span key={i} className="text-xs border px-2 py-1 rounded-full">
-                                        {topic}
+                                        {mentorOptionFr(topic)}
                                     </span>
                                 ))}
                             </div>
@@ -99,7 +102,7 @@ const BookSessionAgain = () => {
                                 href={`/students/mentors/${mentor.mentorId}`}
                                 className="w-full inline-block text-center customSignUpButton text-white py-4 rounded-lg font-medium hover:opacity-90"
                             >
-                                See Profile
+                                Voir le profil
                             </Link>
 
                         </div>

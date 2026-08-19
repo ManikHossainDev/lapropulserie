@@ -8,14 +8,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
 import { useGetTopMentorsQuery } from '@/redux/fetures/Mentors/Mentors';
+import { mentorOptionFr } from '@/Components/mentors/All/mentorOptionLabels';
 
 const Topmentors = () => {
 
     const { data, isLoading } = useGetTopMentorsQuery();
-    const mentors = data?.data?.results ?? [];
+    const mentors = Array.isArray(data?.data)
+        ? data.data
+        : data?.data?.results || [];
 
     if (isLoading) {
-        return <p className="text-center py-5">Loading...</p>;
+        return <p className="text-center py-5">Chargement...</p>;
     }
 
     return (
@@ -23,12 +26,12 @@ const Topmentors = () => {
 
             <h2 className="text-4xl font-semibold text-center text-primary mb-8 flex items-center justify-center gap-2">
                 <img className="w-10 h-10" src="/Images/StudentsDash/Questions_Response/header_teacher.png" alt="" />
-                Top Mentors
+                Meilleurs mentors
             </h2>
 
 
             {!mentors?.length && (
-                <p className="text-center py-5 ">No mentors found</p>
+                <p className="text-center py-5 ">Aucun mentor trouvé</p>
             )}
 
 
@@ -75,7 +78,7 @@ const Topmentors = () => {
                                 </span>
                                 <span>⭐ {mentor.avgRating}</span>
                                 <span>
-                                    🌐 {mentor.availableIn}
+                                    🌐 {mentorOptionFr(mentor.availableIn)}
                                 </span>
                             </div>
 
@@ -88,7 +91,7 @@ const Topmentors = () => {
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {mentor.topics?.slice(0, 2).map((topic, i) => (
                                     <span key={i} className="text-xs border px-2 py-1 rounded-full">
-                                        {topic}
+                                        {mentorOptionFr(topic)}
                                     </span>
                                 ))}
                             </div>
@@ -98,7 +101,7 @@ const Topmentors = () => {
                                 href={`/students/mentors/${mentor.mentorId}`}
                                 className="w-full inline-block text-center customSignUpButton text-white py-4 rounded-lg font-medium hover:opacity-90"
                             >
-                                See Profile
+                                Voir le profil
                             </Link>
 
                         </div>
