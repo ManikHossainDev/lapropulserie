@@ -1,0 +1,105 @@
+name: Deploy — Backend (EC2)
+
+# Monorepo: only runs when backend (or this workflow) changes on main.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e-learning_backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: e-learning-api
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Image metadata
+        id: meta
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          TAG="${{ github.sha }}"
+          IMAGE="ghcr.io/${OWNER}/${{ env.IMAGE_NAME }}"
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "full=${IMAGE}:${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: e-learning_backend
+          file: e-learning_backend/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          # Default 22. For a custom port, set secret EC2_SSH_PORT and change this line to: ${{ secrets.EC2_SSH_PORT }}
+          port: 22
+          script: |
+            set -euo pipefail
+
+            echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            cd "${{ secrets.EC2_APP_DIR }}"
+
+            export API_IMAGE="${{ needs.build-and-push.outputs.image }}:${{ needs.build-and-push.outputs.tag }}"
+
+            # Update API_IMAGE without breaking other lines in .env.deploy
+            if [ -f .env.deploy ]; then
+              grep -v '^API_IMAGE=' .env.deploy > .env.deploy.tmp || true
+              mv .env.deploy.tmp .env.deploy
+            fi
+            echo "API_IMAGE=${API_IMAGE}" >> .env.deploy
+            grep -q '^PORT=' .env.deploy || echo "PORT=8005" >> .env.deploy
+
+            set -a
+            # shellcheck disable=SC1091
+            . ./.env.deploy
+            set +a
+
+            # Runtime secrets must already exist as .env on the host (editable later; restart to apply)
+            test -f .env
+
+            docker compose pull api
+            docker compose up -d api redis
+
+            sleep 10
+            curl -fsS "http://127.0.0.1:${PORT:-8005}/health"
+            echo ""
+            curl -fsS "http://127.0.0.1:${PORT:-8005}/ready" || true
+            echo ""
+            echo "Deployed ${API_IMAGE}"

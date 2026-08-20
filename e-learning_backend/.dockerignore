@@ -11,8 +11,13 @@ npm-debug.log*
 coverage/
 dist/
 build/
-.env.local
-.env.example
+.env
+.env.*
+!.env.example
 .vscode/
 *.zip
 *.tar.gz
+uploads/
+firebaseServiceAccountForTranslation/
+**/*firebase*.json
+**/*serviceAccount*.json

@@ -171,6 +171,8 @@ const getTopMentorsForMentor = async (
     careerStage: mentor.careerStage,
     focusArea: mentor.focusArea,
     industry: mentor.industry,
+    designation: mentor.currentJobTitle || mentor.companyName || 'Mentor',
+    role: mentor.currentJobTitle || mentor.companyName || 'Mentor',
   }));
 
   return paginateResults(formattedMentors, total, page, limit);
@@ -328,6 +330,27 @@ const submitReview = async (
   return newReview;
 };
 
+const APPROVED_LIVE_MENTOR = {
+  isLive: true,
+  haveAdminApproval: 'approved',
+  isDeleted: false,
+};
+
+const persistRecommendedMentorIds = async (
+  studentObjectId: any,
+  recommendedMentorIds: any[],
+) => {
+  if (!recommendedMentorIds.length) {
+    return;
+  }
+  const { StudentQuestionnaireSummary } = require('../student-dashboard/student-questionnaire-summary.model');
+  await StudentQuestionnaireSummary.findOneAndUpdate(
+    { studentId: studentObjectId, isDeleted: false },
+    { recommendedMentorIds },
+    { new: true },
+  );
+};
+
 const getRecommendedMentorsWithGeneration = async (
   studentId: string,
   page: number = 1,
@@ -338,68 +361,96 @@ const getRecommendedMentorsWithGeneration = async (
   const { StudentAnswer } = require('../../question.module/studentAnswer/studentAnswer.model');
   const { AIService } = require('../student-dashboard/ai.service');
 
+  const studentObjectId = mongoose.Types.ObjectId.isValid(studentId)
+    ? new mongoose.Types.ObjectId(studentId)
+    : studentId;
+
   const summary = await StudentQuestionnaireSummary.findOne({
-    studentId,
+    studentId: studentObjectId,
     isDeleted: false,
   }).lean();
 
-  let recommendedMentorIds: any[] = [];
+  if (!summary) {
+    return getTopMentorsForMentor(page, limit);
+  }
 
-  if (!summary || summary.recommendedMentorIds.length === 0) {
-    // Generate recommendations if none exist
-    if (summary) {
-      const answers = await StudentAnswer.find({
-        studentId,
-        questionaryId: summary.questionaryId,
-        isDeleted: false,
+  let recommendedMentorIds: any[] = summary.recommendedMentorIds || [];
+
+  const liveStored = recommendedMentorIds.length
+    ? await MentorProfile.find({
+        _id: { $in: recommendedMentorIds },
+        ...APPROVED_LIVE_MENTOR,
       })
-        .populate('questionId', 'title')
-        .lean();
+        .select('_id')
+        .lean()
+    : [];
 
-      const questionsAndAnswers = answers.map((a: any) => ({
-        question: a.questionId?.title || '',
-        answer: Array.isArray(a.answer) ? a.answer.join(', ') : String(a.answer || ''),
-      }));
+  if (liveStored.length === 0) {
+    const answers = await StudentAnswer.find({
+      studentId: studentObjectId,
+      questionaryId: summary.questionaryId,
+      isDeleted: false,
+    })
+      .populate('questionId', 'title')
+      .lean();
 
-      const preferences = await AIService.recommendMentors(questionsAndAnswers, {
-        title: summary.title,
-        texts: summary.texts,
-        summary: summary.summary,
-      });
+    const questionsAndAnswers = answers.map((a: any) => ({
+      question: a.questionId?.title || '',
+      answer: Array.isArray(a.answer) ? a.answer.join(', ') : String(a.answer || ''),
+    }));
 
-      const mentorQuery: any = {
-        isLive: true,
-        haveAdminApproval: 'approved',
-        isDeleted: false,
-      };
+    const preferences = await AIService.recommendMentors(questionsAndAnswers, {
+      title: summary.title,
+      texts: summary.texts,
+      summary: summary.summary,
+    });
 
-      if (preferences.length > 0) {
-        mentorQuery.$or = [
-          { coachingMethodologies: { $in: preferences } },
-          { coreValues: { $in: preferences } },
-          { specialties: { $in: preferences } },
-        ];
-      }
+    const mentorQuery: any = { ...APPROVED_LIVE_MENTOR };
 
-      const recommendedMentors = await MentorProfile.find(mentorQuery)
+    if (preferences.length > 0) {
+      mentorQuery.$or = [
+        { coachingMethodologies: { $in: preferences } },
+        { coreValues: { $in: preferences } },
+        { specialties: { $in: preferences } },
+      ];
+    }
+
+    let recommendedMentors = await MentorProfile.find(mentorQuery)
+      .sort({ rating: -1 })
+      .limit(20)
+      .lean();
+
+    if (recommendedMentors.length === 0 && mentorQuery.$or) {
+      delete mentorQuery.$or;
+      recommendedMentors = await MentorProfile.find(mentorQuery)
         .sort({ rating: -1 })
         .limit(20)
         .lean();
-
-      recommendedMentorIds = recommendedMentors.map(m => m._id);
-
-      // Store the generated recommendations
-      await StudentQuestionnaireSummary.findOneAndUpdate(
-        { studentId, isDeleted: false },
-        { recommendedMentorIds },
-        { new: true },
-      );
     }
+
+    recommendedMentorIds = recommendedMentors.map((m: any) => m._id);
+    await persistRecommendedMentorIds(studentObjectId, recommendedMentorIds);
   } else {
-    recommendedMentorIds = summary.recommendedMentorIds;
+    recommendedMentorIds = liveStored.map((m: any) => m._id);
+
+    const extras = await MentorProfile.find({
+      ...APPROVED_LIVE_MENTOR,
+      _id: { $nin: recommendedMentorIds },
+    })
+      .sort({ rating: -1 })
+      .limit(20)
+      .select('_id')
+      .lean();
+
+    if (extras.length > 0) {
+      recommendedMentorIds = [
+        ...recommendedMentorIds,
+        ...extras.map((m: any) => m._id),
+      ].slice(0, 20);
+      await persistRecommendedMentorIds(studentObjectId, recommendedMentorIds);
+    }
   }
 
-  // If still no recommendations, fall back to top mentors
   if (recommendedMentorIds.length === 0) {
     return getTopMentorsForMentor(page, limit);
   }
@@ -408,9 +459,7 @@ const getRecommendedMentorsWithGeneration = async (
 
   const mentors = await MentorProfile.find({
     _id: { $in: recommendedMentorIds },
-    isLive: true,
-    haveAdminApproval: 'approved',
-    isDeleted: false,
+    ...APPROVED_LIVE_MENTOR,
   })
     .skip((page - 1) * limit)
     .limit(limit)
@@ -419,6 +468,10 @@ const getRecommendedMentorsWithGeneration = async (
     )
     .populate('userId', 'name')
     .lean();
+
+  if (mentors.length === 0) {
+    return getTopMentorsForMentor(page, limit);
+  }
 
   const formattedMentors = mentors.map((mentor: any) => ({
     mentorId: mentor._id,
@@ -440,6 +493,8 @@ const getRecommendedMentorsWithGeneration = async (
     careerStage: mentor.careerStage,
     focusArea: mentor.focusArea,
     industry: mentor.industry,
+    designation: mentor.currentJobTitle || mentor.companyName || 'Mentor',
+    role: mentor.currentJobTitle || mentor.companyName || 'Mentor',
   }));
 
   return paginateResults(formattedMentors, total, page, limit);

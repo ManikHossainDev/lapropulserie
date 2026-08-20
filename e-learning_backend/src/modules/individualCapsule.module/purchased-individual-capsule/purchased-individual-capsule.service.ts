@@ -22,6 +22,8 @@ import { IndividualModule } from '../individual-module/individual-module.model';
 import { IndividualLesson } from '../individual-lesson/individual-lesson.model';
 import { IndividualModuleProgress } from '../individual-module-progress/individual-module-progress.model';
 import { LessonProgress } from '../individual-lesson-progress/individual-lesson-progress.model';
+import { JourneyCapsule } from '../../journey.module/journey-capsule/journey-capsule.model';
+import { isJourneyOnlyDiscoverCategory } from '../shared/capsule-access.helper';
 
 
 export class PurchasedIndividualCapsuleService extends GenericService<
@@ -64,7 +66,21 @@ export class PurchasedIndividualCapsuleService extends GenericService<
       isDeleted: false,
     }).select('sellIndividually price priceId capsuleType title');
 
-    if (category && category.sellIndividually === false) {
+    if (category && isJourneyOnlyDiscoverCategory(category)) {
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'This capsule is not available for individual purchase. It is included in an Expedition Journey.',
+      );
+    }
+
+    const journeyLinked = await JourneyCapsule.findOne({
+      individualCapsuleId: existingIndividualCapsule._id,
+      isDeleted: false,
+    })
+      .select('_id')
+      .lean();
+
+    if (journeyLinked) {
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
         'This capsule is not available for individual purchase. It is included in an Expedition Journey.',
@@ -122,12 +138,14 @@ export class PurchasedIndividualCapsuleService extends GenericService<
         payment_method_types: ['card'],
         mode: 'payment',
         customer: stripeCustomer,
+        locale: 'fr',
+        allow_promotion_codes: true,
         line_items: [
           {
             price_data: {
               currency: TCurrency.eur,
               product_data: {
-                  name: 'Amount',
+                  name: existingIndividualCapsule.title || 'Capsule individuelle',
               },
               unit_amount : purchasedIndividualCapsule[0].price! * 100,
             },

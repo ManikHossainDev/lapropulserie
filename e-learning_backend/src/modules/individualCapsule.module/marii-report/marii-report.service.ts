@@ -203,6 +203,21 @@ export class MariiReportService extends GenericService<typeof MariiReport, IMari
 
     if (reports.length < individualIds.length) return null;
 
+    if (purchase.overallStatus !== 'completed') {
+      await PurchasedJourney.updateOne(
+        { _id: purchase._id, overallStatus: { $ne: 'completed' } },
+        {
+          $set: {
+            overallStatus: 'completed',
+            completionDate: purchase.completionDate || new Date(),
+            progressPercentage: 100,
+            completedCapsules: individualIds.length,
+            totalCapsules: individualIds.length,
+          },
+        },
+      );
+    }
+
     return this.generateExpeditionReport(studentId, journeyId);
   }
 

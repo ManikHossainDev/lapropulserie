@@ -8,6 +8,9 @@ import { PurchasedJourney } from '../../journey.module/purchased-journey/purchas
 import { PurchasedJourneyService } from '../../journey.module/purchased-journey/purchased-journey.service';
 import ApiError from '../../../errors/ApiError';
 import { TPaymentStatus } from '../paymentTransaction/paymentTransaction.constant';
+import stripe from '../../../config/paymentGateways/stripe.config';
+import { config } from '../../../config';
+import { handlePaymentSucceeded } from '../stripeWebhook/handlePaymentSucceeded';
 
 export class PaymentController {
   /**
@@ -17,17 +20,60 @@ export class PaymentController {
    paymentSuccess = catchAsync(async (req: Request, res: Response) => {
      const { session_id } = req.query;
 
-     if (!session_id) {
+     if (!session_id || Array.isArray(session_id)) {
        throw new ApiError(StatusCodes.BAD_REQUEST, 'Session ID is required');
      }
 
-     // Find the payment transaction
-     const transaction = await PaymentTransaction.findOne({
-       transactionId: session_id,
+     const sessionId = String(session_id);
+
+     let transaction = await PaymentTransaction.findOne({
+       transactionId: sessionId,
      }).populate('referenceId');
 
+     // Stripe redirects here before (or without) the webhook. If the row is
+     // missing, confirm the session with Stripe and fulfill as a fallback.
      if (!transaction) {
-       throw new ApiError(StatusCodes.NOT_FOUND, 'Payment transaction not found');
+       const session = await stripe.checkout.sessions.retrieve(sessionId);
+       const paid =
+         session.payment_status === 'paid' || session.status === 'complete';
+
+       if (paid) {
+         await handlePaymentSucceeded(session);
+         transaction = await PaymentTransaction.findOne({
+           transactionId: sessionId,
+         }).populate('referenceId');
+       }
+
+       if (!transaction) {
+         const wantsHtml = req.accepts('html');
+         if (paid && wantsHtml) {
+           res.render('success', {
+             data: {
+               customerName: session.customer_details?.name || 'Customer',
+               customerEmail: session.customer_details?.email || '',
+               planNickname: session.metadata?.referenceFor || 'Payment',
+               subscriptionType: 'One-time purchase',
+               amountTotal: session.amount_total
+                 ? session.amount_total / 100
+                 : 0,
+               currency: session.currency || 'eur',
+               paymentStatus: session.payment_status,
+               sessionId: session.id,
+               subscriptionId: null,
+               frontEndHomePageUrl:
+                 config.client.url || process.env.CLIENT_URL || 'http://localhost:3000',
+             },
+           });
+           return;
+         }
+
+         throw new ApiError(
+           StatusCodes.NOT_FOUND,
+           paid
+             ? 'Payment received. Confirmation is still processing — refresh this page.'
+             : 'Payment transaction not found',
+         );
+       }
      }
 
      // Get purchase details based on reference type

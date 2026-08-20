@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Payment Failed</title>
+    <title>Paiement annulé</title>
     <style>
       * {
         box-sizing: border-box;
@@ -17,7 +17,7 @@
         align-items: center;
         min-height: 100vh;
         font-family: Arial, sans-serif;
-        background-color: #fdecea; /* Light red background */
+        background-color: #fdecea;
       }
 
       .container {
@@ -32,17 +32,17 @@
 
       .error-icon {
         font-size: 4rem;
-        color: #e53935; /* Red color for error icon */
+        color: #e53935;
         margin-bottom: 1rem;
       }
 
       h1 {
-        color: #d32f2f; /* Darker red for the heading */
+        color: #d32f2f;
         margin-bottom: 1rem;
       }
 
       p {
-        color: #c62828; /* Medium red for text */
+        color: #c62828;
         margin-bottom: 2rem;
       }
 
@@ -50,23 +50,23 @@
         display: inline-block;
         padding: 0.5rem 1.5rem;
         color: #fff;
-        background-color: #e53935; /* Red button */
+        background-color: #e53935;
         text-decoration: none;
         border-radius: 5px;
         transition: background-color 0.3s;
       }
 
       .btn-home:hover {
-        background-color: #c62828; /* Darker red on hover */
+        background-color: #c62828;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="error-icon">❌</div>
-      <h1>Payment Failed</h1>
-      <p>Unfortunately, your transaction could not be completed.</p>
-      <a href="<%= frontEndHomePageUrl %>" class="btn-home">Return to Home</a>
+      <h1>Paiement annulé</h1>
+      <p>Votre transaction n'a pas pu être finalisée.</p>
+      <a href="<%= data.frontEndHomePageUrl || '/' %>" class="btn-home">Retour à l'accueil</a>
     </div>
   </body>
 </html>

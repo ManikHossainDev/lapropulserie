@@ -1,45 +1,55 @@
-# Build stage for production
+# Production image — secrets via runtime env (.env / -e / compose env_file).
+# Do NOT bake .env into the image.
+
+# ── Build ──────────────────────────────────────────────
 FROM node:24-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
 RUN npm install -g pnpm
 
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-
 RUN pnpm build
 
-# Production image
+# ── Runtime ────────────────────────────────────────────
 FROM node:24-alpine
 
-# Install ffmpeg for video processing
-RUN apk add --no-cache ffmpeg
+RUN apk add --no-cache ffmpeg \
+  && addgroup -S app && adduser -S app -G app
 
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
 RUN npm install -g pnpm
 
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /usr/src/app/dist ./dist
+# EJS views (success/cancel pages) — kept next to compiled server
 COPY --from=builder /usr/src/app/src/views ./dist/views
-COPY --from=builder /usr/src/app/package.json .
-COPY --from=builder /usr/src/app/.env ./.env
+COPY --from=builder /usr/src/app/package.json ./
 
-# Create uploads directory for temp video processing
-RUN mkdir -p /tmp/videos
+RUN mkdir -p /tmp/videos /usr/src/app/uploads \
+  && chown -R app:app /usr/src/app /tmp/videos
 
-# Expose port
-EXPOSE 8080
+# Defaults for containers (override with env_file / -e)
+ENV NODE_ENV=production \
+    PORT=8005 \
+    BACKEND_IP=0.0.0.0
 
-# Start production server
+# App listens on PORT; map host→container in compose/EC2
+EXPOSE 8005
+
+USER app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||8005)+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
 CMD ["node", "dist/serverV2.js"]
 
-##----- docker compose up --build
-##----- docker build -t anyName .
+# Build:  docker build -t e-learning-api .
+# Run:    docker run --env-file .env -p 8005:8005 e-learning-api
+# Compose: docker compose up --build

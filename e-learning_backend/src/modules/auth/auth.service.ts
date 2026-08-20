@@ -81,7 +81,7 @@ const ensureMentorSideEffects = async (
   }
 
   // Idempotent: safe on re-register of unverified mentors (no duplicate wallet/profile).
-  let wallet = await Wallet.findOne({ userId, isDeleted: false });
+  let wallet: any = await Wallet.findOne({ userId, isDeleted: false });
   if (!wallet) {
     wallet = await walletService.create({
       userId,

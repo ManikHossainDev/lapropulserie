@@ -219,12 +219,39 @@ export class StudentJourneyService {
       0,
     );
 
+    const allExplorationComplete =
+      isPurchased &&
+      capsulesWithProgress.length > 0 &&
+      capsulesWithProgress.every(
+        (capsule) => capsule.isCompleted && capsule.hasSixPartContent,
+      );
+
+    if (
+      allExplorationComplete &&
+      purchase &&
+      purchase.overallStatus !== 'completed'
+    ) {
+      await PurchasedJourney.updateOne(
+        { _id: purchase._id, overallStatus: { $ne: 'completed' } },
+        {
+          $set: {
+            overallStatus: 'completed',
+            completionDate: purchase.completionDate || new Date(),
+            progressPercentage: 100,
+            completedCapsules: capsulesWithProgress.length,
+            totalCapsules,
+          },
+        },
+      );
+    }
+
     return {
       journey,
       capsules: capsulesWithProgress,
       totalCapsules,
       totalModules,
       isPurchased,
+      isCompleted: allExplorationComplete,
     };
   }
 

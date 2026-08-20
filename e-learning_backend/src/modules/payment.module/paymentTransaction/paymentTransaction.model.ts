@@ -30,10 +30,12 @@ const paymentTransactionSchema = new Schema<IPaymentTransaction>(
     referenceFor: {
       type: String,
       enum: [
-        TTransactionFor.UserSubscription, // previously it was SubscriptionPlan
+        TTransactionFor.UserSubscription,
         TTransactionFor.PurchasedJourney,
         TTransactionFor.PurchasedAdminCapsule,
         TTransactionFor.PurchasedIndividualCapsule,
+        TTransactionFor.MentorSession,
+        TTransactionFor.WithdrawalRequest,
       ],
       required: [
         true,
