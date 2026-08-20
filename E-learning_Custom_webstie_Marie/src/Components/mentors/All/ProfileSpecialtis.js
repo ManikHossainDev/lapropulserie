@@ -45,7 +45,7 @@ const ProfileSpecialtis = ({ data = [] }) => {
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">💡</span>
-                        <h1 className="text-lg font-bold text-indigo-800">Specialties</h1>
+                        <h1 className="text-lg font-bold text-indigo-800">Spécialités</h1>
                     </div>
                     {isEditing ? (
                         <div className="flex gap-2">
@@ -53,13 +53,13 @@ const ProfileSpecialtis = ({ data = [] }) => {
                                 onClick={handleCancel}
                                 className="border border-gray-300 text-gray-600 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
                             >
-                                Cancel
+                                Annuler
                             </button>
                             <button
                                 onClick={handleSave}
                                 className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
                             >
-                                Save
+                                Enregistrer
                             </button>
                         </div>
                     ) : (
@@ -67,7 +67,7 @@ const ProfileSpecialtis = ({ data = [] }) => {
                             onClick={() => setIsEditing(true)}
                             className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2 rounded-lg transition"
                         >
-                            Edit
+                            Modifier
                         </button>
                     )}
                 </div>
@@ -80,7 +80,7 @@ const ProfileSpecialtis = ({ data = [] }) => {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-                            placeholder="Add new Specialty"
+                            placeholder="Ajouter une spécialité"
                             className="flex-1 text-sm text-gray-700 outline-none bg-transparent placeholder-gray-400"
                         />
                         <button
@@ -117,7 +117,7 @@ const ProfileSpecialtis = ({ data = [] }) => {
 
                     {specialties.length === 0 && (
                         <p className="text-center text-sm text-gray-400 py-6">
-                            No specialties added yet. Click Edit to add some.
+                            Aucune spécialité pour le moment. Cliquez sur Modifier pour en ajouter.
                         </p>
                     )}
                 </div>

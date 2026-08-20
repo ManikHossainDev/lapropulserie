@@ -1,5 +1,8 @@
 import React from 'react';
 
+const CALENDLY_DEMO =
+    'https://calendly.com/marie-bouleau-lapropulserie/demonstration-la-propulserie';
+
 const Mostcompanies = () => {
     const features = [
         {
@@ -113,15 +116,18 @@ const Mostcompanies = () => {
                 </div>
 
                 {/* CTA Button */}
-                <button
-                    className="px-10 py-3.5 rounded-full font-semibold text-white text-sm transition-opacity hover:opacity-90 active:scale-95"
+                <a
+                    href={CALENDLY_DEMO}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-10 py-3.5 rounded-full font-semibold text-white text-sm transition-opacity hover:opacity-90 active:scale-95 inline-block"
                     style={{
                         background: 'linear-gradient(135deg, #f5a623 0%, #e8870a 100%)',
                         boxShadow: '0 4px 20px rgba(245,166,35,0.35)',
                     }}
                 >
                     Découvrez les solutions d'entreprise
-                </button>
+                </a>
             </div>
         </div>
     );

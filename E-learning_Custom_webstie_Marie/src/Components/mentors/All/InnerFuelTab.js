@@ -4,6 +4,7 @@ import { Button, Checkbox, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useUpdateInnerFuelMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
 import { toast } from 'react-toastify';
+import { mentorOptionFr } from './mentorOptionLabels';
 
 const coreValueOptions = [
     'Growth', 'Empathy', 'Creativity', 'Balance',
@@ -53,7 +54,7 @@ const ChipGrid = ({ options, selected, onToggle, max, customItems = [], onAddCus
                             disabled={isDisabled}
                             onChange={() => !isDisabled && onToggle(item)}
                         />
-                        {item}
+                        {mentorOptionFr(item)}
                     </div>
                 );
             })}
@@ -67,7 +68,7 @@ const ChipGrid = ({ options, selected, onToggle, max, customItems = [], onAddCus
                         onChange={(e) => setInputVal(e.target.value)}
                         onPressEnter={handleAdd}
                         onBlur={handleAdd}
-                        placeholder="Type & press Enter"
+                        placeholder="Saisir puis Entrée"
                         style={{ width: 150, borderRadius: 8 }}
                     />
                 ) : (

@@ -11,6 +11,9 @@ const profile = apiSlice.injectEndpoints({
         getStudentMyProfileInfo: builder.query({
             query: () => "/users/profile-info",
         }),
+        getCompletedJourneys: builder.query({
+            query: () => "/student-dashboard/completed-journeys?page=1&limit=20",
+        }),
         updateStudentProfile: builder.mutation({
             query: (data) => ({
                 url: "/users/profile-info",
@@ -24,8 +27,7 @@ const profile = apiSlice.injectEndpoints({
 export const { 
     useGetStudentProfileProgressQuery, 
     useGetMyMentorsQuery, 
-    useGetStudentMyProfileInfoQuery ,
+    useGetStudentMyProfileInfoQuery,
+    useGetCompletedJourneysQuery,
     useUpdateStudentProfileMutation
-
-
 } = profile;

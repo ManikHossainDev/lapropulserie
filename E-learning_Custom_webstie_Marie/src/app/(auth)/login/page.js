@@ -79,7 +79,7 @@ const Page = () => {
 
             <form onSubmit={handleSubmit} className='w-full max-w-lg bg-slate-100/90 rounded-lg p-5 py-10 sm:p-8 sm:py-14 md:p-10 md:py-20'>
                 <div className='w-full min-w-0'>
-                    <h2 className='text-2xl sm:text-3xl font-medium text-center'>Login</h2>
+                    <h2 className='text-2xl sm:text-3xl font-medium text-center'>Connexion</h2>
 
                     {errorMsg && (
                         <div className='mt-4 p-2 bg-red-100 border border-red-400 text-red-600 text-sm rounded-md text-center break-words'>
@@ -90,7 +90,7 @@ const Page = () => {
                     <div className='mt-5'>
                         <label className='font-semibold' htmlFor="email">Email</label>
                         <input
-                            placeholder='Enter your email'
+                            placeholder='Entrez votre email'
                             className='mt-2 w-full p-2 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                             type="email"
                             name="email"
@@ -100,10 +100,10 @@ const Page = () => {
                     </div>
 
                     <div className='mt-5'>
-                        <label className='font-semibold' htmlFor="password">Password</label>
+                        <label className='font-semibold' htmlFor="password">Mot de passe</label>
                         <div className='relative'>
                             <input
-                                placeholder='Enter your password'
+                                placeholder='Entrez votre mot de passe'
                                 className='mt-2 w-full p-2 pr-10 border border-[#3b398d] rounded-md focus:outline-0 ring-0 bg-white'
                                 type={showPassword ? "text" : "password"}
                                 name="password"
@@ -124,9 +124,9 @@ const Page = () => {
                     <div className='flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center my-5'>
                         <label htmlFor="remember" className='flex items-center'>
                             <input type="checkbox" name="remember" id="remember" />
-                            <span className='ml-2 text-gray-600 text-sm sm:text-base'>Remember me</span>
+                            <span className='ml-2 text-gray-600 text-sm sm:text-base'>Se souvenir de moi</span>
                         </label>
-                        <Link className='text-blue-600 text-sm' href="/forgot-password">Forgot Password</Link>
+                        <Link className='text-blue-600 text-sm' href="/forgot-password">Mot de passe oublié ?</Link>
                     </div>
 
                     <div className='mt-5'>
@@ -135,11 +135,11 @@ const Page = () => {
                             disabled={isLoading}
                             className='cursor-pointer w-full p-2.5 sm:p-2 bg-[#3b398d] font-semibold text-white rounded-md disabled:opacity-60 disabled:cursor-not-allowed'
                         >
-                            {isLoading ? 'Logging in...' : 'Login'}
+                            {isLoading ? 'Connexion...' : 'Se connecter'}
                         </button>
                     </div>
 
-                    <p className='text-center mt-5 text-gray-600 text-sm sm:text-base'>Don't have an account? <Link className='text-blue-600' href="/signup">Sign Up</Link></p>
+                    <p className='text-center mt-5 text-gray-600 text-sm sm:text-base'>Vous n’avez pas encore de compte ? <Link className='text-blue-600' href="/signup">Créer un compte</Link></p>
                 </div>
             </form>
 

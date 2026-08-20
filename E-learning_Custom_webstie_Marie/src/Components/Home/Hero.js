@@ -1,4 +1,7 @@
 import React from "react";
+import Link from "next/link";
+
+const SIGNUP_PARTICULIER = "/signup?role=student";
 
 const Hero = () => {
     return (
@@ -7,9 +10,12 @@ const Hero = () => {
                 <h2 className="text-6xl  text-white">(Re)trouver  <span className="text-orange-500">du sens</span> au travail</h2>
                 <p className="text-white  my-8">Parce que personne ne vous a jamais appris à vraiment vous connaître</p>
                 <div className=" flex flex-wrap gap-5">
-                    {/* <button className="lg:px-8 px-2 py-4    text-[#ffffff] bg-orange-500 font-semibold rounded-lg ">Profitez gratuitement de votre bilan personnalisé sur le tableau de bord</button> */}
-                    <button className="lg:px-8 px-2 py-4    text-[#ffffff] bg-orange-500 font-semibold rounded-lg ">Commencer mon bilan gratuit</button>
-                    {/* <button className="px-8 py-4  border bg-white text-[#301f4b] customSignUpButtonHover font-semibold rounded-lg ">Faire mon bilan gratuit</button> */}
+                    <Link
+                        href={SIGNUP_PARTICULIER}
+                        className="lg:px-8 px-2 py-4 text-[#ffffff] bg-orange-500 font-semibold rounded-lg inline-block"
+                    >
+                        Commencer mon bilan gratuit
+                    </Link>
                 </div>
                 <p className="mt-5 text-white font-semibold">Gratuit • 15 minutes • Sans engagement</p>
             </div>

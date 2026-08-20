@@ -15,7 +15,7 @@ const Page = () => {
         if (selectedRole) {
             navigate.push(`/signup?role=${selectedRole}`);
         } else {
-            toast.error('Please select a role to continue.');
+            toast.error('Veuillez sélectionner un profil pour continuer.');
         }
     };
 
@@ -26,8 +26,8 @@ const Page = () => {
             </Link>
 
             <div className="mt-10 text-center">
-                <h2 className="text-3xl font-semibold text-gray-900">Sign Up</h2>
-                <p className="text-gray-500 my-2">Select Your Role to Signup</p>
+                <h2 className="text-3xl font-semibold text-gray-900">Créer un compte</h2>
+                <p className="text-gray-500 my-2">Sélectionnez votre profil pour continuer</p>
             </div>
 
             <div className="flex justify-center mt-10">
@@ -41,8 +41,8 @@ const Page = () => {
                             <MdSchool className="text-green-500 text-xl" />
                         </div>
                         <div className="ml-4">
-                            <h3 className="text-lg font-semibold">Student</h3>
-                            <p className="text-sm text-gray-200">Explore learning journeys and connect with mentors</p>
+                            <h3 className="text-lg font-semibold">Particulier</h3>
+                            <p className="text-sm text-gray-200">Accédez au bilan, aux capsules et au Parcours Exploration</p>
                         </div>
                         <input
                             type="checkbox"
@@ -62,7 +62,7 @@ const Page = () => {
                         </div>
                         <div className="ml-4">
                             <h3 className="text-lg font-semibold">Mentor</h3>
-                            <p className="text-sm text-gray-200">Guide students and share your professional expertise</p>
+                            <p className="text-sm text-gray-200">Rejoignez l’écosystème et accompagnez les particuliers</p>
                         </div>
                         <input
                             type="checkbox"
@@ -72,7 +72,7 @@ const Page = () => {
                         />
                     </div>
                     <div>
-                        <button onClick={handleGoNext} className="w-full p-2 bg-[#553283] mt-10 font-semibold text-white rounded-md flex items-center justify-center cursor-pointer">Go Next <GrLinkNext className="ml-2 text-xl" /></button>
+                        <button onClick={handleGoNext} className="w-full p-2 bg-[#553283] mt-10 font-semibold text-white rounded-md flex items-center justify-center cursor-pointer">Continuer <GrLinkNext className="ml-2 text-xl" /></button>
                     </div>
                 </div>
             </div>

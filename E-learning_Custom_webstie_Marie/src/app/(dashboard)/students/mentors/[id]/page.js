@@ -17,11 +17,11 @@ const Page = () => {
   const mentor = data?.data; // ✅ important
  
   if (isLoading) {
-    return <p className="text-center py-10">Loading...</p>;
+    return <p className="text-center py-10">Chargement...</p>;
   }
 
   if (isError) {
-    return <p className="text-center py-10 text-red-500">Failed to load mentor</p>;
+    return <p className="text-center py-10 text-red-500">Impossible de charger le mentor</p>;
   }
 
   return (
@@ -30,7 +30,7 @@ const Page = () => {
 
         {/* LEFT */}
         <div className="lg:col-span-1">
-          <ProfileLeft mentor={mentor} />
+          <ProfileLeft mentor={mentor} mentorId={mentorId} />
         </div>
 
         {/* RIGHT */}

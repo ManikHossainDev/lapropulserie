@@ -10,7 +10,10 @@ import React, { useEffect, useState } from 'react';
 
 const LearningCapsules = () => {
     const { data: categoriesRes, isLoading: categoriesLoading } = useGetAllCapsulesCategoryQuery();
-    const categories = categoriesRes?.data?.results || [];
+    // sendResponse flattens paginateResults → data is the array
+    const categories = Array.isArray(categoriesRes?.data)
+        ? categoriesRes.data
+        : categoriesRes?.data?.results || [];
 
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
@@ -25,7 +28,9 @@ const LearningCapsules = () => {
         { skip: !selectedCategoryId },
     );
 
-    const capsules = capsulesRes?.data?.results || [];
+    const capsules = Array.isArray(capsulesRes?.data)
+        ? capsulesRes.data
+        : capsulesRes?.data?.results || [];
 
     return (
         <div className="bg-white max-w-6xl mx-auto rounded-2xl lg:p-10 p-5 mt-10">

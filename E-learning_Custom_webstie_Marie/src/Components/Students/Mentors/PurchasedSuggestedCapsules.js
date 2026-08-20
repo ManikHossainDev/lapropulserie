@@ -13,7 +13,9 @@ import {
 
 const CategoryCarousel = () => {
     const { data } = useGetAllCapsulesCategoryQuery();
-    const categories = data?.data?.results || [];
+    const categories = Array.isArray(data?.data)
+        ? data.data
+        : data?.data?.results || [];
 
     if (!categories.length) return null;
 
@@ -57,14 +59,14 @@ const PurchasedSuggestedCapsules = () => {
 
     return (
         <div className='max-w-7xl mx-auto my-10 bg-gray-100 rounded-2xl p-5 lg:p-10'>
-            <h2 className="text-4xl font-bold text-center text-primary mb-2">📡 Suggested Capsules</h2>
+            <h2 className="text-4xl font-bold text-center text-primary mb-2">📡 Capsules recommandées</h2>
             <p className="text-center text-gray-500 text-sm mb-4">
                 Capsules recommandées selon votre profil — parcourez par catégorie
             </p>
             <CategoryCarousel />
 
             {isLoading ? (
-                <p className="text-center text-gray-500 py-10">Loading...</p>
+                <p className="text-center text-gray-500 py-10">Chargement...</p>
             ) : (
                 <>
                     <div className='grid lg:grid-cols-3 sm:grid-cols-2 gap-3'>
@@ -75,13 +77,13 @@ const PurchasedSuggestedCapsules = () => {
                     {!fullData.length && (
                         <div className="text-center my-10 space-y-3">
                             <p className="font-medium text-gray-500">
-                                No individual capsules to suggest right now.
+                                Aucune capsule individuelle à vous recommander pour le moment.
                             </p>
                             <Link
                                 href="/students/discover"
                                 className="inline-block text-[#2d2a71] font-semibold hover:underline"
                             >
-                                Browse Discover →
+                                Découvrir les capsules
                             </Link>
                         </div>
                     )}

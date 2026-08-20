@@ -187,7 +187,7 @@ const MissionTab = ({ onNext, onBack, initialData }) => {
                             key={industry}
                             value={industry}
                             className={`border rounded-full px-4 py-1.5 text-xs font-medium transition-all m-0
-                                ${selectedSecteur === industry
+                                ${selectedIndustry === industry
                                     ? 'border-indigo-400 bg-indigo-50 text-indigo-800'
                                     : 'border-gray-200 bg-white text-gray-600'
                                 }`}

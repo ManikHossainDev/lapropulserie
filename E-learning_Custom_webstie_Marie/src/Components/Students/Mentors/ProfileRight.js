@@ -2,7 +2,7 @@
 
 import React from 'react';
 import MentorProfileRateing from './MentorProfileRateing';
-import { useReviewMantorMutation } from '@/redux/fetures/Mentors/Mentors';
+import { mentorOptionFr } from '@/Components/mentors/All/mentorOptionLabels';
 
 const Tag = ({ children }) => (
   <span className="px-3 py-1 text-sm border rounded-full bg-gray-50">
@@ -24,56 +24,47 @@ const ProfileRight = ({ mentor }) => {
     <div>
 
       {/* ABOUT */}
-      <Section title="About Me">
+      <Section title="À propos">
         <p className="text-gray-600 mb-4 leading-relaxed">
-          {mentor?.bio || "No bio available"}
+          {mentor?.bio || "Aucune biographie pour le moment."}
         </p>
-
-        <p className="font-medium mb-2">I'm passionate about:</p>
-
-        <ul className="list-disc pl-6 text-gray-600 space-y-1">
-          <li>Turning career confusion into clear direction</li>
-          <li>Helping people build work around their life</li>
-          <li>Guiding professionals from burnout to passion</li>
-          <li>Making career development empowering</li>
-        </ul>
       </Section>
 
       {/* VALUES */}
-      <Section title="Values">
+      <Section title="Valeurs">
         <div className="flex flex-wrap gap-2">
           {mentor?.values?.length > 0 ? (
             mentor.values.map((item, i) => (
-              <Tag key={i}>{item}</Tag>
+              <Tag key={i}>{mentorOptionFr(item)}</Tag>
             ))
           ) : (
-            <p className="text-sm text-gray-400">No values found</p>
+            <p className="text-sm text-gray-400">Aucune valeur renseignée</p>
           )}
         </div>
       </Section>
 
       {/* SPECIALTIES */}
-      <Section title="Specialties">
+      <Section title="Spécialités">
         <div className="flex flex-wrap gap-2">
           {mentor?.specialties?.length > 0 ? (
             mentor.specialties.map((item, i) => (
-              <Tag key={i}>{item}</Tag>
+              <Tag key={i}>{mentorOptionFr(item)}</Tag>
             ))
           ) : (
-            <p className="text-sm text-gray-400">No specialties found</p>
+            <p className="text-sm text-gray-400">Aucune spécialité renseignée</p>
           )}
         </div>
       </Section>
 
       {/* METHODOLOGIES */}
-      <Section title="Methodologies">
+      <Section title="Méthodologies">
         <div className="flex flex-wrap gap-2">
           {mentor?.methodologies?.length > 0 ? (
             mentor.methodologies.map((item, i) => (
-              <Tag key={i}>{item}</Tag>
+              <Tag key={i}>{mentorOptionFr(item)}</Tag>
             ))
           ) : (
-            <p className="text-sm text-gray-400">No methodologies found</p>
+            <p className="text-sm text-gray-400">Aucune méthodologie renseignée</p>
           )}
         </div>
       </Section>

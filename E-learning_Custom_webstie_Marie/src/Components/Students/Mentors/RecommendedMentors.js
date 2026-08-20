@@ -8,14 +8,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import Link from 'next/link';
 import { useGetRecommendedMentorsQuery } from '@/redux/fetures/Mentors/Mentors';
+import { mentorOptionFr } from '@/Components/mentors/All/mentorOptionLabels';
 
 const RecommendedMentors = () => {
 
     const { data, isLoading } = useGetRecommendedMentorsQuery();
-    const mentors = data?.data?.results ?? [];
+    const mentors = Array.isArray(data?.data)
+        ? data.data
+        : data?.data?.results || [];
 
     if (isLoading) {
-        return <p className="text-center py-5">Loading...</p>;
+        return <p className="text-center py-5">Chargement...</p>;
     }
 
     return (
@@ -24,11 +27,11 @@ const RecommendedMentors = () => {
             {/* Title */}
             <h2 className="text-4xl font-semibold text-center text-primary mb-8 flex items-center justify-center gap-2">
                 <span className="text-3xl">🌟</span>
-                Recommended Mentors
+                Mentors recommandés
             </h2>
 
             {!mentors?.length && (
-                <p className="text-center py-5 ">No mentors found</p>
+                <p className="text-center py-5 ">Aucun mentor trouvé</p>
             )}
 
 
@@ -64,7 +67,7 @@ const RecommendedMentors = () => {
                                 </div>
 
                                 <span className="ml-auto text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
-                                    {mentor.tag || 'Recommended'}
+                                    {mentorOptionFr(mentor.tag || 'Recommended')}
                                 </span>
                             </div>
 
@@ -74,7 +77,7 @@ const RecommendedMentors = () => {
                                     ${mentor.sessionPrice}
                                 </span>
                                 <span>⭐ {mentor.avgRating}</span>
-                                <span>🌐 {mentor.availableIn}</span>
+                                    🌐 {mentorOptionFr(mentor.availableIn)}
                             </div>
 
                             {/* Description */}
@@ -86,7 +89,7 @@ const RecommendedMentors = () => {
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {mentor.topics?.slice(0, 2).map((topic, i) => (
                                     <span key={i} className="text-xs border px-2 py-1 rounded-full">
-                                        {topic}
+                                        {mentorOptionFr(topic)}
                                     </span>
                                 ))}
                             </div>
@@ -96,7 +99,7 @@ const RecommendedMentors = () => {
                                 href={`/students/mentors/${mentor.mentorId}`}
                                 className="w-full inline-block text-center customSignUpButton text-white py-4 rounded-lg font-medium hover:opacity-90"
                             >
-                                See Profile
+                                Voir le profil
                             </Link>
 
                         </div>

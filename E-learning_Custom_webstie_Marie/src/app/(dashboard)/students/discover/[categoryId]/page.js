@@ -21,14 +21,23 @@ export default function DiscoverCategoryPage() {
   const capsules = Array.isArray(capsulesRes?.data)
     ? capsulesRes.data
     : capsulesRes?.data?.results || [];
-  const canPurchaseIndividually = category?.sellIndividually !== false;
+  const canPurchaseIndividually =
+    category?.sellIndividually !== false &&
+    !(category?.title || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .includes('apprendre a se connaitre');
 
   const handlePurchase = async (capsuleId) => {
     try {
       const res = await purchaseCapsule(capsuleId).unwrap();
-      if (res?.data?.paymentUrl) {
-        window.location.href = res.data.paymentUrl;
+      const paymentUrl = res?.data?.url || res?.data?.paymentUrl;
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+        return;
       }
+      alert('Lien de paiement indisponible. Réessayez plus tard.');
     } catch (err) {
       alert(err?.data?.message || 'Erreur lors de l\'achat');
     }
@@ -41,7 +50,7 @@ export default function DiscoverCategoryPage() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
       <div className="max-w-4xl mx-auto space-y-8">
         {category.thumbnail && (
-          <img src={category.thumbnail} alt="" className="w-full h-56 object-cover rounded-2xl" />
+          <img src={category.thumbnail} alt="" className="w-full h-56 object-contain object-center bg-white rounded-2xl" />
         )}
         <div className="bg-white rounded-2xl shadow p-8 space-y-4">
           <h1 className="text-3xl font-bold text-[#2d2a71]">{category.title}</h1>
@@ -53,7 +62,7 @@ export default function DiscoverCategoryPage() {
             {category.estimatedDuration != null && (
               <span>⏱ {category.estimatedDuration} min</span>
             )}
-            {category.sellIndividually === false ? (
+            {!canPurchaseIndividually ? (
               <span className="font-semibold text-[#2d2a71]">
                 Inclus dans une Exploration Journey
               </span>
@@ -77,6 +86,18 @@ export default function DiscoverCategoryPage() {
 
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-xl font-bold text-[#2d2a71] mb-4">Capsules de ce parcours</h2>
+          {capsules.length === 0 ? (
+            <p className="text-gray-600">
+              Ces capsules font partie du parcours Exploration. Elles ne sont pas
+              vendues séparément.{' '}
+              <Link
+                href="/students/exploration-journey"
+                className="text-[#2d2a71] underline"
+              >
+                Accéder à l&apos;Exploration Journey
+              </Link>
+            </p>
+          ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {capsules.map((cap) => {
               const id = cap.id || cap._id;
@@ -91,7 +112,7 @@ export default function DiscoverCategoryPage() {
               return (
                 <div key={id} className="border rounded-xl p-4 flex flex-col gap-3">
                   {cap.thumbnail && (
-                    <img src={cap.thumbnail} alt="" className="h-32 w-full object-cover rounded-lg" />
+                    <img src={cap.thumbnail} alt="" className="h-40 w-full object-contain object-center bg-gray-50 rounded-lg" />
                   )}
                   <h3 className="font-semibold">{cap.title}</h3>
                   <p className="text-xs text-gray-500">
@@ -129,6 +150,7 @@ export default function DiscoverCategoryPage() {
               );
             })}
           </div>
+          )}
         </div>
 
         <RecommendationPanel context="discover" className="mt-4" />

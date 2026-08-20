@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import RecommendationPanel from '@/Components/Students/Recommendations/RecommendationPanel';
+import DownloadCertificate from '@/Components/others/DownloadCertificate';
 import {
   useGenerateExpeditionMariiReportMutation,
   useGetExpeditionMariiReportQuery,
@@ -83,12 +84,35 @@ export default function ExpeditionCapsuleList({
                 : `Débloquer l'expédition${purchasePrice != null ? ` — ${purchasePrice}€` : ''}`}
             </button>
           )}
-          {isPurchased && (
+          {isPurchased && !allCompleted && (
             <span className="text-sm font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-full">
               ✓ Expédition débloquée
             </span>
           )}
+          {isPurchased && allCompleted && (
+            <span className="text-sm font-semibold text-green-800 bg-green-100 px-3 py-1.5 rounded-full">
+              ✓ Parcours terminé
+            </span>
+          )}
         </div>
+
+        {isPurchased && allCompleted && (
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-6 space-y-4">
+            <h2 className="text-2xl font-bold text-[#2d2a71]">
+              Félicitations — vous avez terminé ce parcours
+            </h2>
+            <p className="text-gray-700">
+              Bravo d&apos;avoir mené à bien{' '}
+              {journey?.title || 'le Parcours Exploration'}. Votre certificat
+              d&apos;achèvement est disponible au téléchargement.
+            </p>
+            <DownloadCertificate
+              programTitle={journey?.title || 'Parcours Exploration'}
+              fileName="certificat-parcours-exploration.pdf"
+              buttonClassName="bg-[#2d2a71] hover:opacity-90 text-white px-5 py-3 rounded-xl text-sm font-medium inline-flex items-center gap-2"
+            />
+          </div>
+        )}
 
         <div className="relative">
           <div className="absolute left-5 top-0 bottom-0 w-px bg-indigo-200" />
