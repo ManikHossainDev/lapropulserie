@@ -380,7 +380,15 @@ const getStudentProgress = async (studentId: string) => {
   }
 
   const currentJourney = purchasedJourneys[0];
-  const journeyRef = currentJourney?.journeyId as any;
+  if (!currentJourney) {
+    return {
+      currentCapsuleProgress: 0,
+      overallJourneyProgress: 0,
+      currentCapsuleName: null,
+    };
+  }
+
+  const journeyRef = currentJourney.journeyId as any;
   const journeyId = journeyRef?._id || journeyRef;
 
   if (!journeyId) {

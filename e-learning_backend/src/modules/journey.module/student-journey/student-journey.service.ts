@@ -226,7 +226,11 @@ export class StudentJourneyService {
         (capsule) => capsule.isCompleted && capsule.hasSixPartContent,
       );
 
-    if (allExplorationComplete && purchase?.overallStatus !== 'completed') {
+    if (
+      allExplorationComplete &&
+      purchase &&
+      purchase.overallStatus !== 'completed'
+    ) {
       await PurchasedJourney.updateOne(
         { _id: purchase._id, overallStatus: { $ne: 'completed' } },
         {
