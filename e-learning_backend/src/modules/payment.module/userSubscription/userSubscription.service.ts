@@ -92,6 +92,8 @@ export class UserSubscriptionService {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
+      locale: 'fr',
+      allow_promotion_codes: true,
       line_items: [{ price: plan.stripePriceId, quantity: 1 }],
       success_url:
         config.stripe.success_url ||

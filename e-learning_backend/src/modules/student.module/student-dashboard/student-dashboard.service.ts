@@ -16,8 +16,8 @@ import { StudentQuestionnaireSummary } from './student-questionnaire-summary.mod
 import { AIService } from './ai.service';
 import { StudentAnswer } from '../../question.module/studentAnswer/studentAnswer.model';
 import { PurchasedJourney } from '../../journey.module/purchased-journey/purchased-journey.model';
-import { JourneyProgressTracker } from '../../journey.module/journey-progress-tracker/journey-progress-tracker.model';
 import { JourneyCapsule } from '../../journey.module/journey-capsule/journey-capsule.model';
+import { MariiReport } from '../../individualCapsule.module/marii-report/marii-report.model';
 import { TPaymentStatus } from '../../payment.module/paymentTransaction/paymentTransaction.constant';
 import { Questionary } from '../../question.module/questionary/questionary.model';
 import { Question } from '../../question.module/question/question.model';
@@ -34,6 +34,11 @@ import {
 } from './recommendations.service';
 import { scoreThemesWithWeights } from '../../individualCapsule.module/marii-report/marii-report.utils';
 import { resolveLearnerFirstName } from '../../individualCapsule.module/marii-report/learner-name.helper';
+import { StudentMentor } from '../../studentMentor/studentMentor.model';
+import {
+  getJourneyLinkedIndividualCapsuleIds,
+  isJourneyOnlyDiscoverCategory,
+} from '../../individualCapsule.module/shared/capsule-access.helper';
 
 interface IGenericResponse<T> {
   results: T[];
@@ -112,18 +117,29 @@ const generateAndStoreMentorRecommendations = async (studentId: string) => {
     ];
   }
 
-  const recommendedMentors = await MentorProfile.find(mentorQuery)
+  let recommendedMentors = await MentorProfile.find(mentorQuery)
     .sort({ rating: -1 })
     .limit(20)
     .lean();
 
-  await StudentQuestionnaireSummary.findOneAndUpdate(
-    { studentId, isDeleted: false },
-    { recommendedMentorIds: recommendedMentors.map(m => m._id) },
-    { new: true },
-  );
+  if (recommendedMentors.length === 0 && mentorQuery.$or) {
+    delete mentorQuery.$or;
+    recommendedMentors = await MentorProfile.find(mentorQuery)
+      .sort({ rating: -1 })
+      .limit(20)
+      .lean();
+  }
 
-  return recommendedMentors.map(m => m._id?.toString());
+  const recommendedMentorIds = recommendedMentors.map(m => m._id);
+  if (recommendedMentorIds.length > 0) {
+    await StudentQuestionnaireSummary.findOneAndUpdate(
+      { studentId, isDeleted: false },
+      { recommendedMentorIds },
+      { new: true },
+    );
+  }
+
+  return recommendedMentorIds.map(id => id?.toString());
 };
 
 const getTopMentors = async (
@@ -166,31 +182,36 @@ const getCapsuleCategories = async (
   page: number = 1,
   limit: number = 10,
 ): Promise<IGenericResponse<any>> => {
-  const total = await IndividualCapsuleCategory.countDocuments({
+  const journeyLinkedIds = await getJourneyLinkedIndividualCapsuleIds();
+
+  const categories = await IndividualCapsuleCategory.find({
     isDeleted: false,
-  });
+    sellIndividually: { $ne: false },
+  }).lean();
 
-  const categories = await IndividualCapsuleCategory.find({ isDeleted: false })
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .lean();
+  const discoverCategories = [];
+  for (const cat of categories as any[]) {
+    if (isJourneyOnlyDiscoverCategory(cat)) continue;
 
-  const categoriesWithCount = await Promise.all(
-    categories.map(async (cat: any) => {
-      const count = await IndividualCapsule.countDocuments({
-        capsuleCategoryId: cat._id,
-        isDeleted: false,
-      });
-      return { ...cat, capsuleCount: count };
-    }),
-  );
+    const capsules = await IndividualCapsule.find({
+      capsuleCategoryId: cat._id,
+      isDeleted: false,
+    })
+      .select('_id')
+      .lean();
 
-  return paginateResults(
-    categoriesWithCount as CapsuleCategory[],
-    total,
-    page,
-    limit,
-  );
+    const individualCount = capsules.filter(
+      (capsule: any) => !journeyLinkedIds.has(String(capsule._id)),
+    ).length;
+
+    if (capsules.length > 0 && individualCount === 0) continue;
+
+    discoverCategories.push({ ...cat, capsuleCount: individualCount });
+  }
+
+  const total = discoverCategories.length;
+  const paged = discoverCategories.slice((page - 1) * limit, page * limit);
+  return paginateResults(paged as CapsuleCategory[], total, page, limit);
 };
 
 interface CapsuleListItem {
@@ -215,7 +236,28 @@ const getCapsules = async (
   const query: any = { isDeleted: false };
 
   if (categoryId) {
-    query.capsuleCategoryId = ensureObjectId(categoryId, 'categoryId');
+    const categoryObjectId = ensureObjectId(categoryId, 'categoryId');
+    const category = await IndividualCapsuleCategory.findOne({
+      _id: categoryObjectId,
+      isDeleted: false,
+    })
+      .select('title sellIndividually')
+      .lean();
+
+    if (!category || isJourneyOnlyDiscoverCategory(category)) {
+      return paginateResults([], 0, page, limit);
+    }
+
+    query.capsuleCategoryId = categoryObjectId;
+  }
+
+  const journeyLinkedIds = await getJourneyLinkedIndividualCapsuleIds();
+  if (journeyLinkedIds.size > 0) {
+    query._id = {
+      $nin: Array.from(journeyLinkedIds).map(
+        id => new mongoose.Types.ObjectId(id),
+      ),
+    };
   }
 
   const total = await IndividualCapsule.countDocuments(query);
@@ -263,9 +305,65 @@ const getCapsules = async (
   return paginateResults(enriched, total, page, limit);
 };
 
+const getExplorationCapsuleCompletion = async (
+  studentId: mongoose.Types.ObjectId,
+  journeyId: mongoose.Types.ObjectId,
+) => {
+  const capsules = await JourneyCapsule.find({
+    journeyId,
+    isDeleted: false,
+    individualCapsuleId: { $exists: true, $ne: null },
+  })
+    .select('title capsuleNumber individualCapsuleId')
+    .sort({ capsuleNumber: 1 })
+    .lean();
+
+  if (!capsules.length) {
+    return {
+      capsules: [],
+      completedCount: 0,
+      totalCount: 0,
+      percent: 0,
+      currentCapsule: null,
+      allComplete: false,
+    };
+  }
+
+  const individualIds = capsules.map(c => c.individualCapsuleId);
+  const reports = await MariiReport.find({
+    studentId,
+    capsuleId: { $in: individualIds },
+    isDeleted: false,
+  })
+    .select('capsuleId')
+    .lean();
+
+  const completedIds = new Set(reports.map(r => String(r.capsuleId)));
+  const completedCount = capsules.filter(c =>
+    completedIds.has(String(c.individualCapsuleId)),
+  ).length;
+  const currentCapsule =
+    capsules.find(c => !completedIds.has(String(c.individualCapsuleId))) ||
+    capsules[capsules.length - 1];
+  const currentComplete = completedIds.has(
+    String(currentCapsule?.individualCapsuleId),
+  );
+
+  return {
+    capsules,
+    completedCount,
+    totalCount: capsules.length,
+    percent: Math.round((completedCount / capsules.length) * 100),
+    currentCapsule,
+    currentCapsuleProgress: currentComplete ? 100 : 0,
+    allComplete: completedCount === capsules.length,
+  };
+};
+
 const getStudentProgress = async (studentId: string) => {
+  const studentObjectId = ensureObjectId(studentId, 'studentId');
   const purchasedJourneys = await PurchasedJourney.find({
-    studentId: ensureObjectId(studentId, 'studentId'),
+    studentId: studentObjectId,
     paymentStatus: TPaymentStatus.completed,
     isDeleted: false,
   })
@@ -282,104 +380,148 @@ const getStudentProgress = async (studentId: string) => {
   }
 
   const currentJourney = purchasedJourneys[0];
-  const journeyId = currentJourney?.journeyId;
+  const journeyRef = currentJourney?.journeyId as any;
+  const journeyId = journeyRef?._id || journeyRef;
 
-  const progressTrackers = await JourneyProgressTracker.find({
-    studentId: ensureObjectId(studentId, 'studentId'),
-    journeyId,
-    isDeleted: false,
-  })
-    .populate('capsuleId', 'title')
-    .sort({ updatedAt: -1 })
-    .lean();
-
-  let currentCapsuleProgress = 0;
-  let currentCapsuleName = null;
-
-  if (progressTrackers.length > 0) {
-    const latestTracker = progressTrackers[0];
-    if (latestTracker) {
-      currentCapsuleProgress = latestTracker.overallProgressPercentage || 0;
-      currentCapsuleName = (latestTracker.capsuleId as any)?.title || null;
-    }
+  if (!journeyId) {
+    return {
+      currentCapsuleProgress: 0,
+      overallJourneyProgress: 0,
+      currentCapsuleName: null,
+    };
   }
 
-  const overallJourneyProgress = currentJourney?.progressPercentage || 0;
+  const completion = await getExplorationCapsuleCompletion(
+    studentObjectId,
+    journeyId,
+  );
+
+  if (completion.allComplete && currentJourney.overallStatus !== 'completed') {
+    await PurchasedJourney.updateOne(
+      { _id: currentJourney._id, overallStatus: { $ne: 'completed' } },
+      {
+        $set: {
+          overallStatus: 'completed',
+          completionDate: currentJourney.completionDate || new Date(),
+          progressPercentage: 100,
+          completedCapsules: completion.completedCount,
+          totalCapsules: completion.totalCount,
+        },
+      },
+    );
+  }
 
   return {
-    currentCapsuleProgress,
-    overallJourneyProgress,
-    currentCapsuleName,
+    currentCapsuleProgress: completion.currentCapsuleProgress || 0,
+    overallJourneyProgress: completion.percent,
+    currentCapsuleName: completion.currentCapsule?.title || null,
   };
 };
 
 const getMyMentors = async (studentId: string, page: number = 1, limit: number = 10) => {
-  const skip = (page - 1) * limit;
+  const { MentorsService } = require('../mentors/mentors.service');
+  const studentObjectId = ensureObjectId(studentId, 'studentId');
 
-  const studentMentors = await mongoose.connection.collection('studentmentors').find({
-    studentId: ensureObjectId(studentId, 'studentId'),
+  const recommended = await MentorsService.getRecommendedMentorsWithGeneration(
+    studentId,
+    1,
+    50,
+  );
+  const recResults: any[] = recommended?.results || [];
+
+  const bookedRelations = await StudentMentor.find({
+    studentId: studentObjectId,
     isDeleted: false,
-  }).toArray();
+  }).lean();
+  const bookedUserIds = bookedRelations.map((sm: any) => sm.mentorId);
 
-  const mentorIds = studentMentors.map(sm => sm.mentorId);
-
-  if (mentorIds.length === 0) {
-    return paginateResults([], 0, page, limit);
+  let bookedProfiles: any[] = [];
+  if (bookedUserIds.length > 0) {
+    bookedProfiles = await MentorProfile.find({
+      userId: { $in: bookedUserIds },
+      isLive: true,
+      haveAdminApproval: 'approved',
+      isDeleted: false,
+    })
+      .populate('userId', 'name profileImage')
+      .select('avatarUrl currentJobTitle companyName userId')
+      .lean();
   }
 
-  const mentors = await MentorProfile.find({
-    userId: { $in: mentorIds },
-    isLive: true,
-    haveAdminApproval: 'approved',
-    isDeleted: false,
-  })
-    .populate('userId', 'name profileImage')
-    .select('avatarUrl currentJobTitle companyName userId')
-    .skip(skip)
-    .limit(limit)
-    .lean();
+  const recIds = new Set(recResults.map((m: any) => String(m.mentorId)));
+  const extraBooked = bookedProfiles
+    .filter((profile: any) => !recIds.has(String(profile._id)))
+    .map((mentor: any) => {
+      const designation =
+        mentor.currentJobTitle || mentor.companyName || 'Mentor';
+      return {
+        mentorId: mentor._id,
+        avatarUrl:
+          mentor.avatarUrl || mentor.userId?.profileImage?.imageUrl || '',
+        name: mentor.userId?.name || '',
+        designation,
+        role: designation,
+        currentJobTitle: mentor.currentJobTitle,
+        companyName: mentor.companyName,
+      };
+    });
 
-  const total = await MentorProfile.countDocuments({
-    userId: { $in: mentorIds },
-    isLive: true,
-    haveAdminApproval: 'approved',
-    isDeleted: false,
-  });
+  const allMentors = [
+    ...extraBooked,
+    ...recResults.map((mentor: any) => {
+      const designation =
+        mentor.designation ||
+        mentor.role ||
+        mentor.currentJobTitle ||
+        mentor.companyName ||
+        'Mentor';
+      return {
+        ...mentor,
+        designation,
+        role: designation,
+      };
+    }),
+  ];
 
-  const formattedMentors = mentors.map(mentor => ({
-    mentorId: mentor._id,
-    avatarUrl: mentor.avatarUrl || (mentor.userId as any)?.profileImage?.imageUrl || '',
-    name: (mentor.userId as any)?.name || '',
-    designation: mentor.currentJobTitle || mentor.companyName || 'Mentor',
-  }));
-
-  return paginateResults(formattedMentors, total, page, limit);
+  const total = allMentors.length;
+  const paged = allMentors.slice((page - 1) * limit, page * limit);
+  return paginateResults(paged, total, page, limit);
 };
 
 const getCompletedJourneys = async (studentId: string, page: number = 1, limit: number = 10) => {
-  const query = {
-    studentId: ensureObjectId(studentId, 'studentId'),
+  const studentObjectId = ensureObjectId(studentId, 'studentId');
+  const purchases = await PurchasedJourney.find({
+    studentId: studentObjectId,
     paymentStatus: TPaymentStatus.completed,
-    overallStatus: 'completed',
     isDeleted: false,
-  };
-
-  const total = await PurchasedJourney.countDocuments(query);
-
-  const completedJourneys = await PurchasedJourney.find(query)
-    .populate('journeyId', 'title')
-    .select('journeyId completionDate')
-    .sort({ completionDate: -1 })
-    .skip((page - 1) * limit)
-    .limit(limit)
+  })
+    .populate('journeyId', 'title thumbnail')
+    .sort({ completionDate: -1, createdAt: -1 })
     .lean();
 
-  const formattedJourneys = completedJourneys.map(journey => ({
-    title: (journey.journeyId as any)?.title || 'Unknown Journey',
-    completedDate: journey.completionDate,
-  }));
+  const completedJourneys = [];
+  for (const purchase of purchases) {
+    const journeyRef = purchase.journeyId as any;
+    const journeyId = journeyRef?._id || journeyRef;
+    if (!journeyId) continue;
 
-  return paginateResults(formattedJourneys, total, page, limit);
+    const completion = await getExplorationCapsuleCompletion(
+      studentObjectId,
+      journeyId,
+    );
+    if (!completion.allComplete) continue;
+
+    completedJourneys.push({
+      title: journeyRef?.title || 'Parcours Exploration',
+      completedDate: purchase.completionDate || purchase.updatedAt,
+      journeyId,
+      thumbnail: journeyRef?.thumbnail || '',
+    });
+  }
+
+  const total = completedJourneys.length;
+  const paged = completedJourneys.slice((page - 1) * limit, page * limit);
+  return paginateResults(paged, total, page, limit);
 };
 
 const formatCapsuleCard = (
@@ -404,6 +546,10 @@ const formatCapsuleCard = (
     avgRating: rating,
     totalReviewCount: capsule.totalReviewCount || 0,
     category: (capsule.capsuleCategoryId as any)?.title || '',
+    categoryId:
+      (capsule.capsuleCategoryId as any)?._id ||
+      capsule.capsuleCategoryId ||
+      null,
     accessType,
     purchaseSource: extras.purchaseSource || (accessType === 'suggested' ? null : 'individual'),
     journeyId: extras.journeyId || null,
@@ -857,11 +1003,14 @@ const getMyCapsules = async (
 
   const profileText = await collectStudentProfileText(studentId);
   const weightedThemes = scoreThemesWithWeights(profileText);
+  const journeyLinkedIds = await getJourneyLinkedIndividualCapsuleIds();
 
   const suggestedResults = suggestedCapsules
     .filter((capsule: any) => {
+      if (journeyLinkedIds.has(String(capsule._id))) return false;
       const category = capsule.capsuleCategoryId as any;
-      return category?.sellIndividually !== false;
+      if (!category?.title) return false;
+      return !isJourneyOnlyDiscoverCategory(category);
     })
     .map((capsule: any) => ({
       card: formatCapsuleCard(capsule, 'suggested'),
@@ -957,6 +1106,10 @@ const getCapsuleDetails = async (studentId: string, capsuleId: string) => {
       averageRating: capsule.averageRating || 0,
       totalReviewCount: capsule.totalReviewCount || 0,
       category: (capsule.capsuleCategoryId as any)?.title || '',
+      categoryId:
+        (capsule.capsuleCategoryId as any)?._id ||
+        capsule.capsuleCategoryId ||
+        null,
     },
     accessType,
     canAccessContent: accessType !== 'suggested',

@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import path from 'path';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import notFound from './middlewares/notFound';
@@ -16,6 +17,7 @@ import {
 } from './modules/calendly.module/webhookHandler';
 import { verifyCalendlySignature } from './middlewares/calendly/verifyCalendlySignature';
 import sendResponse, { sendErrorResponse } from './shared/sendResponse';
+import { redisClient } from './helpers/redis/redis';
 // import i18nextFsBackend from 'i18next-fs-backend';
 
 /*-─────────────────────────────────
@@ -86,6 +88,36 @@ app.use('/api/v1', router);
 //live response
 app.get('/', (req: Request, res: Response) => {
   res.send(welcome());
+});
+
+// Liveness — process is up (Docker HEALTHCHECK / load balancers)
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Readiness — Mongo + Redis (deploy smoke / orchestrators)
+app.get('/ready', async (_req: Request, res: Response) => {
+  const mongoOk = mongoose.connection.readyState === 1;
+  let redisOk = false;
+  try {
+    redisOk = Boolean(redisClient?.isReady);
+    if (redisOk) {
+      await redisClient.ping();
+    }
+  } catch {
+    redisOk = false;
+  }
+
+  const ready = mongoOk && redisOk;
+  res.status(ready ? 200 : 503).json({
+    status: ready ? 'ready' : 'not_ready',
+    mongo: mongoOk,
+    redis: redisOk,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Test endpoints with professional responses

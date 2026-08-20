@@ -11,6 +11,10 @@ import {
   scoreThemesWithWeights,
 } from '../../individualCapsule.module/marii-report/marii-report.utils';
 import { StudentQuestionnaireSummary } from './student-questionnaire-summary.model';
+import {
+  getJourneyLinkedIndividualCapsuleIds,
+  isJourneyOnlyDiscoverCategory,
+} from '../../individualCapsule.module/shared/capsule-access.helper';
 
 export type RecommendationContext =
   | 'questionnaire'
@@ -152,7 +156,7 @@ export const getPersonalizedRecommendations = async (
   }).lean();
 
   const scoredCategories = categories
-    .filter((cat: any) => cat.sellIndividually !== false)
+    .filter((cat: any) => !isJourneyOnlyDiscoverCategory(cat))
     .map((cat: any) => ({
       id: cat._id,
       title: cat.title,
@@ -177,8 +181,15 @@ export const getPersonalizedRecommendations = async (
     .populate('capsuleCategoryId', 'title sellIndividually')
     .lean();
 
+  const journeyLinkedIds = await getJourneyLinkedIndividualCapsuleIds();
+
   const scoredCapsules = capsules
-    .filter((c: any) => c.capsuleCategoryId?.sellIndividually !== false)
+    .filter((c: any) => {
+      if (journeyLinkedIds.has(String(c._id))) return false;
+      const category = c.capsuleCategoryId as any;
+      if (!category?.title) return false;
+      return !isJourneyOnlyDiscoverCategory(category);
+    })
     .map((c: any) => ({
       id: c._id,
       title: c.title,

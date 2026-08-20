@@ -35,11 +35,13 @@ export class StripeGateway extends PaymentGateway {
       payment_method_types: ['card'],
       mode: 'payment',
       customer: stripeCustomerId,
+      locale: 'fr',
+      allow_promotion_codes: true,
       line_items: [
         {
           price_data: {
             currency: 'eur',
-            product_data: { name: 'Amount' },
+            product_data: { name: 'Paiement' },
             unit_amount: price * 100,
           },
           quantity: 1,

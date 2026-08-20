@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Payment Successful</title>
+    <title>Paiement réussi</title>
     <style>
       * {
         box-sizing: border-box;
@@ -46,6 +46,19 @@
         margin-bottom: 2rem;
       }
 
+      .details {
+        text-align: left;
+        margin-bottom: 2rem;
+        color: #2e7d32;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .details div {
+        margin-bottom: 0.35rem;
+      }
+
       .btn-home {
         display: inline-block;
         padding: 0.5rem 1.5rem;
@@ -64,26 +77,23 @@
   <body>
     <div class="container">
       <div class="success-icon">✔️</div>
-      <h1>Thank You for Your Payment!</h1>
-      <p>Your transaction was successful.</p>
+      <h1>Merci pour votre paiement !</h1>
+      <p>Votre transaction a été effectuée avec succès.</p>
 
-      <!-- Display Payment Details -->
       <div class="details">
-        <div><strong>Customer:</strong> <%= data.customerName %></div>
-        <div><strong>Email:</strong> <%= data.customerEmail %></div>
-        <div><strong>Plan:</strong> <%= data.planNickname %></div>
-        <div><strong>Type:</strong> <%= data.subscriptionType %></div>
-        <div><strong>Amount Paid:</strong> <%= data.amountTotal.toLocaleString() %> <%= data.currency %></div>
-        <div><strong>Status:</strong> <%= data.paymentStatus === 'paid' ? 'Paid' : 'Unpaid' %></div>
-        <div><strong>Session ID:</strong> <%= data.sessionId %></div>
+        <div><strong>Client :</strong> <%= data.customerName %></div>
+        <div><strong>Email :</strong> <%= data.customerEmail %></div>
+        <div><strong>Produit :</strong> <%= data.planNickname %></div>
+        <div><strong>Type :</strong> <%= data.subscriptionType %></div>
+        <div><strong>Montant :</strong> <%= Number(data.amountTotal || 0).toLocaleString('fr-FR') %> <%= data.currency %></div>
+        <div><strong>Statut :</strong> <%= data.paymentStatus === 'paid' || data.paymentStatus === 'completed' ? 'Payé' : data.paymentStatus %></div>
+        <div><strong>Session :</strong> <%= data.sessionId %></div>
         <% if (data.subscriptionId) { %>
-          <div><strong>Subscription ID:</strong> <%= data.subscriptionId %></div>
+          <div><strong>Abonnement :</strong> <%= data.subscriptionId %></div>
         <% } %>
       </div>
 
-      <!-- <a href="<%= frontEndHomePageUrl %>" class="btn-home"
-        >Return to Home</a
-      > -->
+      <a href="<%= data.frontEndHomePageUrl || '/' %>" class="btn-home">Retour à l'accueil</a>
     </div>
   </body>
 </html>

@@ -1,43 +1,72 @@
-# Production Docker Compose file
-# Run with: docker-compose up
+# Backend stack for EC2 / local prod-like runs.
+# Prefer pulling a pre-built image (CI/CD). Set API_IMAGE on the host.
+# MongoDB: Atlas via MONGODB_URI / MONGODB_URL in .env
+# Optional local Mongo: docker compose --profile local-db up -d
 
 services:
   api:
+    image: ${API_IMAGE:-e-learning-api:local}
     build: .
     container_name: e-learning-api
+    restart: unless-stopped
     ports:
-      - "8005:8005"
+      - "${PORT:-8005}:${PORT:-8005}"
     env_file:
       - .env
     dns:
       - 8.8.8.8
       - 8.8.4.4
     depends_on:
-      - mongo
-      - redis
-      - kafka
-      - mailhog
+      redis:
+        condition: service_healthy
     volumes:
       - /tmp/videos:/tmp/videos
-    command: node dist/serverV2.js
+      # Mount Firebase JSON only if push/translation needed:
+      # - ./firebaseServiceAccountForTranslation:/usr/src/app/firebaseServiceAccountForTranslation:ro
     networks:
       - e-learning-network
     environment:
+      NODE_ENV: production
+      BACKEND_IP: 0.0.0.0
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      KAFKA_BROKERS: kafka:9092
-      SMTP_HOST: mailhog
-      SMTP_PORT: 1025
-      # Overrides the .env value (which points at "localhost" — meaningless inside a container)
-      MONGO_URL_REMOTE: mongodb://mongo:27017/e-learning
-      # .env sets this to the host machine's LAN IP, which a container cannot bind to.
-      # 0.0.0.0 makes the app listen on all interfaces inside the container so the port mapping above works.
-      BACKEND_IP: 0.0.0.0
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:'+(process.env.PORT||8005)+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
+  redis:
+    image: redis:7-alpine
+    container_name: e-learning-redis
+    restart: unless-stopped
+    # Not published to the host — only reachable on the Docker network
+    expose:
+      - "6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - e-learning-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional local Mongo (skip when using Atlas)
   mongo:
+    profiles: ["local-db"]
     image: mongo:7
     container_name: e-learning-mongo
-    restart: always
+    restart: unless-stopped
     ports:
       - "27018:27017"
     volumes:
@@ -45,47 +74,12 @@ services:
     networks:
       - e-learning-network
 
-  redis:
-    image: redis:7-alpine
-    container_name: e-learning-redis
-    restart: always
-    ports:
-      - "6380:6379"
-    command: redis-server --appendonly yes
-    networks:
-      - e-learning-network
-
-  kafka:
-    # bitnami/kafka free images removed from Docker Hub — use official Apache image
-    image: apache/kafka:3.7.0
-    container_name: e-learning-kafka
-    restart: always
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_MESSAGE_MAX_BYTES: 10485760
-      KAFKA_REPLICA_FETCH_MAX_BYTES: 10485760
-      KAFKA_SOCKET_REQUEST_MAX_BYTES: 10485760
-    networks:
-      - e-learning-network
-
+  # Dev-only mail catcher (optional)
   mailhog:
+    profiles: ["mailhog"]
     image: mailhog/mailhog:latest
     container_name: e-learning-mailhog
-    restart: always
+    restart: unless-stopped
     ports:
       - "1025:1025"
       - "8025:8025"
@@ -94,11 +88,7 @@ services:
 
 volumes:
   mongo_data:
-    driver: local
   redis_data:
-    driver: local
-  kafka_data:
-    driver: local
 
 networks:
   e-learning-network:

@@ -14,6 +14,44 @@ const isFreeJourneyDoc = (journey?: { journeyType?: string; price?: number } | n
   return journey.price === 0 || journey.price == null;
 };
 
+export const normalizeDiscoverTitle = (title = '') =>
+  title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/['’]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+export const isExplorationJourneyCategoryTitle = (title = '') =>
+  normalizeDiscoverTitle(title).includes('apprendre a se connaitre');
+
+export const isJourneyOnlyDiscoverCategory = (category?: {
+  title?: string;
+  sellIndividually?: boolean;
+} | null) => {
+  if (!category) return false;
+  if (category.sellIndividually === false) return true;
+  return isExplorationJourneyCategoryTitle(category.title);
+};
+
+export const getJourneyLinkedIndividualCapsuleIds = async () => {
+  const links = await JourneyCapsule.find({
+    individualCapsuleId: { $exists: true, $ne: null },
+    isDeleted: false,
+  })
+    .select('individualCapsuleId')
+    .lean();
+
+  return new Set(
+    links
+      .map((link: any) =>
+        link.individualCapsuleId ? String(link.individualCapsuleId) : '',
+      )
+      .filter(Boolean),
+  );
+};
+
 /** Effective commercial price: capsule field first, then category. */
 const resolveEffectivePrice = (
   capsule: { price?: number | null },
@@ -59,7 +97,7 @@ export async function assertStudentCapsuleAccess(
         _id: capsule.capsuleCategoryId,
         isDeleted: false,
       })
-        .select('sellIndividually price capsuleType')
+        .select('sellIndividually price capsuleType title')
         .lean()
     : null;
 
@@ -103,9 +141,44 @@ export async function assertStudentCapsuleAccess(
     }
   }
 
+  // Exploration Journey capsules are not sold on Discover, even if the
+  // category flag was left as sellIndividually=true in admin.
+  const journeyLinked = await JourneyCapsule.findOne({
+    individualCapsuleId: capsuleObjectId,
+    isDeleted: false,
+  })
+    .select('_id')
+    .lean();
+
+  if (journeyLinked && !options?.journeyId) {
+    const individualPurchase = await PurchasedIndividualCapsule.findOne({
+      studentId: studentObjectId,
+      capsuleId: capsuleObjectId,
+      isDeleted: false,
+      paymentStatus: 'completed',
+    }).lean();
+    if (individualPurchase) return;
+
+    const expeditionUnlock =
+      (await hasCompletedPaidJourneyAccess(
+        studentObjectId,
+        capsuleObjectId,
+      )) ||
+      (await hasCompletedOrFreeJourneyAccess(
+        studentObjectId,
+        capsuleObjectId,
+      ));
+    if (expeditionUnlock) return;
+
+    throw new ApiError(
+      StatusCodes.FORBIDDEN,
+      'This capsule is only available through the Exploration Journey',
+    );
+  }
+
   // Free individual capsules (no price) — still block journey-only catalogue items without journey context.
   if (effectivePrice <= 0) {
-    if (category?.sellIndividually === false) {
+    if (isJourneyOnlyDiscoverCategory(category)) {
       const linkedFreeUnlock = await hasCompletedOrFreeJourneyAccess(
         studentObjectId,
         capsuleObjectId,
@@ -135,7 +208,7 @@ export async function assertStudentCapsuleAccess(
   );
   if (expeditionUnlock) return;
 
-  if (category?.sellIndividually === false) {
+  if (isJourneyOnlyDiscoverCategory(category)) {
     throw new ApiError(
       StatusCodes.FORBIDDEN,
       'This capsule is only available through an Expedition Journey purchase',

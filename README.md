@@ -170,9 +170,12 @@ npm run preview
 ### Backend CI/CD (monorepo → EC2)
 
 - **CI:** `.github/workflows/ci-backend.yml` — builds `e-learning_backend` on PRs/pushes that touch that folder.
-- **CD:** `.github/workflows/deploy-backend.yml` — on `main` (backend paths only): build/push image to GHCR, SSH to EC2, `docker compose pull && up`.
+- **CD:** `.github/workflows/deploy-backend.yml` — on `main` (backend paths only): build/push image to GHCR, SSH to EC2, `docker compose pull && up` (api + redis).
 - Health: `GET /health` (liveness), `GET /ready` (Mongo + Redis).
-- On EC2: keep prod secrets in `e-learning_backend/.env`; set `API_IMAGE` via `.env.deploy` (see `e-learning_backend/.env.deploy.example`).
+- MongoDB: **Atlas** via `MONGODB_URL` / `MONGODB_URI` in EC2 `.env` (not baked into the image).
+- On EC2 (`/var/www/lapropulserie/backend`): `docker-compose.yml`, `.env.deploy` (see `e-learning_backend/env.deploy.example`), and runtime `.env` (Stripe/Google/etc. — edit anytime, then `docker compose restart api`).
+- Nginx: `api.lapropulserie.fr` → `127.0.0.1:8005`.
+- Secret `EC2_APP_DIR` = `/var/www/lapropulserie/backend` (reuse same `EC2_HOST` / `EC2_USER` / `EC2_SSH_KEY` / GHCR secrets as website).
 
 ### Website CI/CD (Next.js → same EC2)
 

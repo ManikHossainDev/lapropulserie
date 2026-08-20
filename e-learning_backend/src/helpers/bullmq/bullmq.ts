@@ -109,10 +109,21 @@ export const startNotificationWorker = () => {
           buildTranslatedField(data.title as any)
         ]);
 
+        // Admin purchase alerts intentionally pass receiverId="" (role-based).
+        // Omit empty strings so mongoose does not try to cast "" → ObjectId.
+        const receiverId =
+          data.receiverId && String(data.receiverId).trim()
+            ? data.receiverId
+            : undefined;
+        const senderId =
+          data.senderId && String(data.senderId).trim()
+            ? data.senderId
+            : undefined;
+
         const notification = await Notification.create({
           title: titleObj,
-          senderId: data.senderId,
-          receiverId: data.receiverId,
+          senderId,
+          receiverId,
           receiverRole: data.receiverRole,
           type: data.type,
           linkFor: data.linkFor,
