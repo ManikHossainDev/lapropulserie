@@ -41,6 +41,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Require production API URL
+        run: |
+          if [ -z "${{ vars.VITE_API_BASE_URL }}" ]; then
+            echo "Missing GitHub Variable VITE_API_BASE_URL (e.g. https://api.lapropulserie.fr/api/v1)"
+            exit 1
+          fi
+          echo "VITE_API_BASE_URL is set"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 

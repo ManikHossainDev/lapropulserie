@@ -9,12 +9,16 @@ RUN npm ci
 
 COPY . .
 
-ARG VITE_API_BASE_URL=http://localhost:8005/api/v1
+ARG VITE_API_BASE_URL
 ARG VITE_IMAGE_BASE_URL=
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 ENV VITE_IMAGE_BASE_URL=$VITE_IMAGE_BASE_URL
 
-RUN npm run build
+RUN if [ -z "$VITE_API_BASE_URL" ]; then \
+      echo "ERROR: VITE_API_BASE_URL build-arg is required"; \
+      exit 1; \
+    fi \
+ && npm run build
 
 FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
