@@ -1,0 +1,99 @@
+name: Deploy — Admin (EC2)
+
+# Monorepo: only when admin app (or this workflow) changes on main.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'E-learning_Custom_webstie_Marie_Admin/**'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: e-learning-admin
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Image metadata
+        id: meta
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          TAG="${{ github.sha }}"
+          IMAGE="ghcr.io/${OWNER}/${{ env.IMAGE_NAME }}"
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: E-learning_Custom_webstie_Marie_Admin
+          file: E-learning_Custom_webstie_Marie_Admin/Dockerfile
+          push: true
+          build-args: |
+            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+            VITE_IMAGE_BASE_URL=${{ vars.VITE_IMAGE_BASE_URL }}
+          tags: |
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            set -euo pipefail
+
+            echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            cd "${{ secrets.EC2_ADMIN_APP_DIR }}"
+
+            export ADMIN_IMAGE="${{ needs.build-and-push.outputs.image }}:${{ needs.build-and-push.outputs.tag }}"
+
+            if [ -f .env.deploy ]; then
+              grep -v '^ADMIN_IMAGE=' .env.deploy > .env.deploy.tmp || true
+              mv .env.deploy.tmp .env.deploy
+            fi
+            echo "ADMIN_IMAGE=${ADMIN_IMAGE}" >> .env.deploy
+            grep -q '^ADMIN_PORT=' .env.deploy || echo "ADMIN_PORT=8003" >> .env.deploy
+
+            set -a
+            # shellcheck disable=SC1091
+            . ./.env.deploy
+            set +a
+
+            docker compose pull admin
+            docker compose up -d admin
+
+            sleep 8
+            curl -fsS "http://127.0.0.1:${ADMIN_PORT:-8003}/" >/dev/null
+            echo "Deployed ${ADMIN_IMAGE}"

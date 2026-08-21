@@ -1,0 +1,40 @@
+name: CI — Admin
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'E-learning_Custom_webstie_Marie_Admin/**'
+      - '.github/workflows/ci-admin.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'E-learning_Custom_webstie_Marie_Admin/**'
+      - '.github/workflows/ci-admin.yml'
+
+defaults:
+  run:
+    working-directory: E-learning_Custom_webstie_Marie_Admin
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: E-learning_Custom_webstie_Marie_Admin/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || 'http://localhost:8005/api/v1' }}
+          VITE_IMAGE_BASE_URL: ${{ vars.VITE_IMAGE_BASE_URL || '' }}
+        run: npm run build

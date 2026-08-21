@@ -7,6 +7,7 @@ export default defineConfig({
     port: 8003,
     host: true,
     allowedHosts: [
+      'admin.lapropulserie.fr',
       'admin.lapropulserie.com',
       'mohaimin8002.sobhoy.com',
       'mohaimin8003.sobhoy.com',
@@ -17,6 +18,7 @@ export default defineConfig({
     port: 8003,
     host: true,
     allowedHosts: [
+      'admin.lapropulserie.fr',
       'admin.lapropulserie.com',
       'mohaimin8002.sobhoy.com',
       'mohaimin8003.sobhoy.com',
