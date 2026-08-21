@@ -1,12 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const apiBaseUrl = (
+  import.meta.env.VITE_API_BASE_URL ||
+  "http://localhost:8005/api/v1"
+).replace(/\/$/, "");
+
 export const baseApi = createApi({
   reducerPath: "pokemonApi",
   baseQuery: fetchBaseQuery({
-    // baseUrl: "https://api.lapropulserie.com/api/v1",
-    // baseUrl: "http://localhost:8005/api/v1",
-    // baseUrl: "http://10.10.5.76:8005/api/v1",
-    baseUrl: "https://mohaimin8005.sobhoy.com/api/v1",
+    baseUrl: apiBaseUrl,
   
     prepareHeaders: (headers, { getState }) => {
       // const token = getState().auth.token; 
