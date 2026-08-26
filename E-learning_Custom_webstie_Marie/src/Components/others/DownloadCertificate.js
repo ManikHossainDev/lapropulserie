@@ -53,7 +53,7 @@ const DownloadCertificate = ({
                 onClick={downloadCertificate2}
                 className={buttonClassName}
             >
-                Télécharger le certificat <FaArrowDown />
+                Télécharger mon certificat <FaArrowDown />
             </button>
 
             <div className="fixed left-[-9999px] top-0">
@@ -102,8 +102,8 @@ function CertificateTemplate({ userName, programTitle, issuedOn }) {
                         </h2>
 
                         <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-10">
-                            Pour avoir mené à bien {programTitle}.
-                            Votre engagement, votre sincérité et votre constance tout au long de
+                            pour avoir mené à bien le {programTitle}.
+                            Ton engagement, ta sincérité et ta constance tout au long de
                             cette exploration méritent d&apos;être reconnus.
                         </p>
 

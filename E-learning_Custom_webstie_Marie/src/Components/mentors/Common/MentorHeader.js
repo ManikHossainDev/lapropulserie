@@ -5,40 +5,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IoIosMenu, IoMdNotifications } from 'react-icons/io';
 import { useGetOnboardingStatusQuery } from '@/redux/fetures/Mentors/MentorOnboarding';
 
-const notifications = [
-    {
-        id: 1,
-        title: 'Nouvelle demande de mentoré',
-        message: 'Sarah Johnson souhaite réserver une session avec vous.',
-        time: 'il y a 2 min',
-        read: false,
-    },
-    {
-        id: 2,
-        title: 'Rappel de session',
-        message: 'Vous avez une session avec Mark Lee dans 1 heure.',
-        time: 'il y a 1 h',
-        read: false,
-    },
-    {
-        id: 3,
-        title: 'Paiement reçu',
-        message: 'Vous avez reçu 70,00 $ de Tasmia Hassan.',
-        time: 'il y a 3 h',
-        read: true,
-    },
-    {
-        id: 4,
-        title: 'Nouvel avis',
-        message: 'Jennie Yun vous a laissé un avis 5 étoiles.',
-        time: 'Hier',
-        read: true,
-    },
-];
-
 const MentorHeader = ({ isOpen, setIsOpen }) => {
     const [showNotifications, setShowNotifications] = useState(false);
-    const [notifs, setNotifs] = useState(notifications);
+    const [notifs, setNotifs] = useState([]);
     const notifRef = useRef(null);
 
     const { data: onboardingData } = useGetOnboardingStatusQuery();

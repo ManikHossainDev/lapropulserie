@@ -72,7 +72,7 @@ const sendEmail = async (values: ISendEmail) => {
 };
 
 const sendVerificationEmail = async (to: string, otp: string, name?: string) => {
-  const subject = 'Verify Your Email Address';
+  const subject = 'Vérifie ton adresse e-mail';
   const html = await renderEmailTemplate('otp', { otp, name, expiresInMinutes: 3 });
 
   emitEmailJob({ to, subject, html });

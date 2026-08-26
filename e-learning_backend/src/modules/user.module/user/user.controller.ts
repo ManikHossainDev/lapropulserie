@@ -74,6 +74,25 @@ export class UserController extends GenericController<typeof User, IUser> {
     });
   });
 
+  /** Authenticated student/mentor soft-deletes their own account */
+  deleteMyAccount = catchAsync(async (req: Request, res: Response) => {
+    const userId = String((req.user as IUser)?.userId || '');
+    if (!userId) {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, 'User not authenticated');
+    }
+
+    const deletedObject = await this.userService.softDeleteById(userId);
+    if (!deletedObject) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found');
+    }
+
+    sendResponse(res, {
+      code: StatusCodes.OK,
+      data: { id: deletedObject._id },
+      message: 'Account deleted successfully',
+    });
+  });
+
   //---------------------------------
   // from previous codebase
   //---------------------------------
@@ -503,8 +522,8 @@ export class UserController extends GenericController<typeof User, IUser> {
 
   updateProfileInformationOfAUser = catchAsync(
     async (req: Request, res: Response) => {
-      // Handle form data: parse 'data' as JSON and set profileImage
-      if (req.body.data) {
+      // Body already normalized by route middleware (JSON `data` + uploaded profileImage)
+      if (req.body.data && typeof req.body.data === 'string') {
         req.body = JSON.parse(req.body.data);
       }
       if (req.uploadedFiles?.profileImage) {

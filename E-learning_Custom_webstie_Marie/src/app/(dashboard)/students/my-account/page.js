@@ -261,7 +261,7 @@ const Page = () => {
                     <div className="space-y-3">
                         {courses.length === 0 ? (
                             <p className="text-center text-gray-500 py-6">
-                                Aucun certificat pour le moment. Terminez le Parcours Exploration pour le télécharger ici.
+                                Aucun certificat pour le moment. Termine le Parcours Exploration pour le télécharger ici.
                             </p>
                         ) : (
                             courses.map((course, i) => (

@@ -9,37 +9,6 @@ import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import { IoIosMenu, IoMdNotifications } from 'react-icons/io';
 
-const notifications = [
-    {
-        id: 1,
-        title: 'New Mentee Request',
-        message: 'Sarah Johnson wants to book a session with you.',
-        time: '2 min ago',
-        read: false,
-    },
-    {
-        id: 2,
-        title: 'Session Reminder',
-        message: 'You have a session with Mark Lee in 1 hour.',
-        time: '1 hr ago',
-        read: false,
-    },
-    {
-        id: 3,
-        title: 'Payment Received',
-        message: 'You received $70.00 from Tasmia Hassan.',
-        time: '3 hr ago',
-        read: true,
-    },
-    {
-        id: 4,
-        title: 'New Review',
-        message: 'Jennie Yun left you a 5-star review.',
-        time: 'Yesterday',
-        read: true,
-    },
-];
-
 const StudentsHeader = ({ isOpen, setIsOpen }) => {
 
     const { data: profileInfo } = useGetStudentMyProfileInfoQuery();
@@ -47,7 +16,7 @@ const StudentsHeader = ({ isOpen, setIsOpen }) => {
     
 
     const [showNotifications, setShowNotifications] = useState(false);
-    const [notifs, setNotifs] = useState(notifications);
+    const [notifs, setNotifs] = useState([]);
     const notifRef = useRef(null);
 
     const unreadCount = notifs.filter((n) => !n.read).length;
@@ -127,7 +96,7 @@ const StudentsHeader = ({ isOpen, setIsOpen }) => {
                                 {notifs.length === 0 ? (
                                     <div className="px-4 py-8 text-center">
                                         <p className="text-2xl mb-2">🔔</p>
-                                        <p className="text-sm text-gray-400">No notifications yet</p>
+                                        <p className="text-sm text-gray-400">Aucune notification pour le moment</p>
                                     </div>
                                 ) : (
                                     notifs.map((notif) => (

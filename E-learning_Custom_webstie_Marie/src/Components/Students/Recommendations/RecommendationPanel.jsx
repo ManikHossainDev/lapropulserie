@@ -48,7 +48,7 @@ export default function RecommendationPanel({
 
       {rec.journeys?.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Exploration Journeys</h4>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2">Parcours Exploration</h4>
           <div className="grid gap-3 sm:grid-cols-2">
             {rec.journeys.map((j) => {
               const id = j.id || j._id;
@@ -95,10 +95,13 @@ export default function RecommendationPanel({
           <div className="grid gap-3 sm:grid-cols-2">
             {rec.capsules.map((cap) => {
               const id = cap.id || cap._id;
-              const categoryId = cap.categoryId || cap.capsuleCategoryId;
-              // Route via Discover so unpaid capsules hit purchase/lock UI (#50)
+              const categoryId =
+                cap.categoryId ||
+                cap.capsuleCategoryId?._id ||
+                cap.capsuleCategoryId;
+              // Discover category page (purchase/lock UI); deep-link capsule when possible
               const href = categoryId
-                ? `/students/discover/${categoryId}`
+                ? `/students/discover/${categoryId}${id ? `?highlight=${id}` : ''}`
                 : `/students/discover`;
               return (
                 <Link

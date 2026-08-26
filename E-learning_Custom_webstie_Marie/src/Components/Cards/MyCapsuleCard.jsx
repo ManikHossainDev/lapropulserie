@@ -13,7 +13,8 @@ const MyCapsuleCard = ({ item }) => {
     const capsuleId = item?.capsuleId || item?.id || item?._id;
     const categoryId = item?.categoryId || item?.capsuleCategoryId;
     const isOwned = item?.isPurchased || item?.accessType === 'purchased' || item?.accessType === 'gifted';
-    const isSuggested = item?.accessType === 'suggested' || (!isOwned && categoryId);
+    const isSuggested =
+        item?.accessType === 'suggested' || (!isOwned && Boolean(categoryId));
     const rating = item?.avgRating ?? item?.averageRating ?? 0;
     const reviewCount = item?.totalReviewCount ?? 0;
 
@@ -26,7 +27,7 @@ const MyCapsuleCard = ({ item }) => {
         : '/students/exploration-journey/capsule-journey';
 
     const discoverHref = categoryId
-        ? `/students/discover/${categoryId}`
+        ? `/students/discover/${categoryId}${capsuleId ? `?highlight=${capsuleId}` : ''}`
         : '/students/discover';
 
     const handlePurchase = async () => {
@@ -45,11 +46,21 @@ const MyCapsuleCard = ({ item }) => {
 
     return (
         <div className="border rounded-xl h-full flex flex-col bg-white">
-            <img
-                className="rounded-t-xl h-60 object-contain object-center w-full bg-gray-100"
-                src={item?.thumbnail || '/Images/StudentsDash/page_bg.png'}
-                alt={item?.title || 'Capsule'}
-            />
+            {!isOwned ? (
+                <Link href={discoverHref} className="block">
+                    <img
+                        className="rounded-t-xl h-60 object-contain object-center w-full bg-gray-100"
+                        src={item?.thumbnail || '/Images/StudentsDash/page_bg.png'}
+                        alt={item?.title || 'Capsule'}
+                    />
+                </Link>
+            ) : (
+                <img
+                    className="rounded-t-xl h-60 object-contain object-center w-full bg-gray-100"
+                    src={item?.thumbnail || '/Images/StudentsDash/page_bg.png'}
+                    alt={item?.title || 'Capsule'}
+                />
+            )}
 
             <div className="p-5 flex flex-col justify-between flex-1">
                 <div>
@@ -101,7 +112,7 @@ const MyCapsuleCard = ({ item }) => {
                                 </Link>
                             )}
                         </div>
-                    ) : isSuggested ? (
+                    ) : isSuggested || !capsuleId ? (
                         <Link
                             href={discoverHref}
                             className="w-full flex items-center justify-between text-[#2d2a71] font-semibold hover:opacity-80"
@@ -110,17 +121,25 @@ const MyCapsuleCard = ({ item }) => {
                             <FaArrowRight />
                         </Link>
                     ) : (
-                        <button
-                            type="button"
-                            onClick={handlePurchase}
-                            disabled={isLoading}
-                            className="w-full flex items-center justify-between disabled:opacity-60"
-                        >
-                            <span className="text-xl font-semibold">
-                                {item?.price != null ? `${item.price}€` : 'Acheter'}
-                            </span>
-                            <FaArrowRight className="text-2xl text-primary" />
-                        </button>
+                        <div className="space-y-2">
+                            <Link
+                                href={discoverHref}
+                                className="w-full flex items-center justify-between text-[#2d2a71] font-semibold hover:opacity-80"
+                            >
+                                <span>Voir la capsule</span>
+                                <FaArrowRight />
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={handlePurchase}
+                                disabled={isLoading}
+                                className="w-full flex items-center justify-between disabled:opacity-60 text-sm text-gray-600"
+                            >
+                                <span>
+                                    {item?.price != null ? `Acheter — ${item.price}€` : 'Acheter'}
+                                </span>
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

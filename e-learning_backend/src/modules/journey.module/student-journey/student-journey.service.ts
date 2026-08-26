@@ -195,7 +195,8 @@ export class StudentJourneyService {
 
       let isLocked = false;
       if (!isPurchased) {
-        isLocked = index !== 0;
+        // Full journey is paid — no free capsule access before Débloquer (#client Aug 2026)
+        isLocked = true;
       } else if (index === 0) {
         isLocked = false;
       } else if (previousIndividualId) {

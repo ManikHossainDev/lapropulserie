@@ -9,8 +9,8 @@ const FAQTab = () => {
     if (isLoading) {
         return (
             <div className="bg-gray-50 rounded-2xl p-6">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">Frequently Asked Questions</h2>
-                <p className="text-sm text-gray-400">Loading...</p>
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">Questions fréquentes</h2>
+                <p className="text-sm text-gray-400">Chargement...</p>
             </div>
         );
     }
@@ -18,8 +18,8 @@ const FAQTab = () => {
     if (isError) {
         return (
             <div className="bg-gray-50 rounded-2xl p-6">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">Frequently Asked Questions</h2>
-                <p className="text-sm text-red-400">Failed to load FAQs.</p>
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">Questions fréquentes</h2>
+                <p className="text-sm text-red-400">Impossible de charger les FAQ.</p>
             </div>
         );
     }
@@ -28,10 +28,10 @@ const FAQTab = () => {
 
     return (
         <div className="bg-gray-50 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Questions fréquentes</h2>
             <div className="space-y-3">
                 {faqs.length === 0 && (
-                    <p className="text-sm text-gray-400">No FAQs found.</p>
+                    <p className="text-sm text-gray-400">Aucune FAQ trouvée.</p>
                 )}
                 {faqs.map((faq) => (
                     <div key={faq.id} className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">

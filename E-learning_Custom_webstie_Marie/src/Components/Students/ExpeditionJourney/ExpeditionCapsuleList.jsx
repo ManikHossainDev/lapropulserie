@@ -70,7 +70,9 @@ export default function ExpeditionCapsuleList({
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className="text-sm text-gray-500 max-w-xl">
-            Progressez capsule par capsule. Terminez chaque parcours pour débloquer la suivante.
+            {isPurchased
+              ? 'Progressez capsule par capsule. Terminez chaque parcours pour débloquer la suivante.'
+              : "Découvre le Parcours Exploration. Débloque l'expédition pour accéder aux 5 capsules."}
           </p>
           {showPurchaseCta && !isPurchased && (
             <button
@@ -96,18 +98,29 @@ export default function ExpeditionCapsuleList({
           )}
         </div>
 
+        {!isPurchased && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            Les capsules sont verrouillées tant que l&apos;expédition n&apos;est pas débloquée.
+            {showPurchaseCta
+              ? " Utilise le bouton « Débloquer l'expédition » pour continuer."
+              : ''}
+          </div>
+        )}
+
         {isPurchased && allCompleted && (
           <div className="rounded-2xl border border-green-200 bg-green-50 p-6 space-y-4">
             <h2 className="text-2xl font-bold text-[#2d2a71]">
-              Félicitations — vous avez terminé ce parcours
+              Félicitations, tu as terminé le Parcours Exploration !
             </h2>
             <p className="text-gray-700">
-              Bravo d&apos;avoir mené à bien{' '}
-              {journey?.title || 'le Parcours Exploration'}. Votre certificat
-              d&apos;achèvement est disponible au téléchargement.
+              Bravo pour le chemin parcouru. Tu as pris le temps d&apos;explorer ce qui
+              t&apos;anime, ce qui te freine et ce que tu souhaites construire pour la suite.
+            </p>
+            <p className="text-gray-700">
+              Ton certificat de réussite est maintenant disponible.
             </p>
             <DownloadCertificate
-              programTitle={journey?.title || 'Parcours Exploration'}
+              programTitle="Parcours Exploration"
               fileName="certificat-parcours-exploration.pdf"
               buttonClassName="bg-[#2d2a71] hover:opacity-90 text-white px-5 py-3 rounded-xl text-sm font-medium inline-flex items-center gap-2"
             />
@@ -141,7 +154,9 @@ export default function ExpeditionCapsuleList({
                       )}
                       {isLocked && (
                         <p className="text-sm text-amber-600 mt-2">
-                          🔒 Terminez la capsule précédente pour débloquer
+                          {isPurchased
+                            ? '🔒 Termine la capsule précédente pour débloquer'
+                            : "🔒 Débloque l'expédition pour accéder"}
                         </p>
                       )}
                       {!isLocked && item.hasSixPartContent && (
@@ -191,8 +206,8 @@ export default function ExpeditionCapsuleList({
             {!expeditionReport ? (
               <div className="space-y-3">
                 <p className="text-gray-600 text-sm">
-                  Félicitations ! Vous avez terminé toutes les capsules. Marii peut maintenant
-                  produire une synthèse globale de votre expédition.
+                  Félicitations ! Tu as terminé toutes les capsules. Marii peut maintenant
+                  produire une synthèse globale de ton expédition.
                 </p>
                 <button
                   type="button"

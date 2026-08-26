@@ -10,6 +10,7 @@ const profile = apiSlice.injectEndpoints({
         }),
         getStudentMyProfileInfo: builder.query({
             query: () => "/users/profile-info",
+            providesTags: ["Profile"],
         }),
         getCompletedJourneys: builder.query({
             query: () => "/student-dashboard/completed-journeys?page=1&limit=20",
@@ -17,8 +18,15 @@ const profile = apiSlice.injectEndpoints({
         updateStudentProfile: builder.mutation({
             query: (data) => ({
                 url: "/users/profile-info",
-                method: "POST",
+                method: "PUT",
                 body: data,
+            }),
+            invalidatesTags: ["Profile"],
+        }),
+        deleteMyAccount: builder.mutation({
+            query: () => ({
+                url: "/users/delete-my-account",
+                method: "PUT",
             }),
         }),
     }),
@@ -29,5 +37,6 @@ export const {
     useGetMyMentorsQuery, 
     useGetStudentMyProfileInfoQuery,
     useGetCompletedJourneysQuery,
-    useUpdateStudentProfileMutation
+    useUpdateStudentProfileMutation,
+    useDeleteMyAccountMutation,
 } = profile;

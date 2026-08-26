@@ -22,8 +22,11 @@ const YourPersonalizedSummary = () => {
 
     if (isLoading) {
         return (
-            <div className="relative z-10 max-w-6xl mx-auto bg-white rounded-xl lg:p-10 p-5">
+            <div className="relative z-10 max-w-6xl mx-auto bg-white rounded-xl lg:p-10 p-5 text-center space-y-4">
                 <IsLoading row={6} />
+                <p className="text-[#2d2a71] font-medium">
+                    Ta synthèse est en train d&apos;être générée, merci de patienter.
+                </p>
             </div>
         );
     }
