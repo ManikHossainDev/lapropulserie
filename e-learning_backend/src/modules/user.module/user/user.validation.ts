@@ -97,6 +97,7 @@ export const adminUserJourneyTypeUpdateValidationSchema = z.object({
 export const updateProfileInfoValidationSchema = z.object({
   body: z.object({
     name: z.string().optional(),
+    email: z.string().trim().email().optional(),
     phoneNumber: z.string().optional(),
     profileImage: z.array(z.string()).optional(),
     location: z.string().optional(),

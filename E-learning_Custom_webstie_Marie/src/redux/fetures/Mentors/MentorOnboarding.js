@@ -7,6 +7,7 @@ const mentorOnboarding = apiSlice.injectEndpoints({
                 url: `/mentor-profiles/onboarding/status`,
                 method: "GET",
             }),
+            providesTags: ["MentorOnboarding"],
         }),
         getMentorProfile: builder.query({
             query: () => ({
@@ -48,8 +49,11 @@ const mentorOnboarding = apiSlice.injectEndpoints({
             query: ({ data, avatarUrl }) => {
                 const formData = new FormData();
                 formData.append('data', JSON.stringify(data));
-                if (avatarUrl) {
+                // Only append real file uploads — never a URL string (breaks multer)
+                if (typeof File !== 'undefined' && avatarUrl instanceof File) {
                     formData.append('avatarUrl', avatarUrl);
+                } else if (typeof Blob !== 'undefined' && avatarUrl instanceof Blob) {
+                    formData.append('avatarUrl', avatarUrl, 'avatar.jpg');
                 }
                 return {
                     url: `/mentor-profiles/onboarding/profile-with-avatar`,
@@ -57,6 +61,7 @@ const mentorOnboarding = apiSlice.injectEndpoints({
                     body: formData,
                 };
             },
+            invalidatesTags: ["MentorOnboarding"],
         }),
         updateMission: builder.mutation({
             query: (data) => ({
@@ -64,6 +69,7 @@ const mentorOnboarding = apiSlice.injectEndpoints({
                 method: "PUT",
                 body: data,
             }),
+            invalidatesTags: ["MentorOnboarding"],
         }),
         updateInnerFuel: builder.mutation({
             query: (data) => ({
@@ -71,6 +77,7 @@ const mentorOnboarding = apiSlice.injectEndpoints({
                 method: "PUT",
                 body: data,
             }),
+            invalidatesTags: ["MentorOnboarding"],
         }),
         updateMethods: builder.mutation({
             query: (data) => ({
@@ -78,6 +85,7 @@ const mentorOnboarding = apiSlice.injectEndpoints({
                 method: "PUT",
                 body: data,
             }),
+            invalidatesTags: ["MentorOnboarding"],
         }),
         subscribeToPlan: builder.mutation({
             query: ({ subscriptionPlanId }) => ({

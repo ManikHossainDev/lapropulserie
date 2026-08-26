@@ -135,23 +135,24 @@ export class MentorProfileService extends GenericService<
     let newStage = existing.profileInfoFillUpCount || 0;
 
     // Step 1: Basic Information
-    if (
-      data.name ||
-      data.location ||
-      data.availableIn?.length ||
-      data.language?.length ||
+    // Note: `name` lives on User (updated above), not on MentorProfile schema.
+    const hasBasicInfoUpdate =
+      data.location !== undefined ||
+      data.availableIn !== undefined ||
+      data.language !== undefined ||
       data.sessionPrice !== undefined ||
-      data.currentJobTitle ||
-      data.companyName ||
+      data.currentJobTitle !== undefined ||
+      data.companyName !== undefined ||
       data.yearsOfExperience !== undefined ||
-      data.bio ||
-      data.facebookLink ||
-      data.instagramLink ||
-      data.twitterLink ||
-      data.avatarUrl
-    ) {
-      Object.assign(updateData, {
-        name: data.name,
+      data.bio !== undefined ||
+      data.facebookLink !== undefined ||
+      data.instagramLink !== undefined ||
+      data.twitterLink !== undefined ||
+      data.avatarUrl !== undefined ||
+      Boolean(data.name);
+
+    if (hasBasicInfoUpdate) {
+      const basicFields: Record<string, unknown> = {
         location: data.location,
         availableIn: data.availableIn,
         language: data.language,
@@ -164,6 +165,12 @@ export class MentorProfileService extends GenericService<
         instagramLink: data.instagramLink,
         twitterLink: data.twitterLink,
         avatarUrl: data.avatarUrl,
+      };
+
+      Object.entries(basicFields).forEach(([key, value]) => {
+        if (value !== undefined) {
+          (updateData as Record<string, unknown>)[key] = value;
+        }
       });
 
       newStage = Math.max(newStage, 1);
@@ -191,11 +198,11 @@ export class MentorProfileService extends GenericService<
     }
 
     // Step 4: Methods (coachingMethodologies, calendlyProfileLink)
-    if (data.coachingMethodologies || data.calendlyProfileLink) {
-      if (data.coachingMethodologies) {
+    if (data.coachingMethodologies !== undefined || data.calendlyProfileLink !== undefined) {
+      if (data.coachingMethodologies !== undefined) {
         updateData.coachingMethodologies = data.coachingMethodologies;
       }
-      if (data.calendlyProfileLink) {
+      if (data.calendlyProfileLink !== undefined) {
         updateData.calendlyProfileLink = data.calendlyProfileLink;
       }
       newStage = Math.max(newStage, 4);

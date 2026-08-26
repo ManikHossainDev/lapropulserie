@@ -905,6 +905,18 @@ export class UserService extends GenericService<typeof User, IUser> {
     const updateData: any = {};
     if (data.name) updateData.name = data.name;
     if (data.phoneNumber) updateData.phoneNumber = data.phoneNumber;
+    if (data.email) {
+      const email = String(data.email).trim().toLowerCase();
+      const existing = await User.findOne({
+        email,
+        _id: { $ne: id },
+        isDeleted: { $ne: true },
+      }).select('_id');
+      if (existing) {
+        throw new ApiError(StatusCodes.CONFLICT, 'Cet e-mail est déjà utilisé.');
+      }
+      updateData.email = email;
+    }
     if (data.profileImage && data.profileImage.length > 0) {
       const attachmentUrl = await Attachment.findById(data.profileImage[0]);
       if (attachmentUrl?.attachment) {

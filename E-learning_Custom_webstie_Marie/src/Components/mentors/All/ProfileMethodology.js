@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from 'react';
 
 const methodologies = [
-    { value: 'mindful_reflection', label: 'Mindful Reflection', sub: 'Focusing on self-awareness and inner growth.' },
-    { value: 'action_planning', label: 'Action Planning', sub: 'Goal-oriented strategy with clear milestones.' },
-    { value: 'basing_thinking', label: 'Basing Thinking', sub: 'Iterative problem-solving and rapid ideation.' },
-    { value: 'career_mapping', label: 'Career Mapping', sub: 'Structuring long-term professional trajectories.' },
-    { value: 'scenario_method', label: 'Scenario Method', sub: 'Guiding discovery through critical questioning.' },
-    { value: 'role_playing', label: 'Role Playing', sub: 'Simulating real-world scenarios for practice.' },
+    { value: 'mindful_reflection', label: 'Réflexion consciente', sub: 'Accent sur la conscience de soi et la croissance intérieure.' },
+    { value: 'action_planning', label: 'Plan d’action', sub: 'Stratégie orientée objectifs avec des jalons clairs.' },
+    { value: 'basing_thinking', label: 'Pensée itérative', sub: 'Résolution de problèmes itérative et idéation rapide.' },
+    { value: 'career_mapping', label: 'Cartographie de carrière', sub: 'Structurer des trajectoires professionnelles à long terme.' },
+    { value: 'scenario_method', label: 'Méthode des scénarios', sub: 'Guider la découverte par le questionnement critique.' },
+    { value: 'role_playing', label: 'Jeux de rôle', sub: 'Simuler des situations réelles pour s’entraîner.' },
 ];
 
 const ProfileMethodology = ({ data = {} }) => {

@@ -5,6 +5,7 @@ import {
     useUpdateStudentProfileMutation
 } from '@/redux/fetures/profile/profile';
 import React, { useRef, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const ProfileTab = () => {
 
@@ -24,7 +25,6 @@ const ProfileTab = () => {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    // ✅ Load API data
     useEffect(() => {
         if (profile) {
             setForm({
@@ -38,7 +38,8 @@ const ProfileTab = () => {
         const file = e.target.files[0];
         if (file) {
             setPreview(URL.createObjectURL(file));
-            setImageFile(file); // ✅ important
+            setImageFile(file);
+            if (!isEditing) setIsEditing(true);
         }
     };
 
@@ -46,45 +47,50 @@ const ProfileTab = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    // ✅ Save handler
     const handleSave = async () => {
         try {
             const formData = new FormData();
-
-            formData.append('name', form.fullName);
-            formData.append('email', form.email);
+            // Backend expects JSON in `data` + optional profileImage file
+            formData.append(
+                'data',
+                JSON.stringify({
+                    name: form.fullName.trim(),
+                    email: form.email.trim(),
+                }),
+            );
 
             if (imageFile) {
                 formData.append('profileImage', imageFile);
             }
 
-            const res = await updateStudentProfile(formData).unwrap();
+            await updateStudentProfile(formData).unwrap();
 
-            console.log('Updated:', res);
-
+            toast.success('Profil enregistré.');
             setIsEditing(false);
             setPreview(null);
             setImageFile(null);
-
-            refetch(); // 🔥 refresh profile
-
+            refetch();
         } catch (error) {
             console.error('Update failed:', error);
+            toast.error(
+                error?.data?.message ||
+                    "Échec de l'enregistrement du profil. Réessaie.",
+            );
         }
     };
 
     return (
         <div className="bg-gray-50 rounded-2xl p-6 space-y-6">
 
-            {/* Avatar */}
             <div className="flex items-center gap-5">
                 <div className="relative w-20 h-20">
 
                     {preview ? (
-                        <img src={preview} className="w-20 h-20 rounded-full object-cover" />
+                        <img src={preview} alt="" className="w-20 h-20 rounded-full object-cover" />
                     ) : profile?.profileImage?.imageUrl ? (
                         <img
                             src={url + profile.profileImage.imageUrl}
+                            alt=""
                             className="w-20 h-20 rounded-full object-cover"
                         />
                     ) : (
@@ -94,6 +100,7 @@ const ProfileTab = () => {
                     )}
 
                     <button
+                        type="button"
                         onClick={() => fileInputRef.current.click()}
                         className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-md"
                     >
@@ -114,22 +121,22 @@ const ProfileTab = () => {
 
                 <div>
                     <p className="text-sm font-semibold text-gray-700 mb-2">
-                        Profile Picture
+                        Photo de profil
                     </p>
                     <button
+                        type="button"
                         onClick={() => fileInputRef.current.click()}
                         className="bg-indigo-900 text-white text-sm px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
                     >
-                        Change Image
+                        Changer l&apos;image
                     </button>
                 </div>
             </div>
 
-            {/* Fields */}
             <div className="space-y-4">
 
                 <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Full Name</label>
+                    <label className="text-sm text-gray-600 mb-1 block">Nom complet</label>
                     <input
                         name="fullName"
                         value={form.fullName}
@@ -140,9 +147,10 @@ const ProfileTab = () => {
                 </div>
 
                 <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Email Address</label>
+                    <label className="text-sm text-gray-600 mb-1 block">Adresse e-mail</label>
                     <input
                         name="email"
+                        type="email"
                         value={form.email}
                         onChange={handleChange}
                         disabled={!isEditing}
@@ -152,17 +160,17 @@ const ProfileTab = () => {
 
             </div>
 
-            {/* Button */}
             <button
+                type="button"
                 onClick={isEditing ? handleSave : () => setIsEditing(true)}
                 disabled={isLoading}
-                className="w-full py-4 rounded-xl text-white text-sm font-medium customSignUpButton hover:opacity-90 transition"
+                className="w-full py-4 rounded-xl text-white text-sm font-medium customSignUpButton hover:opacity-90 transition disabled:opacity-60"
             >
                 {isLoading
-                    ? 'Saving...'
+                    ? 'Enregistrement...'
                     : isEditing
-                        ? 'Save Changes'
-                        : 'Edit'}
+                        ? 'Enregistrer'
+                        : 'Modifier'}
             </button>
 
         </div>

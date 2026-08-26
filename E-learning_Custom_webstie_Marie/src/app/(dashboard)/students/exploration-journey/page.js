@@ -1,7 +1,43 @@
-import Link from "next/link";
-import React from "react";
+'use client';
 
-const Page = () => {
+import Link from 'next/link';
+import React from 'react';
+import { useGetStudentOnboardingStatusQuery } from '@/redux/fetures/auth/onboardingStatus';
+
+const ExplorationJourneyLandingPage = () => {
+  const { data, isLoading } = useGetStudentOnboardingStatusQuery();
+  const status = data?.data;
+  const bilanDone = Boolean(
+    status?.hasCompletedQuestionnaire || status?.isCompleted,
+  );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Chargement...
+      </div>
+    );
+  }
+
+  if (!bilanDone) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#f5f3ff] to-[#efeafe] flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-xl bg-white rounded-3xl shadow-sm p-8 text-center space-y-5">
+          <h1 className="text-2xl font-bold text-indigo-900">Parcours Exploration</h1>
+          <p className="text-gray-700 leading-relaxed">
+            Pour accéder au Parcours Exploration, commence par réaliser ton bilan professionnel.
+          </p>
+          <Link
+            href="/students/all-questions"
+            className="inline-block bg-blue-950 hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium shadow-md transition"
+          >
+            Faire mon bilan
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f5f3ff] to-[#efeafe] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-sm p-10">
@@ -27,7 +63,7 @@ const Page = () => {
         <p className="text-center text-gray-600 mt-6 leading-relaxed max-w-4xl mx-auto">
           <span className="font-semibold text-primary">
             Le Parcours Exploration
-          </span>{" "}
+          </span>{' '}
           est une expérience guidée, en plusieurs étapes, conçue pour t&apos;aider
           à mieux te comprendre, clarifier ce qui te freine aujourd&apos;hui,
           et réaligner ta trajectoire professionnelle.
@@ -43,10 +79,10 @@ const Page = () => {
 
           <div className="grid md:grid-cols-2 gap-6">
             {[
-              "Une compréhension plus claire de tes valeurs et de tes moteurs",
-              "Un sens plus fort de ta direction professionnelle",
+              'Une compréhension plus claire de tes valeurs et de tes moteurs',
+              'Un sens plus fort de ta direction professionnelle',
               "Des outils concrets pour passer à l'action",
-              "Un certificat d'achèvement final",
+              'Un certificat de réussite',
             ].map((item, index) => (
               <div key={index} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-sm">
@@ -72,9 +108,9 @@ const Page = () => {
 
             <div className="space-y-3">
               {[
-                "Te guider tout au long de ton exploration",
+                'Te guider tout au long de ton exploration',
                 "T'encourager et te rassurer",
-                "Te fournir des analyses personnalisées à partir de tes réponses",
+                'Te fournir des analyses personnalisées à partir de tes réponses',
               ].map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-xs">
@@ -96,7 +132,10 @@ const Page = () => {
         </div>
 
         <div className="flex justify-center mt-10">
-          <Link href="/students/exploration-journey/capsule-journey" className="bg-blue-950 hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium shadow-md transition">
+          <Link
+            href="/students/exploration-journey/capsule-journey"
+            className="bg-blue-950 hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium shadow-md transition"
+          >
             Commencer le Parcours Exploration →
           </Link>
         </div>
@@ -106,4 +145,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default ExplorationJourneyLandingPage;

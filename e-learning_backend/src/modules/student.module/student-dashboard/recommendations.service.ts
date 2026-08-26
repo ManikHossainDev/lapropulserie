@@ -183,22 +183,46 @@ export const getPersonalizedRecommendations = async (
 
   const journeyLinkedIds = await getJourneyLinkedIndividualCapsuleIds();
 
-  const scoredCapsules = capsules
+  const scoredCapsulesRaw = capsules
     .filter((c: any) => {
       if (journeyLinkedIds.has(String(c._id))) return false;
       const category = c.capsuleCategoryId as any;
       if (!category?.title) return false;
       return !isJourneyOnlyDiscoverCategory(category);
     })
-    .map((c: any) => ({
-      id: c._id,
-      title: c.title,
-      thumbnail: c.thumbnail,
-      categoryTitle: (c.capsuleCategoryId as any)?.title,
-      score: scoreContentAgainstThemes(c.title, '', weightedThemes),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 4);
+    .map((c: any) => {
+      const category = c.capsuleCategoryId as any;
+      const categoryId = category?._id || category?.id || c.capsuleCategoryId;
+      return {
+        id: c._id,
+        title: c.title,
+        thumbnail: c.thumbnail,
+        categoryId,
+        categoryTitle: category?.title,
+        score: scoreContentAgainstThemes(
+          c.title,
+          `${category?.title || ''} ${c.description || ''}`,
+          weightedThemes,
+        ),
+      };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  // Prefer category diversity so suggestions are not all from one theme
+  const scoredCapsules: typeof scoredCapsulesRaw = [];
+  const usedCategories = new Set<string>();
+  for (const cap of scoredCapsulesRaw) {
+    if (scoredCapsules.length >= 4) break;
+    const key = String(cap.categoryId || '');
+    if (key && usedCategories.has(key)) continue;
+    if (key) usedCategories.add(key);
+    scoredCapsules.push(cap);
+  }
+  for (const cap of scoredCapsulesRaw) {
+    if (scoredCapsules.length >= 4) break;
+    if (scoredCapsules.some(s => String(s.id) === String(cap.id))) continue;
+    scoredCapsules.push(cap);
+  }
 
   const journeys = await Journey.find({
     isDeleted: false,

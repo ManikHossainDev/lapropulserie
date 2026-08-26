@@ -1,6 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useUpdateProfileWithAvatarMutation, useUpdateMethodsMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { useUpdateMissionMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+
+const toOptionalNumber = (value) => {
+    if (value === '' || value === null || value === undefined) return undefined;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : undefined;
+};
 
 const Basicinfo = ({ data = {} }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -15,55 +21,71 @@ const Basicinfo = ({ data = {} }) => {
     });
     const [saved, setSaved] = useState({ ...form });
 
-    const [updateProfileWithAvatar] = useUpdateProfileWithAvatarMutation();
-    const [updateMethods] = useUpdateMethodsMutation();
+    const [updateProfile, { isLoading: isSaving }] = useUpdateMissionMutation();
 
+    // Sync from server only when not editing — avoids wiping in-progress edits
+    // when parent re-renders with a new `data` object reference.
     useEffect(() => {
-        if (data) {
-            const newForm = {
-                fullName: data.name || '',
-                jobTitle: data.currentJobTitle || '',
-                company: data.companyName || '',
-                experience: data.yearsOfExperience || '',
-                sessionPrice: data.sessionPrice || '',
-                shortBio: data.bio || '',
-                calendlyLink: data.calendlyProfileLink || '',
-            };
-            setForm(newForm);
-            setSaved(newForm);
-        }
-    }, [data]);
+        if (isEditing) return;
+        const newForm = {
+            fullName: data.name || '',
+            jobTitle: data.currentJobTitle || '',
+            company: data.companyName || '',
+            experience:
+                data.yearsOfExperience === 0 || data.yearsOfExperience
+                    ? String(data.yearsOfExperience)
+                    : '',
+            sessionPrice:
+                data.sessionPrice === 0 || data.sessionPrice
+                    ? String(data.sessionPrice)
+                    : '',
+            shortBio: data.bio || '',
+            calendlyLink: data.calendlyProfileLink || '',
+        };
+        setForm(newForm);
+        setSaved(newForm);
+    }, [
+        isEditing,
+        data.name,
+        data.currentJobTitle,
+        data.companyName,
+        data.yearsOfExperience,
+        data.sessionPrice,
+        data.bio,
+        data.calendlyProfileLink,
+    ]);
 
     const wordCount = form.shortBio.trim() === '' ? 0 : form.shortBio.trim().split(/\s+/).length;
     const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
     const handleSave = async () => {
         try {
-            const basicInfoPayload = {
-                name: form.fullName,
-                currentJobTitle: form.jobTitle,
-                companyName: form.company,
-                yearsOfExperience: Number(form.experience),
-                sessionPrice: Number(form.sessionPrice),
-                bio: form.shortBio,
-                language: data.language || ['English'],
-                availableIn: data.availableIn || 'both',
-                location: data.location || '',
+            // Only send fields edited on this screen (validated by backend zod schema).
+            // Do not re-send location/language/availableIn — avoids wiping them with defaults.
+            const payload = {
+                name: form.fullName.trim(),
+                currentJobTitle: form.jobTitle.trim(),
+                companyName: form.company.trim(),
+                bio: form.shortBio.trim(),
+                calendlyProfileLink: form.calendlyLink.trim(),
             };
 
-            await updateProfileWithAvatar({ data: basicInfoPayload, avatarUrl: data.avatarUrl }).unwrap();
+            const yearsOfExperience = toOptionalNumber(form.experience);
+            const sessionPrice = toOptionalNumber(form.sessionPrice);
+            if (yearsOfExperience !== undefined) payload.yearsOfExperience = yearsOfExperience;
+            if (sessionPrice !== undefined) payload.sessionPrice = sessionPrice;
 
-            const methodsPayload = {
-                coachingMethodologies: data.coachingMethodologies || [],
-                calendlyProfileLink: form.calendlyLink,
-            };
-            await updateMethods(methodsPayload).unwrap();
+            await updateProfile(payload).unwrap();
 
             setSaved({ ...form });
             setIsEditing(false);
         } catch (error) {
             console.error('Failed to save profile:', error);
-            alert('Failed to save profile. Please try again.');
+            const apiMessage =
+                error?.data?.message ||
+                error?.error ||
+                'Échec de l’enregistrement du profil. Veuillez réessayer.';
+            alert(apiMessage);
         }
     };
 
@@ -86,29 +108,34 @@ const Basicinfo = ({ data = {} }) => {
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <span className="text-3xl">🚀</span>
-                        <h1 className="text-xl font-bold text-indigo-800">Basic Info</h1>
+                        <h1 className="text-xl font-bold text-indigo-800">Infos de base</h1>
                     </div>
                     {isEditing ? (
                         <div className="flex gap-2">
                             <button
+                                type="button"
                                 onClick={handleCancel}
+                                disabled={isSaving}
                                 className="border border-gray-300 text-gray-600 text-sm font-medium px-5 py-2 rounded-lg hover:bg-gray-100 transition"
                             >
-                                Cancel
+                                Annuler
                             </button>
                             <button
+                                type="button"
                                 onClick={handleSave}
-                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
+                                disabled={isSaving}
+                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition disabled:opacity-60"
                             >
-                                Save
+                                {isSaving ? 'Enregistrement...' : 'Enregistrer'}
                             </button>
                         </div>
                     ) : (
                         <button
+                            type="button"
                             onClick={() => setIsEditing(true)}
                             className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2 rounded-lg transition"
                         >
-                            Edit
+                            Modifier
                         </button>
                     )}
                 </div>
@@ -116,9 +143,8 @@ const Basicinfo = ({ data = {} }) => {
                 {/* Form */}
                 <div className="space-y-5">
 
-                    {/* Full Name */}
                     <div>
-                        <label className="block text-sm text-gray-600 mb-1.5">Full Name</label>
+                        <label className="block text-sm text-gray-600 mb-1.5">Nom complet</label>
                         <input
                             value={form.fullName}
                             onChange={set('fullName')}
@@ -127,10 +153,9 @@ const Basicinfo = ({ data = {} }) => {
                         />
                     </div>
 
-                    {/* Job Title + Company */}
                     <div className="grid lg:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1.5">Current Job Title</label>
+                            <label className="block text-sm text-gray-600 mb-1.5">Poste actuel</label>
                             <input
                                 value={form.jobTitle}
                                 onChange={set('jobTitle')}
@@ -139,7 +164,7 @@ const Basicinfo = ({ data = {} }) => {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1.5">Company / Organization</label>
+                            <label className="block text-sm text-gray-600 mb-1.5">Entreprise / Organisation</label>
                             <input
                                 value={form.company}
                                 onChange={set('company')}
@@ -149,10 +174,9 @@ const Basicinfo = ({ data = {} }) => {
                         </div>
                     </div>
 
-                    {/* Experience + Session Price */}
                     <div className="grid lg:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1.5">Years Of Experience</label>
+                            <label className="block text-sm text-gray-600 mb-1.5">Années d’expérience</label>
                             <input
                                 value={form.experience}
                                 onChange={set('experience')}
@@ -162,7 +186,7 @@ const Basicinfo = ({ data = {} }) => {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1.5">Session Price</label>
+                            <label className="block text-sm text-gray-600 mb-1.5">Prix de la séance</label>
                             <input
                                 value={form.sessionPrice}
                                 onChange={set('sessionPrice')}
@@ -173,11 +197,10 @@ const Basicinfo = ({ data = {} }) => {
                         </div>
                     </div>
 
-                    {/* Short Bio */}
                     <div>
                         <div className="flex items-center justify-between mb-1.5">
-                            <label className="text-sm text-gray-600">Short Bio</label>
-                            <span className="text-xs text-gray-400">{wordCount}/2000 Words</span>
+                            <label className="text-sm text-gray-600">Bio courte</label>
+                            <span className="text-xs text-gray-400">{wordCount}/2000 mots</span>
                         </div>
                         <textarea
                             value={form.shortBio}
@@ -188,9 +211,8 @@ const Basicinfo = ({ data = {} }) => {
                         />
                     </div>
 
-                    {/* Calendly Link */}
                     <div>
-                        <label className="block text-sm text-gray-600 mb-1.5">Calendly Profile Link</label>
+                        <label className="block text-sm text-gray-600 mb-1.5">Lien de profil Calendly</label>
                         <input
                             value={form.calendlyLink}
                             onChange={set('calendlyLink')}

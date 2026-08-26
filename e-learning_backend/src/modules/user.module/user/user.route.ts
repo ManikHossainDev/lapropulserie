@@ -18,7 +18,8 @@
  * @module UserRoutes
  */
 
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { UserController } from './user.controller';
 import { validateFiltersForQuery } from '../../../middlewares/queryValidation/paginationQueryValidationMiddleware';
 import auth from '../../../middlewares/auth';
@@ -28,6 +29,7 @@ import validateRequest from '../../../shared/validateRequest';
 import * as validation from './user.validation';
 import { setRequestFilterAndValue } from '../../../middlewares/setRequestFilterAndValue';
 import { imageUploadPipelineForUpdateUserProfile } from './user.middleware';
+import ApiError from '../../../errors/ApiError';
 import { IsProviderRejected } from '../../../middlewares/provider/IsProviderRejected';
 
 export const optionValidationChecking = <
@@ -375,8 +377,22 @@ router
   .route('/profile-info')
   .put(
     auth(TRole.common),
-    validateRequest(validation.updateProfileInfoValidationSchema),
     ...imageUploadPipelineForUpdateUserProfile,
+    (req: Request, _res: Response, next: NextFunction) => {
+      try {
+        if (typeof req.body?.data === 'string') {
+          const parsed = JSON.parse(req.body.data);
+          req.body = { ...parsed };
+        }
+        if ((req as any).uploadedFiles?.profileImage) {
+          req.body.profileImage = (req as any).uploadedFiles.profileImage;
+        }
+        next();
+      } catch {
+        next(new ApiError(StatusCodes.BAD_REQUEST, 'Invalid profile payload'));
+      }
+    },
+    validateRequest(validation.updateProfileInfoValidationSchema),
     controller.updateProfileInformationOfAUser,
   );
 
@@ -425,6 +441,15 @@ router
  * @returns {Object} List of all users
  */
 router.route('/').get(auth(TRole.admin), controller.getAll);
+
+/**
+ * @route PUT /users/delete-my-account
+ * @description Soft-delete the authenticated user's own account
+ * @access Private (student / mentor)
+ */
+router
+  .route('/delete-my-account')
+  .put(auth(TRole.commonUser), controller.deleteMyAccount);
 
 /**
  * @route PUT /users/softDelete/:id

@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import RecommendationPanel from '@/Components/Students/Recommendations/RecommendationPanel';
 import {
   useGetCategoryByIdQuery,
@@ -12,12 +12,15 @@ import {
 
 export default function DiscoverCategoryPage() {
   const { categoryId } = useParams();
+  const searchParams = useSearchParams();
+  const highlightId = searchParams.get('highlight');
+  const highlightRef = useRef(null);
+
   const { data: categoryRes, isLoading } = useGetCategoryByIdQuery(categoryId);
   const { data: capsulesRes } = useGetCapsulesByCategoryQuery(categoryId);
   const [purchaseCapsule, { isLoading: purchasing }] = usePurchaseCapsuleMutation();
 
   const category = categoryRes?.data;
-  // sendResponse flattens paginateResults → data is the array (meta at top level)
   const capsules = Array.isArray(capsulesRes?.data)
     ? capsulesRes.data
     : capsulesRes?.data?.results || [];
@@ -29,6 +32,12 @@ export default function DiscoverCategoryPage() {
       .toLowerCase()
       .includes('apprendre a se connaitre');
 
+  useEffect(() => {
+    if (highlightId && highlightRef.current) {
+      highlightRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [highlightId, capsules.length]);
+
   const handlePurchase = async (capsuleId) => {
     try {
       const res = await purchaseCapsule(capsuleId).unwrap();
@@ -39,7 +48,7 @@ export default function DiscoverCategoryPage() {
       }
       alert('Lien de paiement indisponible. Réessayez plus tard.');
     } catch (err) {
-      alert(err?.data?.message || 'Erreur lors de l\'achat');
+      alert(err?.data?.message || "Erreur lors de l'achat");
     }
   };
 
@@ -100,7 +109,7 @@ export default function DiscoverCategoryPage() {
           ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {capsules.map((cap) => {
-              const id = cap.id || cap._id;
+              const id = String(cap.id || cap._id);
               const price = Number(cap.price ?? category?.price ?? 0);
               const isFree = cap.isFree === true || price <= 0;
               const isPurchased = cap.isPurchased === true;
@@ -108,9 +117,16 @@ export default function DiscoverCategoryPage() {
                 isFree || isPurchased || cap.canAccessContent === true;
               const needsPurchase =
                 canPurchaseIndividually && !isFree && !isPurchased;
+              const isHighlighted = highlightId && String(highlightId) === id;
 
               return (
-                <div key={id} className="border rounded-xl p-4 flex flex-col gap-3">
+                <div
+                  key={id}
+                  ref={isHighlighted ? highlightRef : null}
+                  className={`border rounded-xl p-4 flex flex-col gap-3 ${
+                    isHighlighted ? 'border-[#2d2a71] ring-2 ring-[#2d2a71]/30' : ''
+                  }`}
+                >
                   {cap.thumbnail && (
                     <img src={cap.thumbnail} alt="" className="h-40 w-full object-contain object-center bg-gray-50 rounded-lg" />
                   )}

@@ -20,6 +20,7 @@ const questionnaireAllowedPrefixes = [
   '/api/v1/auth/refresh-auth',
   '/api/v1/question-system',
   '/api/v1/users/profile-info',
+  '/api/v1/users/delete-my-account',
 ];
 
 const isQuestionnaireGateBypassed = (path: string) => {
