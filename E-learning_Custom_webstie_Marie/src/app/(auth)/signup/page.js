@@ -190,9 +190,26 @@ const SignupForm = () => {
                     </div>
 
                     <div className='flex justify-between items-center my-5'>
-                        <label htmlFor="acceptTOC">
-                            <input type="checkbox" name="acceptTOC" id="acceptTOC" />
-                            <span className='ml-2 text-gray-600'>J’accepte les conditions générales d’utilisation.</span>
+                        <label htmlFor="acceptTOC" className="flex items-start gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                name="acceptTOC"
+                                id="acceptTOC"
+                                className="mt-1 shrink-0"
+                            />
+                            <span className='text-gray-600'>
+                                J&apos;ai lu et j&apos;accepte les{' '}
+                                <Link
+                                    href="/legal/cgu"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 underline hover:opacity-80"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    Conditions générales d&apos;utilisation
+                                </Link>
+                                .
+                            </span>
                         </label>
                     </div>
 

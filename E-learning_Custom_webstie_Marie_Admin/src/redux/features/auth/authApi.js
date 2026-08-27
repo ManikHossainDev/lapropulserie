@@ -1,6 +1,5 @@
 import { baseApi } from "../../baseApi/baseApi";
 
-
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -19,7 +18,7 @@ const authApi = baseApi.injectEndpoints({
     }),
     logout: builder.mutation({
       query: () => ({
-        url: "/logout",
+        url: "/auth/logout",
         method: "POST",
       }),
     }),
@@ -30,25 +29,22 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
-    verifyEmail: builder.mutation({
-      query: (data) => ({
-        url: "/verify-forgot-password-otp",
-        method: "POST",
-        body: data,
-      }),
-    }),
+    // Backend verifies OTP together with the new password (no separate verify endpoint)
     resetPassword: builder.mutation({
       query: (data) => ({
-        url: "/change-admin-password",
+        url: "/auth/reset-password",
         method: "POST",
         body: data,
       }),
     }),
     changePassword: builder.mutation({
-      query: (data) => ({
-        url: "/change-admin-password-3",
+      query: ({ oldPassword, currentPassword, newPassword }) => ({
+        url: "/auth/change-password",
         method: "POST",
-        body: data,
+        body: {
+          currentPassword: currentPassword || oldPassword,
+          newPassword,
+        },
       }),
     }),
   }),
@@ -59,7 +55,6 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useForgotPasswordMutation,
-  useVerifyEmailMutation,
   useResetPasswordMutation,
   useChangePasswordMutation,
 } = authApi;

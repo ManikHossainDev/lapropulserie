@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form } from "antd";
-import { HiOutlineMail } from "react-icons/hi";
 import { IoIosArrowBack } from "react-icons/io";
 import signinImage from "/public/Auth/main_logo.jpg";
 import { useForgotPasswordMutation } from "../../../redux/features/auth/authApi";
@@ -62,15 +61,11 @@ const ForgetPassword = () => {
                 { type: "email", message: "Enter a valid email!" },
               ]}
             >
-              <div className="flex items-center gap-3 px-3 py-2.5 bg-white border border-gray-200 rounded-md">
-                <HiOutlineMail className="text-gray-400 text-lg" />
-
-                <input
-                  type="email"
-                  placeholder="Enter Email"
-                  className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
-                />
-              </div>
+              <input
+                type="email"
+                placeholder="Enter Email"
+                className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-md outline-none text-sm text-gray-700 placeholder-gray-400 focus:border-[#2d2a71]"
+              />
             </Form.Item>
             <Form.Item>
               <button
