@@ -1,35 +1,97 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import { Modal, Button, Input, Form } from 'antd';
-import { useDeleteFaqMutation, useGetAllFaqQuery, useCreateFaqMutation } from '../../redux/features/setting/settingApi';
+import { Modal, Button, Input, Form, Select } from 'antd';
+import {
+    useDeleteFaqMutation,
+    useGetAllFaqQuery,
+    useCreateFaqMutation,
+    useGetFaqCategoriesQuery,
+    useCreateFaqCategoryMutation,
+} from '../../redux/features/setting/settingApi';
 import { FiPlus } from 'react-icons/fi';
 import { toast } from 'sonner';
+
+const resolveId = (value) => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value.id || value._id || '';
+};
 
 const AllFaq = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
+    const [ensuringCategory, setEnsuringCategory] = useState(false);
+    const triedDefaultCategory = React.useRef(false);
 
     const { data: allFaq, refetch, isLoading } = useGetAllFaqQuery({ page, limit });
+    const {
+        data: categoriesRes,
+        refetch: refetchCategories,
+        isLoading: categoriesLoading,
+    } = useGetFaqCategoriesQuery();
     const [deleteFaq] = useDeleteFaqMutation();
     const [addFaq, { isLoading: isAdding }] = useCreateFaqMutation();
-
-
-
+    const [createFaqCategory] = useCreateFaqCategoryMutation();
 
     const fullData = allFaq?.data?.results || [];
+    const categories = useMemo(() => {
+        const raw = categoriesRes?.data;
+        if (Array.isArray(raw)) return raw;
+        if (Array.isArray(raw?.results)) return raw.results;
+        return [];
+    }, [categoriesRes]);
 
-    // Get faqCategoryId from existing data (or set your own default)
-    const faqCategoryId = fullData[0]?.faqCategoryId || '';
+    const categoryOptions = categories
+        .map((cat) => ({
+            value: resolveId(cat),
+            label: cat.categoryName || cat.name || 'Category',
+        }))
+        .filter((opt) => opt.value);
 
+    // First FAQ list was empty → admin sent faqCategoryId: "" → API 400.
+    // Ensure at least one category exists so Add FAQ always has a valid ObjectId.
     useEffect(() => {
-        refetch();
-    }, [refetch]);
+        let cancelled = false;
+        const ensureDefaultCategory = async () => {
+            if (categoriesLoading || triedDefaultCategory.current) return;
+            if (categoryOptions.length > 0) return;
+
+            triedDefaultCategory.current = true;
+            setEnsuringCategory(true);
+            try {
+                await createFaqCategory({ categoryName: 'Général' }).unwrap();
+                if (!cancelled) await refetchCategories();
+            } catch (error) {
+                console.error('Error creating default FAQ category:', error);
+                toast.error('Could not create FAQ category. Try again.');
+                triedDefaultCategory.current = false;
+            } finally {
+                if (!cancelled) setEnsuringCategory(false);
+            }
+        };
+
+        ensureDefaultCategory();
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        categoriesLoading,
+        categoryOptions.length,
+        createFaqCategory,
+        refetchCategories,
+    ]);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
 
     const showModal = () => {
+        const defaultCategoryId = categoryOptions[0]?.value || '';
+        form.setFieldsValue({
+            question: '',
+            answer: '',
+            faqCategoryId: defaultCategoryId,
+        });
         setIsModalVisible(true);
     };
 
@@ -39,27 +101,31 @@ const AllFaq = () => {
     };
 
     const handleAddFaq = async (values) => {
+        const faqCategoryId = resolveId(values.faqCategoryId);
+        if (!faqCategoryId) {
+            toast.error('Please select a FAQ category');
+            return;
+        }
+
         try {
-            const payload = {
-                faqCategoryId: faqCategoryId,
+            await addFaq({
+                faqCategoryId,
                 question: values.question,
                 answer: values.answer,
-            };
-
-            await addFaq(payload).unwrap();
+            }).unwrap();
             toast.success('FAQ added successfully');
             setIsModalVisible(false);
             form.resetFields();
             refetch();
         } catch (error) {
-            toast.error('Failed to add FAQ');
+            toast.error(error?.data?.message || 'Failed to add FAQ');
             console.error('Error adding FAQ:', error);
         }
     };
 
     const handleDelete = async (faq) => {
         try {
-            await deleteFaq(faq.id).unwrap();
+            await deleteFaq(faq.id || faq._id).unwrap();
             toast.success('FAQ deleted successfully');
             refetch();
         } catch (error) {
@@ -68,16 +134,13 @@ const AllFaq = () => {
         }
     };
 
-
-    if (isLoading) {
-        return <p className="text-center text-gray-400 py-10">Loading FAQs...</p>
+    if (isLoading || categoriesLoading || ensuringCategory) {
+        return <p className="text-center text-gray-400 py-10">Loading FAQs...</p>;
     }
-
 
     return (
         <div>
-            {/* Header */}
-            <div className='mt-5 sm:mt-0 flex items-center justify-between'>
+            <div className="mt-5 sm:mt-0 flex items-center justify-between">
                 <Link to={"/"} className="flex items-center cursor-pointer my-8">
                     <MdOutlineKeyboardArrowLeft size={30} />
                     <h1 className="text-xl font-medium ml-2">FAQ</h1>
@@ -86,21 +149,19 @@ const AllFaq = () => {
                     <button
                         className="bg-[#2d2a71] text-white px-10 py-3 rounded-lg flex items-center gap-2"
                         onClick={showModal}
+                        disabled={!categoryOptions.length}
                     >
-                        <FiPlus className='text-xl font-semibold text-white' /> Add FAQ
+                        <FiPlus className="text-xl font-semibold text-white" /> Add FAQ
                     </button>
                 </div>
             </div>
 
-
-
-            {/* List of FAQs */}
             <div className="mt-5 md:px-8 px-3">
                 <div className="my-5">
-                    <div className='space-y-4'>
+                    <div className="space-y-4">
                         {fullData?.length > 0 ? (
-                            fullData?.map((faq, index) => (
-                                <div key={faq.id || index} className="border rounded">
+                            fullData.map((faq, index) => (
+                                <div key={faq.id || faq._id || index} className="border rounded">
                                     <p className="font-medium text-lg bg-[#2e2a7142] p-3 flex items-center justify-between">
                                         {faq.question}
                                         <button
@@ -120,19 +181,23 @@ const AllFaq = () => {
                 </div>
             </div>
 
-            {/* Modal for adding FAQ */}
             <Modal
                 title="Add New FAQ"
                 open={isModalVisible}
                 onCancel={handleCancel}
                 footer={null}
             >
-                <Form
-                    form={form}
-                    onFinish={handleAddFaq}
-                    layout="vertical"
-                    initialValues={{ question: '', answer: '' }}
-                >
+                <Form form={form} onFinish={handleAddFaq} layout="vertical">
+                    <Form.Item
+                        name="faqCategoryId"
+                        label="Category"
+                        rules={[{ required: true, message: 'Please select a category!' }]}
+                    >
+                        <Select
+                            placeholder="Select category"
+                            options={categoryOptions}
+                        />
+                    </Form.Item>
                     <Form.Item
                         name="question"
                         label="Question"
