@@ -62,6 +62,27 @@ import { Attachment } from '../../attachments/attachment.model';
 import { IAttachment } from '../../attachments/attachment.interface';
 import { TJourneyType, TStatusType } from './user.constant';
 
+/** Upload pipeline may return a public URL (V2) or an Attachment ObjectId (legacy). */
+async function resolveProfileImageUrl(
+  profileImage?: string[],
+): Promise<string | undefined> {
+  const first = profileImage?.[0];
+  if (!first || typeof first !== 'string') return undefined;
+
+  if (/^https?:\/\//i.test(first)) {
+    return first;
+  }
+
+  if (mongoose.Types.ObjectId.isValid(first)) {
+    const attachment = (await Attachment.findById(first).lean()) as
+      | IAttachment
+      | null;
+    return attachment?.attachment || undefined;
+  }
+
+  return undefined;
+}
+
 declare const ServiceBooking: any;
 
 interface IAdminOrSuperAdminPayload {
@@ -918,9 +939,9 @@ export class UserService extends GenericService<typeof User, IUser> {
       updateData.email = email;
     }
     if (data.profileImage && data.profileImage.length > 0) {
-      const attachmentUrl = await Attachment.findById(data.profileImage[0]);
-      if (attachmentUrl?.attachment) {
-        updateData.profileImage = { imageUrl: attachmentUrl.attachment };
+      const imageUrl = await resolveProfileImageUrl(data.profileImage);
+      if (imageUrl) {
+        updateData.profileImage = { imageUrl };
       }
     }
 
@@ -965,12 +986,8 @@ export class UserService extends GenericService<typeof User, IUser> {
 
     const user: IUser = await User.findById(id).select('name profileImage');
 
-    // if (!data?.profileImage[0]) {
-    //   throw new ApiError(StatusCodes.NOT_FOUND, 'You have to upload an image to update');
-    // }
-
-    const attachmentUrl: IAttachment | null = await Attachment.findById(
-      (data as any)?.profileImage?.[0],
+    const imageUrl = await resolveProfileImageUrl(
+      (data as any)?.profileImage,
     );
 
     const updateUser: any = await User.findByIdAndUpdate(
@@ -978,9 +995,7 @@ export class UserService extends GenericService<typeof User, IUser> {
       {
         name: data.name,
         profileImage: {
-          imageUrl: attachmentUrl?.attachment
-            ? attachmentUrl?.attachment
-            : user?.profileImage?.imageUrl,
+          imageUrl: imageUrl || user?.profileImage?.imageUrl,
         },
         phoneNumber: data.phoneNumber,
       },
@@ -1007,18 +1022,19 @@ export class UserService extends GenericService<typeof User, IUser> {
       );
     }
 
-    const attachmentUrl: IAttachment | null = await Attachment.findById(
-      data?.profileImage[0],
-    );
-    // console.log("user -> ", user);
+    const imageUrl = await resolveProfileImageUrl(data?.profileImage);
+    if (!imageUrl) {
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'Invalid profile image upload',
+      );
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
         profileImage: {
-          imageUrl: attachmentUrl?.attachment
-            ? attachmentUrl?.attachment
-            : user?.profileImage?.imageUrl,
+          imageUrl,
         },
       },
       { new: true },
