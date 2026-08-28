@@ -129,8 +129,9 @@ const AllFaq = () => {
             toast.success('FAQ deleted successfully');
             refetch();
         } catch (error) {
-            toast.error('Failed to delete FAQ');
+            toast.error(error?.data?.message || 'Failed to delete FAQ');
             console.error('Error deleting FAQ:', error);
+            refetch();
         }
     };
 
