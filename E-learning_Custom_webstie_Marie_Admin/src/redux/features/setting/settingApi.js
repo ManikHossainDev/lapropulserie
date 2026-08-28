@@ -9,6 +9,19 @@ const settingApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getFaqCategories: builder.query({
+      query: () => ({
+        url: `/faqCategory`,
+        method: "GET",
+      }),
+    }),
+    createFaqCategory: builder.mutation({
+      query: (body) => ({
+        url: `/faqCategory`,
+        method: "POST",
+        body,
+      }),
+    }),
     createFaq: builder.mutation({
       query: (faqData) => ({
         url: "/faq",
@@ -55,6 +68,8 @@ const settingApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllFaqQuery,
+  useGetFaqCategoriesQuery,
+  useCreateFaqCategoryMutation,
   useCreateFaqMutation,
   useDeleteFaqMutation,
   useGetProfileQuery,
