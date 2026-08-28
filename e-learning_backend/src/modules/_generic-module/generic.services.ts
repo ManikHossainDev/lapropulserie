@@ -96,9 +96,14 @@ export class GenericService<ModelType, InterfaceType> {
     select ? : string | string[]
   ) {
 
-    // console.log('Service received filters:', JSON.stringify(filters, null, 2));
+    // Soft-deleted docs must not keep showing in admin/client lists.
+    // Callers can still pass isDeleted explicitly when they need deleted rows.
+    const queryFilters = { ...(filters || {}) };
+    if (queryFilters.isDeleted === undefined) {
+      queryFilters.isDeleted = { $ne: true };
+    }
 
-    const result = await this.model.paginate(filters, options, populateOptions, select);
+    const result = await this.model.paginate(queryFilters, options, populateOptions, select);
     
     return result;
   }
@@ -192,8 +197,9 @@ export class GenericService<ModelType, InterfaceType> {
       //   return null;
     }
 
+    // Idempotent: already soft-deleted → treat as success (avoids stale UI double-delete 400)
     if (object.isDeleted === true) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'Item already deleted');
+      return object;
     }
 
     return await this.model.findByIdAndUpdate(
