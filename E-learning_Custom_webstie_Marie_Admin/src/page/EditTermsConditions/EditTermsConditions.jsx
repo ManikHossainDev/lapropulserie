@@ -1,24 +1,53 @@
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Form, message } from "antd";
-import ReactQuill from "react-quill"; // Import React Quill
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import { useState } from "react";
-import { useUpdateTermConditionsMutation } from "../../redux/features/setting/getAllData";
+import { Form } from "antd";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useEffect, useState } from "react";
+import {
+  useGetTermsConditionsQuery,
+  useUpdateTermConditionsMutation,
+} from "../../redux/features/setting/getAllData";
 import { toast } from "sonner";
 
-const EditTermsConditions = () => {
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ font: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["bold", "italic", "underline", "strike"],
+    [{ align: [] }],
+    [{ color: [] }, { background: [] }],
+    ["blockquote", "code-block"],
+    ["link", "image", "video"],
+    [{ script: "sub" }, { script: "super" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    ["clean"],
+  ],
+};
 
-  const [updateTermsConditions, { isLoading }] = useUpdateTermConditionsMutation();
+const EditTermsConditions = () => {
+  const { data: termsConditions, isLoading: isLoadingContent } =
+    useGetTermsConditionsQuery();
+  const [updateTermsConditions, { isLoading }] =
+    useUpdateTermConditionsMutation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    const existing = termsConditions?.data?.content;
+    if (typeof existing === "string") {
+      setContent(existing);
+      form.setFieldsValue({ content: existing });
+    }
+  }, [termsConditions, form]);
 
   const handleSubmit = async () => {
     try {
       await updateTermsConditions({ content }).unwrap();
       toast.success("Terms and Conditions updated successfully!");
-      navigate("/terms-conditions"); // Navigate back to the Terms and Conditions page
+      navigate("/terms-conditions");
     } catch (error) {
       toast.error("Failed to update Terms and Conditions. Please try again.");
     }
@@ -26,54 +55,38 @@ const EditTermsConditions = () => {
 
   return (
     <section className="w-full h-full min-h-screen ">
-      {/* Header Section */}
       <div className="flex justify-between items-center py-5">
         <Link to="/terms-conditions" className="flex gap-4 items-center">
-          <>
-            <IoChevronBack className="text-2xl" />
-          </>
+          <IoChevronBack className="text-2xl" />
           <h1 className="text-2xl font-semibold">Terms of Conditions</h1>
         </Link>
       </div>
 
-      {/* Form Section */}
       <div className="w-full p-6 rounded-lg border">
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          {/* React Quill for Terms and Conditions Content */}
-          <Form.Item name="content" initialValue={content}>
-            <ReactQuill
-              value={content}
-              onChange={(value) => setContent(value)}
-              modules={{
-                toolbar: [
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }], // Header dropdown
-                  [{ font: [] }], // Font options
-                  [{ list: "ordered" }, { list: "bullet" }], // Ordered and bullet lists
-                  ["bold", "italic", "underline", "strike"], // Formatting options
-                  [{ align: [] }], // Text alignment
-                  [{ color: [] }, { background: [] }], // Color and background
-                  ["blockquote", "code-block"], // Blockquote and code block
-                  ["link", "image", "video"], // Link, image, and video upload
-                  [{ script: "sub" }, { script: "super" }], // Subscript and superscript
-                  [{ indent: "-1" }, { indent: "+1" }], // Indent
-                  ["clean"], // Remove formatting
-                ],
-              }}
-              style={{ height: "300px" }} // Set the increased height
-            />
-          </Form.Item>
+        {isLoadingContent ? (
+          <p className="text-gray-400 py-10 text-center">Loading...</p>
+        ) : (
+          <Form form={form} layout="vertical" onFinish={handleSubmit}>
+            <Form.Item name="content">
+              <ReactQuill
+                value={content}
+                onChange={(value) => setContent(value)}
+                modules={quillModules}
+                style={{ height: "300px" }}
+              />
+            </Form.Item>
 
-          {/* Update Button */}
-          <div className="flex justify-end md:mt-0 mt-40">
-            <button
-              // type="primary"
-              // htmlType="submit"
-              className="bg-[#2d2a71] text-white text-xl font-semibold px-5 py-3 rounded-md md:mt-14"
-            >
-              Update
-            </button>
-          </div>
-        </Form>
+            <div className="flex justify-end md:mt-0 mt-40">
+              <button
+                type="submit"
+                className="bg-[#2d2a71] text-white text-xl font-semibold px-5 py-3 rounded-md md:mt-14"
+                disabled={isLoading}
+              >
+                {isLoading ? "Updating..." : "Update"}
+              </button>
+            </div>
+          </Form>
+        )}
       </div>
     </section>
   );
