@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const SIGNUP_PARTICULIER = '/signup?role=student';
 const CALENDLY_DEMO =
-    'https://calendly.com/marie-bouleau-lapropulserie/demonstration-la-propulserie';
+    'https://calendly.com/marie-bouleau-lapropulserie/rdv';
 
 const ChooseYourMission = () => {
     return (
