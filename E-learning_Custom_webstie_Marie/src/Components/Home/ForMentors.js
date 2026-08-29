@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CALENDLY_DEMO =
-    'https://calendly.com/marie-bouleau-lapropulserie/demonstration-la-propulserie';
+    'https://calendly.com/marie-bouleau-lapropulserie/rdv';
 
 const ForMentors = () => {
     const features = [
