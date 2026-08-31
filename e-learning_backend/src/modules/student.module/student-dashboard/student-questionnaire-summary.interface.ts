@@ -11,6 +11,8 @@ export interface IStudentQuestionnaireSummary {
   /** Structured Marii analysis (8 mandatory sections) */
   sections?: Array<{ title: string; brief: string; items: string[] }>;
   recommendedMentorIds: Types.ObjectId[];
+  /** When the bilan synthèse was emailed to the learner (avoid duplicate sends). */
+  summaryEmailedAt?: Date | null;
   isDeleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

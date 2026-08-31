@@ -48,6 +48,11 @@ const StudentQuestionnaireSummarySchema =
         ref: 'User',
         default: [],
       },
+      summaryEmailedAt: {
+        type: Date,
+        required: false,
+        default: null,
+      },
       isDeleted: {
         type: Boolean,
         required: [false, 'isDeleted is not required'],

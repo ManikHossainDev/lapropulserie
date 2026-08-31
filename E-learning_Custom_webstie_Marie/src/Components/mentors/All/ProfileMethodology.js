@@ -1,5 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useUpdateMethodsMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { toast } from 'react-toastify';
 
 const methodologies = [
     { value: 'mindful_reflection', label: 'Réflexion consciente', sub: 'Accent sur la conscience de soi et la croissance intérieure.' },
@@ -14,6 +16,7 @@ const ProfileMethodology = ({ data = {} }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [selected, setSelected] = useState([]);
     const [saved, setSaved] = useState([]);
+    const [updateMethods, { isLoading }] = useUpdateMethodsMutation();
 
     useEffect(() => {
         if (data?.coachingMethodologies) {
@@ -29,9 +32,15 @@ const ProfileMethodology = ({ data = {} }) => {
         );
     };
 
-    const handleSave = () => {
-        setSaved([...selected]);
-        setIsEditing(false);
+    const handleSave = async () => {
+        try {
+            await updateMethods({ coachingMethodologies: selected }).unwrap();
+            setSaved([...selected]);
+            setIsEditing(false);
+            toast.success('Méthodologie enregistrée');
+        } catch (error) {
+            toast.error(error?.data?.message || "Échec de l'enregistrement");
+        }
     };
 
     const handleCancel = () => {
@@ -42,8 +51,6 @@ const ProfileMethodology = ({ data = {} }) => {
     return (
         <div className="p-6 bg-gray-100 rounded-lg min-h-screen">
             <div className=" ">
-
-                {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">💎</span>
@@ -59,9 +66,10 @@ const ProfileMethodology = ({ data = {} }) => {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
+                                disabled={isLoading}
+                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition disabled:opacity-60"
                             >
-                                Enregistrer
+                                {isLoading ? '…' : 'Enregistrer'}
                             </button>
                         </div>
                     ) : (
@@ -74,7 +82,6 @@ const ProfileMethodology = ({ data = {} }) => {
                     )}
                 </div>
 
-                {/* Cards */}
                 <div className=" sm:flex space-y-4 flex-wrap gap-3">
                     {methodologies.map((method) => {
                         const isActive = selected.includes(method.value);
@@ -91,7 +98,6 @@ const ProfileMethodology = ({ data = {} }) => {
                             >
                                 <p className="text-xs font-bold text-gray-800 mb-2">{method.label}</p>
                                 <div className="flex items-start gap-2">
-                                    {/* Checkbox */}
                                     <div className={`w-4 h-4 rounded flex-shrink-0 mt-0.5 border-2 flex items-center justify-center transition-all
                                         ${isActive
                                             ? 'bg-indigo-800 border-indigo-800'
@@ -110,7 +116,6 @@ const ProfileMethodology = ({ data = {} }) => {
                         );
                     })}
                 </div>
-
             </div>
         </div>
     );

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nouvelle demande mentor — La Propulserie</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f2f5;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f0f2f5;padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;">
+          <tr>
+            <td style="background:#2d2a71;padding:28px 24px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:22px;">La Propulserie</h1>
+              <p style="margin:8px 0 0;color:#c5d0e6;font-size:14px;">Validation mentor</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 24px;color:#1a1a2e;">
+              <p style="margin:0 0 12px;font-size:16px;">Bonjour,</p>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.5;color:#4a5568;">
+                Un mentor vient de demander la validation de son profil sur la plateforme.
+              </p>
+              <div style="margin:0 0 20px;padding:14px 16px;background:#f7f8fc;border-radius:10px;border-left:4px solid #f5a623;">
+                <p style="margin:0 0 6px;font-size:14px;color:#4a5568;"><strong>Nom :</strong> <%= mentorName %></p>
+                <p style="margin:0;font-size:14px;color:#4a5568;"><strong>E-mail :</strong> <%= mentorEmail %></p>
+              </div>
+              <p style="text-align:center;margin:28px 0;">
+                <a href="<%= adminBookingUrl %>"
+                   style="display:inline-block;background:linear-gradient(135deg,#f5a623,#e8870a);color:#fff;text-decoration:none;font-weight:bold;padding:14px 28px;border-radius:8px;">
+                  Voir les demandes
+                </a>
+              </p>
+              <p style="margin:0;font-size:13px;color:#8898b8;line-height:1.4;">
+                Si le bouton ne fonctionne pas :<br />
+                <a href="<%= adminBookingUrl %>" style="color:#2d2a71;word-break:break-all;"><%= adminBookingUrl %></a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 24px 24px;text-align:center;font-size:12px;color:#a0aec0;">
+              <%= typeof appName !== 'undefined' ? appName : 'La Propulserie' %>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

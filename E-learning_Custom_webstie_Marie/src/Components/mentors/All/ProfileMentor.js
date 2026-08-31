@@ -1,5 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useUpdateMissionMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { toast } from 'react-toastify';
 
 const careerStages = [
     { value: 'students', label: 'Étudiants & stagiaires', sub: 'En début de parcours' },
@@ -14,6 +16,7 @@ const ProfileMentor = ({ data = [] }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [selected, setSelected] = useState([]);
     const [saved, setSaved] = useState([]);
+    const [updateMission, { isLoading }] = useUpdateMissionMutation();
 
     useEffect(() => {
         if (data) {
@@ -29,9 +32,15 @@ const ProfileMentor = ({ data = [] }) => {
         );
     };
 
-    const handleSave = () => {
-        setSaved([...selected]);
-        setIsEditing(false);
+    const handleSave = async () => {
+        try {
+            await updateMission({ careerStage: selected }).unwrap();
+            setSaved([...selected]);
+            setIsEditing(false);
+            toast.success('Mentorat enregistré');
+        } catch (error) {
+            toast.error(error?.data?.message || "Échec de l'enregistrement");
+        }
     };
 
     const handleCancel = () => {
@@ -42,8 +51,6 @@ const ProfileMentor = ({ data = [] }) => {
     return (
         <div className="p-6 bg-gray-100 rounded-lg min-h-screen">
             <div className="">
-
-                {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">🛸</span>
@@ -59,9 +66,10 @@ const ProfileMentor = ({ data = [] }) => {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
+                                disabled={isLoading}
+                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition disabled:opacity-60"
                             >
-                                Enregistrer
+                                {isLoading ? '…' : 'Enregistrer'}
                             </button>
                         </div>
                     ) : (
@@ -74,7 +82,6 @@ const ProfileMentor = ({ data = [] }) => {
                     )}
                 </div>
 
-                {/* Cards Grid */}
                 <div className="flex flex-wrap gap-3">
                     {careerStages.map((stage) => {
                         const isSelected = selected.includes(stage.value);
@@ -89,7 +96,6 @@ const ProfileMentor = ({ data = [] }) => {
                                         : 'border-gray-200 bg-white'
                                     }`}
                             >
-                                {/* Checkbox */}
                                 <div className={`w-4 h-4 rounded flex-shrink-0 mt-0.5 border-2 flex items-center justify-center transition-all
                                     ${isSelected
                                         ? 'bg-indigo-800 border-indigo-800'
@@ -102,8 +108,6 @@ const ProfileMentor = ({ data = [] }) => {
                                         </svg>
                                     )}
                                 </div>
-
-                                {/* Text */}
                                 <div>
                                     <p className="text-xs font-semibold text-gray-800 leading-tight">{stage.label}</p>
                                     <p className="text-xs text-gray-400 mt-0.5 leading-tight">{stage.sub}</p>
@@ -112,7 +116,6 @@ const ProfileMentor = ({ data = [] }) => {
                         );
                     })}
                 </div>
-
             </div>
         </div>
     );

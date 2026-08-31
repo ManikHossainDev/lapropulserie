@@ -220,9 +220,19 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
   const [exerciseDraft, setExerciseDraft] = useState({});
   const [pdfLoading, setPdfLoading] = useState(false);
   const [reportError, setReportError] = useState('');
+  // Hydrate drafts once per capsule — refetch after blur must not wipe in-progress typing.
+  const draftsHydratedForCapsule = useRef(null);
 
   useEffect(() => {
-    if (!savedAnswers) return;
+    draftsHydratedForCapsule.current = null;
+    setReflectionDraft({});
+    setExerciseDraft({});
+  }, [capsuleId]);
+
+  useEffect(() => {
+    if (!savedAnswers || !capsuleId) return;
+    if (draftsHydratedForCapsule.current === capsuleId) return;
+    draftsHydratedForCapsule.current = capsuleId;
     const r = {};
     (savedAnswers.reflectionAnswers || []).forEach((a) => {
       r[a.orderNumber] = a.answer;
@@ -233,24 +243,33 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
       e[a.orderNumber] = a.answer;
     });
     setExerciseDraft(e);
-  }, [savedAnswers]);
+  }, [savedAnswers, capsuleId]);
 
   const persistReflection = async (orderNumber, answer) => {
-    await saveAnswers({
-      capsuleId,
-      journeyId: journeyId || undefined,
-      reflectionAnswers: [{ orderNumber, answer }],
-    });
-    refetchAnswers();
+    try {
+      await saveAnswers({
+        capsuleId,
+        journeyId: journeyId || undefined,
+        reflectionAnswers: [{ orderNumber, answer }],
+      });
+      // Do not await refetch into drafts — hydrate-once prevents wipe; background sync is enough.
+      refetchAnswers();
+    } catch (error) {
+      console.error('Failed to save reflection answer:', error);
+    }
   };
 
   const persistExercise = async (orderNumber, answer) => {
-    await saveAnswers({
-      capsuleId,
-      journeyId: journeyId || undefined,
-      exerciseAnswers: [{ orderNumber, answer }],
-    });
-    refetchAnswers();
+    try {
+      await saveAnswers({
+        capsuleId,
+        journeyId: journeyId || undefined,
+        exerciseAnswers: [{ orderNumber, answer }],
+      });
+      refetchAnswers();
+    } catch (error) {
+      console.error('Failed to save exercise answer:', error);
+    }
   };
 
   /** Flush in-memory drafts so Parts 3–4 / synthèse never miss unblurred answers. */
@@ -279,18 +298,17 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
     await refetchAnswers();
   };
 
-  /** Persist answer steps before leaving them (Suivant / tabs / Précédent). */
-  const navigateToStep = async (nextStep) => {
+  /** Change step immediately; persist drafts in background so Précédent/Suivant never freeze. */
+  const navigateToStep = (nextStep) => {
     const target = Number(nextStep);
     if (!Number.isFinite(target) || target < 1 || target > 6 || target === step) return;
-    if (step === 3 || step === 4) {
-      try {
-        await flushDraftAnswers();
-      } catch (error) {
-        console.error('Failed to save answers before navigation:', error);
-      }
-    }
+    const leavingAnswerStep = step === 3 || step === 4;
     setStep(target);
+    if (leavingAnswerStep) {
+      flushDraftAnswers().catch((error) => {
+        console.error('Failed to save answers before navigation:', error);
+      });
+    }
   };
 
   useEffect(() => {

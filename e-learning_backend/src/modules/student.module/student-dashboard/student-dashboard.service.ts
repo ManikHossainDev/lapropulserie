@@ -35,6 +35,8 @@ import {
 import { scoreThemesWithWeights } from '../../individualCapsule.module/marii-report/marii-report.utils';
 import { resolveLearnerFirstName } from '../../individualCapsule.module/marii-report/learner-name.helper';
 import { StudentMentor } from '../../studentMentor/studentMentor.model';
+import { User } from '../../user.module/user/user.model';
+import { sendBilanSummaryEmail } from '../../../helpers/emailService';
 import {
   getJourneyLinkedIndividualCapsuleIds,
   isJourneyOnlyDiscoverCategory,
@@ -1352,6 +1354,31 @@ const getOrGenerateQuestionnaireSummary = async (
     existing.summary &&
     !looksGenericOrStale(existing.summary, existing.texts)
   ) {
+    // Backfill: email once if this learner never received the synthèse mail
+    if (!existing.summaryEmailedAt) {
+      try {
+        const student = await User.findById(studentId).select('email name').lean();
+        if (student?.email) {
+          const firstName =
+            (await resolveLearnerFirstName(studentId)) ||
+            student.name?.split(' ')[0];
+          await sendBilanSummaryEmail({
+            to: student.email,
+            firstName,
+            title: existing.title,
+            summary: existing.summary,
+            texts: existing.texts,
+          });
+          await StudentQuestionnaireSummary.updateOne(
+            { _id: existing._id },
+            { $set: { summaryEmailedAt: new Date() } },
+          );
+        }
+      } catch (err) {
+        console.error('[Questionnaire] Failed to email stored bilan summary:', err);
+      }
+    }
+
     return {
       title: existing.title,
       texts: existing.texts,
@@ -1375,7 +1402,7 @@ const getOrGenerateQuestionnaireSummary = async (
     generated.source === 'ai' && generated.sections?.length ? generated.sections : sections;
 
   if (lastQuestionaryId) {
-    await StudentQuestionnaireSummary.findOneAndUpdate(
+    const savedSummary = await StudentQuestionnaireSummary.findOneAndUpdate(
       {
         studentId: ensureObjectId(studentId, 'studentId'),
         isDeleted: false,
@@ -1394,6 +1421,26 @@ const getOrGenerateQuestionnaireSummary = async (
     generateAndStoreMentorRecommendations(studentId).catch(err =>
       console.error('[Questionnaire] Mentor recommendations failed:', err),
     );
+
+    // Email synthèse once per learner summary (not on every page refresh)
+    if (savedSummary && !savedSummary.summaryEmailedAt) {
+      try {
+        const student = await User.findById(studentId).select('email name').lean();
+        if (student?.email) {
+          await sendBilanSummaryEmail({
+            to: student.email,
+            firstName: learnerFirstName || student.name?.split(' ')[0],
+            title: generated.title,
+            summary: generated.summary,
+            texts: generated.texts,
+          });
+          savedSummary.summaryEmailedAt = new Date();
+          await savedSummary.save();
+        }
+      } catch (err) {
+        console.error('[Questionnaire] Failed to email bilan summary:', err);
+      }
+    }
   }
 
   return {

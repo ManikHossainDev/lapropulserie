@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-
+import { useUpdateMissionMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { toast } from 'react-toastify';
 import { mentorOptionFr } from './mentorOptionLabels';
 
 const industries = [
@@ -17,6 +18,7 @@ const ProfileIndustry = ({ data = [] }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [selected, setSelected] = useState('');
     const [saved, setSaved] = useState('');
+    const [updateMission, { isLoading }] = useUpdateMissionMutation();
 
     useEffect(() => {
         if (data && data.length > 0) {
@@ -25,9 +27,19 @@ const ProfileIndustry = ({ data = [] }) => {
         }
     }, [data]);
 
-    const handleSave = () => {
-        setSaved(selected);
-        setIsEditing(false);
+    const handleSave = async () => {
+        if (!selected) {
+            toast.warning('Veuillez sélectionner un secteur');
+            return;
+        }
+        try {
+            await updateMission({ industry: [selected] }).unwrap();
+            setSaved(selected);
+            setIsEditing(false);
+            toast.success('Secteur enregistré');
+        } catch (error) {
+            toast.error(error?.data?.message || "Échec de l'enregistrement");
+        }
     };
 
     const handleCancel = () => {
@@ -38,8 +50,6 @@ const ProfileIndustry = ({ data = [] }) => {
     return (
         <div className="p-6 bg-gray-100 rounded-lg min-h-screen">
             <div className="">
-
-                {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">🌐</span>
@@ -55,9 +65,10 @@ const ProfileIndustry = ({ data = [] }) => {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
+                                disabled={isLoading}
+                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition disabled:opacity-60"
                             >
-                                Enregistrer
+                                {isLoading ? '…' : 'Enregistrer'}
                             </button>
                         </div>
                     ) : (
@@ -70,7 +81,6 @@ const ProfileIndustry = ({ data = [] }) => {
                     )}
                 </div>
 
-                {/* Radio Chips */}
                 <div className="flex flex-wrap gap-2">
                     {industries.map((industry) => {
                         const isActive = selected === industry;
@@ -85,7 +95,6 @@ const ProfileIndustry = ({ data = [] }) => {
                                         : 'border-gray-200 bg-white text-gray-600'
                                     }`}
                             >
-                                {/* Radio dot */}
                                 <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all
                                     ${isActive
                                         ? 'border-indigo-800 bg-indigo-800'
@@ -101,7 +110,6 @@ const ProfileIndustry = ({ data = [] }) => {
                         );
                     })}
                 </div>
-
             </div>
         </div>
     );

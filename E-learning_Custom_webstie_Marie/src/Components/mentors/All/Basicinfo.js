@@ -1,6 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useUpdateMissionMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import {
+    useUpdateMissionMutation,
+    useUpdateProfileWithAvatarMutation,
+} from '@/redux/fetures/Mentors/MentorOnboarding';
+import PhotoUpload from './PhotoUpload';
 
 const toOptionalNumber = (value) => {
     if (value === '' || value === null || value === undefined) return undefined;
@@ -10,6 +14,7 @@ const toOptionalNumber = (value) => {
 
 const Basicinfo = ({ data = {} }) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [photoFile, setPhotoFile] = useState(null);
     const [form, setForm] = useState({
         fullName: '',
         jobTitle: '',
@@ -21,7 +26,10 @@ const Basicinfo = ({ data = {} }) => {
     });
     const [saved, setSaved] = useState({ ...form });
 
-    const [updateProfile, { isLoading: isSaving }] = useUpdateMissionMutation();
+    const [updateProfile, { isLoading: isSavingProfile }] = useUpdateMissionMutation();
+    const [updateProfileWithAvatar, { isLoading: isSavingAvatar }] =
+        useUpdateProfileWithAvatarMutation();
+    const isSaving = isSavingProfile || isSavingAvatar;
 
     // Sync from server only when not editing — avoids wiping in-progress edits
     // when parent re-renders with a new `data` object reference.
@@ -44,6 +52,7 @@ const Basicinfo = ({ data = {} }) => {
         };
         setForm(newForm);
         setSaved(newForm);
+        setPhotoFile(null);
     }, [
         isEditing,
         data.name,
@@ -53,31 +62,45 @@ const Basicinfo = ({ data = {} }) => {
         data.sessionPrice,
         data.bio,
         data.calendlyProfileLink,
+        data.avatarUrl,
     ]);
 
     const wordCount = form.shortBio.trim() === '' ? 0 : form.shortBio.trim().split(/\s+/).length;
     const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
+    const buildPayload = () => {
+        // Only send fields edited on this screen (validated by backend zod schema).
+        // Do not re-send location/language/availableIn — avoids wiping them with defaults.
+        const payload = {
+            name: form.fullName.trim(),
+            currentJobTitle: form.jobTitle.trim(),
+            companyName: form.company.trim(),
+            bio: form.shortBio.trim(),
+            calendlyProfileLink: form.calendlyLink.trim(),
+        };
+
+        const yearsOfExperience = toOptionalNumber(form.experience);
+        const sessionPrice = toOptionalNumber(form.sessionPrice);
+        if (yearsOfExperience !== undefined) payload.yearsOfExperience = yearsOfExperience;
+        if (sessionPrice !== undefined) payload.sessionPrice = sessionPrice;
+        return payload;
+    };
+
     const handleSave = async () => {
         try {
-            // Only send fields edited on this screen (validated by backend zod schema).
-            // Do not re-send location/language/availableIn — avoids wiping them with defaults.
-            const payload = {
-                name: form.fullName.trim(),
-                currentJobTitle: form.jobTitle.trim(),
-                companyName: form.company.trim(),
-                bio: form.shortBio.trim(),
-                calendlyProfileLink: form.calendlyLink.trim(),
-            };
+            const payload = buildPayload();
 
-            const yearsOfExperience = toOptionalNumber(form.experience);
-            const sessionPrice = toOptionalNumber(form.sessionPrice);
-            if (yearsOfExperience !== undefined) payload.yearsOfExperience = yearsOfExperience;
-            if (sessionPrice !== undefined) payload.sessionPrice = sessionPrice;
-
-            await updateProfile(payload).unwrap();
+            if (photoFile instanceof File) {
+                await updateProfileWithAvatar({
+                    data: payload,
+                    avatarUrl: photoFile,
+                }).unwrap();
+            } else {
+                await updateProfile(payload).unwrap();
+            }
 
             setSaved({ ...form });
+            setPhotoFile(null);
             setIsEditing(false);
         } catch (error) {
             console.error('Failed to save profile:', error);
@@ -91,6 +114,7 @@ const Basicinfo = ({ data = {} }) => {
 
     const handleCancel = () => {
         setForm({ ...saved });
+        setPhotoFile(null);
         setIsEditing(false);
     };
 
@@ -142,6 +166,11 @@ const Basicinfo = ({ data = {} }) => {
 
                 {/* Form */}
                 <div className="space-y-5">
+                    <PhotoUpload
+                        avatarUrl={data.avatarUrl}
+                        onChange={(file) => setPhotoFile(file)}
+                        disabled={!isEditing}
+                    />
 
                     <div>
                         <label className="block text-sm text-gray-600 mb-1.5">Nom complet</label>

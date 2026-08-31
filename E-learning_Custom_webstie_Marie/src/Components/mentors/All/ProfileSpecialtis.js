@@ -1,11 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useUpdateInnerFuelMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { toast } from 'react-toastify';
 
 const ProfileSpecialtis = ({ data = [] }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [specialties, setSpecialties] = useState([]);
     const [saved, setSaved] = useState([]);
     const [inputValue, setInputValue] = useState('');
+    const [updateInnerFuel, { isLoading }] = useUpdateInnerFuelMutation();
 
     useEffect(() => {
         if (data) {
@@ -25,10 +28,16 @@ const ProfileSpecialtis = ({ data = [] }) => {
         setSpecialties(specialties.filter((_, i) => i !== index));
     };
 
-    const handleSave = () => {
-        setSaved([...specialties]);
-        setIsEditing(false);
-        setInputValue('');
+    const handleSave = async () => {
+        try {
+            await updateInnerFuel({ specialties }).unwrap();
+            setSaved([...specialties]);
+            setIsEditing(false);
+            setInputValue('');
+            toast.success('Spécialités enregistrées');
+        } catch (error) {
+            toast.error(error?.data?.message || "Échec de l'enregistrement");
+        }
     };
 
     const handleCancel = () => {
@@ -40,8 +49,6 @@ const ProfileSpecialtis = ({ data = [] }) => {
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             <div className="">
-
-                {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">💡</span>
@@ -57,9 +64,10 @@ const ProfileSpecialtis = ({ data = [] }) => {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
+                                disabled={isLoading}
+                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition disabled:opacity-60"
                             >
-                                Enregistrer
+                                {isLoading ? '…' : 'Enregistrer'}
                             </button>
                         </div>
                     ) : (
@@ -72,7 +80,6 @@ const ProfileSpecialtis = ({ data = [] }) => {
                     )}
                 </div>
 
-                {/* Add Input — only visible when editing */}
                 {isEditing && (
                     <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 mb-3 shadow-sm">
                         <input
@@ -94,7 +101,6 @@ const ProfileSpecialtis = ({ data = [] }) => {
                     </div>
                 )}
 
-                {/* Specialty List */}
                 <div className="space-y-2">
                     {specialties.map((item, i) => (
                         <div
@@ -121,7 +127,6 @@ const ProfileSpecialtis = ({ data = [] }) => {
                         </p>
                     )}
                 </div>
-
             </div>
         </div>
     );
