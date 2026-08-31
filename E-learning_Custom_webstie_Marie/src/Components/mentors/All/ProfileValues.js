@@ -1,11 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useUpdateInnerFuelMutation } from '@/redux/fetures/Mentors/MentorOnboarding';
+import { toast } from 'react-toastify';
 
 const ProfileValues = ({ data = [] }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [values, setValues] = useState([]);
     const [saved, setSaved] = useState([]);
     const [inputValue, setInputValue] = useState('');
+    const [updateInnerFuel, { isLoading }] = useUpdateInnerFuelMutation();
 
     useEffect(() => {
         if (data) {
@@ -25,10 +28,16 @@ const ProfileValues = ({ data = [] }) => {
         setValues(values.filter((_, i) => i !== index));
     };
 
-    const handleSave = () => {
-        setSaved([...values]);
-        setIsEditing(false);
-        setInputValue('');
+    const handleSave = async () => {
+        try {
+            await updateInnerFuel({ coreValues: values }).unwrap();
+            setSaved([...values]);
+            setIsEditing(false);
+            setInputValue('');
+            toast.success('Valeurs enregistrées');
+        } catch (error) {
+            toast.error(error?.data?.message || "Échec de l'enregistrement");
+        }
     };
 
     const handleCancel = () => {
@@ -40,8 +49,6 @@ const ProfileValues = ({ data = [] }) => {
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             <div className="">
-
-                {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                         <span className="text-2xl">✨</span>
@@ -57,9 +64,10 @@ const ProfileValues = ({ data = [] }) => {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition"
+                                disabled={isLoading}
+                                className="bg-indigo-800 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition disabled:opacity-60"
                             >
-                                Enregistrer
+                                {isLoading ? '…' : 'Enregistrer'}
                             </button>
                         </div>
                     ) : (
@@ -72,7 +80,6 @@ const ProfileValues = ({ data = [] }) => {
                     )}
                 </div>
 
-                {/* Add Input */}
                 <div className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl px-4 py-3 mb-5 shadow-sm">
                     <input
                         type="text"
@@ -98,7 +105,6 @@ const ProfileValues = ({ data = [] }) => {
                     </button>
                 </div>
 
-                {/* Chips */}
                 <div className="flex flex-wrap gap-2">
                     {values.map((item, i) => (
                         <div
@@ -128,7 +134,6 @@ const ProfileValues = ({ data = [] }) => {
                         </p>
                     )}
                 </div>
-
             </div>
         </div>
     );

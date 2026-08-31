@@ -176,23 +176,19 @@ export class MentorProfileService extends GenericService<
       newStage = Math.max(newStage, 1);
     }
 
-    // Step 2: Mission (careerStage, focusArea, industry - all arrays)
+    // Step 2: Mission — only set fields that were actually sent (My Account edits one tab at a time)
     if (data.careerStage || data.focusArea || data.industry?.length) {
-      Object.assign(updateData, {
-        industry: data.industry,
-        focusArea: data.focusArea,
-        careerStage: data.careerStage,
-      });
+      if (data.industry !== undefined) updateData.industry = data.industry;
+      if (data.focusArea !== undefined) updateData.focusArea = data.focusArea;
+      if (data.careerStage !== undefined) updateData.careerStage = data.careerStage;
 
       newStage = Math.max(newStage, 2);
     }
 
-    // Step 3: Inner Fuel (coreValues min 5, specialties min 5)
+    // Step 3: Inner Fuel — same partial-safe rule
     if (data.coreValues || data.specialties) {
-      Object.assign(updateData, {
-        specialties: data.specialties,
-        coreValues: data.coreValues,
-      });
+      if (data.specialties !== undefined) updateData.specialties = data.specialties;
+      if (data.coreValues !== undefined) updateData.coreValues = data.coreValues;
 
       newStage = Math.max(newStage, 3);
     }

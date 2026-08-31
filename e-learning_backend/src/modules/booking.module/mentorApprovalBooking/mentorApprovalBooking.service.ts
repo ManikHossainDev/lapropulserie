@@ -8,6 +8,7 @@ import { TMentorApprovalBookingStatus } from './mentorApprovalBooking.constant';
 import { MentorProfile } from '../../mentor.module/mentorProfile/mentorProfile.model';
 import { THaveAdminApproval } from '../../mentor.module/mentorProfile/mentorProfile.constant';
 import { User } from '../../user.module/user/user.model';
+import { sendMentorApprovalRequestEmail } from '../../../helpers/emailService';
 
 export class MentorApprovalBookingService {
   private async findActiveBookingByMentorProfileId(mentorProfileId: string) {
@@ -56,6 +57,14 @@ export class MentorApprovalBookingService {
     mentorProfile.rejectionReason = null;
     mentorProfile.isLive = false;
     await mentorProfile.save();
+
+    // Notify admins by email (fire-and-forget; failures logged in mailer)
+    sendMentorApprovalRequestEmail(
+      mentor.name || 'Mentor',
+      mentor.email || '',
+    ).catch(err =>
+      console.error('[MentorApproval] Failed to queue admin email:', err),
+    );
 
     return booking.toJSON();
   }

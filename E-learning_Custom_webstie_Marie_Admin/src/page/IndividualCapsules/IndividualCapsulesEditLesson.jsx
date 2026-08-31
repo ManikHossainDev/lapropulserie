@@ -9,18 +9,41 @@ import { toast } from 'sonner';
 const UploadZone = ({ inputId, accept, previewType, preview, fileName, dragOver, setDragOver, onFile, onClear, height = 'h-28' }) => (
     <>
         {preview ? (
-            <div className="relative rounded-xl overflow-hidden border border-[#eaecf4] h-32">
+            <div className="relative rounded-xl overflow-hidden border border-[#eaecf4] h-32 bg-[#0f0f1a]">
                 {previewType === 'video'
-                    ? <video src={preview} className="w-full h-full object-cover" controls />
+                    ? (/\.m3u8(\?|$)/i.test(String(preview))
+                        ? (
+                            <div className="h-full flex flex-col items-center justify-center gap-1 px-3 text-center">
+                                <p className="text-xs text-white/90 font-medium">Current video on file</p>
+                                <p className="text-[10px] text-white/50">Use Replace to change it</p>
+                            </div>
+                          )
+                        : <video src={preview} className="w-full h-full object-cover" controls />)
                     : <img src={preview} alt="preview" className="w-full h-full object-cover" />
                 }
                 <button type="button" onClick={onClear}
                     className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow border border-[#eaecf4] text-red-500 hover:bg-red-50 transition-colors">
                     <FiX size={12} />
                 </button>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-3 py-2">
-                    <p className="text-white text-xs truncate">{fileName}</p>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 flex items-center justify-between gap-2">
+                    <p className="text-white text-xs truncate min-w-0">{fileName}</p>
+                    <label
+                        htmlFor={inputId}
+                        className="flex-shrink-0 cursor-pointer rounded-md bg-white/95 text-[#2d2a71] text-[11px] font-semibold px-2.5 py-1 hover:bg-white"
+                    >
+                        Replace
+                    </label>
                 </div>
+                <input
+                    id={inputId}
+                    type="file"
+                    accept={accept}
+                    className="hidden"
+                    onChange={(e) => {
+                        onFile(e.target.files?.[0]);
+                        e.target.value = '';
+                    }}
+                />
             </div>
         ) : (
             <label
@@ -40,6 +63,20 @@ const UploadZone = ({ inputId, accept, previewType, preview, fileName, dragOver,
 );
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+const resolveLessonApiId = (l) => l?._id || l?.id || '';
+const resolveLessonVideoUrl = (l) => {
+    if (!l) return null;
+    if (l.videoUrl) return l.videoUrl;
+    if (typeof l.lessonVideo === 'string') return l.lessonVideo;
+    return l.lessonVideo?.url || null;
+};
+const resolveModuleVideoUrl = (mod) => {
+    if (!mod) return null;
+    if (mod.videoUrl) return mod.videoUrl;
+    if (typeof mod.moduleVideo === 'string') return mod.moduleVideo;
+    return mod.moduleVideo?.url || null;
+};
+
 const makeNewLesson = (sl) => ({
     // no _id — brand new lesson added during edit
     sl,
@@ -56,21 +93,27 @@ const makeNewLesson = (sl) => ({
     isNew: true,
 });
 
-const mapApiLesson = (l, index) => ({
-    _id: l._id ?? '',
-    sl: l.sl ?? index + 1,
-    id: l._id ?? `existing_${index}`,   // local key
-    title: l.title ?? '',
-    description: l.description ?? '',
-    estimatedTime: l.estimatedTime ?? '',
-    orderNumber: l.orderNumber ?? index + 1,
-    video: l.videoUrl ?? null,           // existing CDN URL for preview
-    videoFile: null,
-    videoName: l.videoUrl ? 'Current video' : '',
-    dragOver: false,
-    confirmed: false,
-    isNew: false,
-});
+const mapApiLesson = (l, index) => {
+    const apiId = resolveLessonApiId(l);
+    const videoUrl = resolveLessonVideoUrl(l);
+    return {
+        _id: apiId,
+        sl: l.sl ?? index + 1,
+        id: apiId || `existing_${index}`,
+        title: l.title ?? '',
+        description: l.description ?? '',
+        estimatedTime: l.estimatedTime ?? '',
+        orderNumber: l.orderNumber ?? index + 1,
+        video: videoUrl,
+        videoFile: null,
+        videoName: videoUrl ? 'Current video' : '',
+        dragOver: false,
+        confirmed: false,
+        isNew: false,
+        // Keep existing video object so save without replace does not wipe it
+        existingLessonVideo: l.lessonVideo && typeof l.lessonVideo === 'object' ? l.lessonVideo : null,
+    };
+};
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const IndividualCapsulesEditLesson = () => {
@@ -116,9 +159,12 @@ const IndividualCapsulesEditLesson = () => {
         setModuleDescription(fullData.description ?? '');
         setEstimatedTime(fullData.estimatedTime ?? '');
         setOrderNumber(fullData.orderNumber ?? 1);
-        if (fullData.videoUrl) {
-            setModuleVideo(fullData.videoUrl);
-            setModuleVideoName('Current video');
+        if (fullData.videoUrl || fullData.moduleVideo) {
+            const url = resolveModuleVideoUrl(fullData);
+            if (url) {
+                setModuleVideo(url);
+                setModuleVideoName('Current video');
+            }
         }
         if (fullData.lessons?.length) {
             setLessons(fullData.lessons.map(mapApiLesson));
@@ -131,14 +177,21 @@ const IndividualCapsulesEditLesson = () => {
 
     const handleLessonVideo = (localId, file) => {
         if (!file) return;
-        updateLesson(localId, 'videoName', file.name);
-        updateLesson(localId, 'videoFile', file);
-        updateLesson(localId, 'video', URL.createObjectURL(file));
+        setLessons(prev => prev.map(l => l.id === localId
+            ? {
+                ...l,
+                videoName: file.name,
+                videoFile: file,
+                video: URL.createObjectURL(file),
+                existingLessonVideo: null,
+            }
+            : l
+        ));
     };
 
     const clearLessonVideo = (localId) =>
         setLessons(prev => prev.map(l => l.id === localId
-            ? { ...l, video: null, videoFile: null, videoName: '' }
+            ? { ...l, video: null, videoFile: null, videoName: '', existingLessonVideo: null }
             : l
         ));
 
@@ -184,6 +237,12 @@ const IndividualCapsulesEditLesson = () => {
                 estimatedTime: l.estimatedTime,
                 orderNumber: l.orderNumber,
                 _fileKey: getFileKey(l),
+                // Preserve existing video when not uploading a replacement
+                ...(!l.videoFile && l.existingLessonVideo?.url
+                    ? { lessonVideo: l.existingLessonVideo }
+                    : !l.videoFile && l.video && !String(l.video).startsWith('blob:')
+                        ? { lessonVideo: { url: l.video, status: 'ready' } }
+                        : {}),
             })),
         };
 

@@ -107,6 +107,13 @@ export const config = {
     url: process.env.CLIENT_URL || 'http://localhost:3000',
   },
 
+  admin: {
+    /** Inbox for mentor approval alerts (falls back to ADMIN_SEED_EMAIL). */
+    notifyEmail:
+      process.env.ADMIN_NOTIFY_EMAIL || process.env.ADMIN_SEED_EMAIL || '',
+    url: process.env.ADMIN_URL || 'https://admin.lapropulserie.fr',
+  },
+
   backend: {
     ip: process.env.BACKEND_IP || 'localhost',
     baseUrl: `http://${process.env.BACKEND_IP}:${process.env.PORT}`,

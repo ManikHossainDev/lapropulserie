@@ -7,6 +7,7 @@ import { errorLogger, logger } from '../shared/logger';
 import { ISendEmail } from '../types/email';
 import { config } from '../config';
 import { emitEmailJob } from './emailEventEmitter';
+import { User } from '../modules/user.module/user/user.model';
 
 // Create Nodemailer transporter
 const hasAuth = Boolean(config.smtp.username) && Boolean(config.smtp.password);
@@ -117,6 +118,82 @@ const sendSupportMessageEmail = async (
     html,
   });
 };
+
+const sendMentorApprovalRequestEmail = async (
+  mentorName: string,
+  mentorEmail: string,
+) => {
+  const adminUrl = (config.admin.url || 'https://admin.lapropulserie.fr').replace(
+    /\/$/,
+    '',
+  );
+  const adminBookingUrl = `${adminUrl}/booking-list`;
+  const html = await renderEmailTemplate('mentor-approval-request', {
+    mentorName,
+    mentorEmail,
+    adminBookingUrl,
+  });
+  const subject = `Nouvelle demande de validation mentor — ${mentorName}`;
+
+  const recipients = new Set<string>();
+  if (config.admin.notifyEmail?.trim()) {
+    recipients.add(config.admin.notifyEmail.trim().toLowerCase());
+  }
+
+  // Also notify every active admin account
+  try {
+    const admins = await User.find({
+      role: 'admin',
+      isDeleted: { $ne: true },
+    })
+      .select('email')
+      .lean();
+    for (const admin of admins) {
+      if (admin?.email) recipients.add(String(admin.email).trim().toLowerCase());
+    }
+  } catch (error) {
+    errorLogger.error('Failed to load admin emails for mentor approval', error);
+  }
+
+  if (!recipients.size) {
+    logger.warn(
+      'No ADMIN_NOTIFY_EMAIL / admin users found — mentor approval email skipped',
+    );
+    return;
+  }
+
+  for (const to of recipients) {
+    emitEmailJob({ to, subject, html });
+  }
+};
+
+const sendBilanSummaryEmail = async (input: {
+  to: string;
+  firstName?: string;
+  title: string;
+  summary: string;
+  texts?: string[];
+}) => {
+  const clientBase = (config.client.url || 'http://localhost:8002').replace(
+    /\/$/,
+    '',
+  );
+  const summaryUrl = `${clientBase}/students/question-summary`;
+  const html = await renderEmailTemplate('bilan-summary', {
+    firstName: input.firstName || '',
+    title: input.title,
+    summary: input.summary,
+    texts: input.texts || [],
+    summaryUrl,
+  });
+
+  emitEmailJob({
+    to: input.to,
+    subject: 'Ta synthèse de bilan — La Propulserie',
+    html,
+  });
+};
+
 export {
   sendEmail,
   sendVerificationEmail,
@@ -124,4 +201,6 @@ export {
   sendAdminOrSuperAdminCreationEmail,
   sendSupportMessageEmail,
   sendWelcomeEmail,
+  sendMentorApprovalRequestEmail,
+  sendBilanSummaryEmail,
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import { FiUploadCloud, FiX, FiPlus, FiTrash2, FiEdit2, FiLink } from 'react-icons/fi';
+import { FiUploadCloud, FiX, FiPlus, FiTrash2, FiEdit2 } from 'react-icons/fi';
 import { HiPlus } from 'react-icons/hi';
 import {
   useDeleteCapsuleModuleLessonMutation,
@@ -18,6 +18,7 @@ import {
   validateCapsuleForm,
   validateCapsuleVideoFiles,
 } from './capsuleFormUtils';
+import CapsuleVideoField from './CapsuleVideoField';
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 const inputCls =
@@ -43,87 +44,6 @@ const SectionHeader = ({ number, title, subtitle }) => (
     </div>
   </div>
 );
-
-// ── Video Field — upload or embed ─────────────────────────────────────────────
-const VideoField = ({ label, fileKey, fileState, setFileState, embedState, setEmbedState }) => {
-  const [mode, setMode] = useState('embed');
-
-  // If an existing URL is present (not a blob), start in embed mode
-  useEffect(() => {
-    if (embedState) setMode('embed');
-  }, []);
-
-  const handleFile = (file) => {
-    if (!file) return;
-    setFileState({ file, preview: URL.createObjectURL(file), name: file.name });
-    setEmbedState('');
-  };
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-semibold text-[#1a1a2e]">{label}</label>
-        <div className="flex gap-1 bg-[#f0f0f8] rounded-lg p-0.5">
-          <button
-            type="button"
-            onClick={() => setMode('upload')}
-            className={`flex items-center gap-1 px-3 py-1 rounded-md text-xs font-semibold transition-colors ${mode === 'upload' ? 'bg-white text-[#2d2a71] shadow-sm' : 'text-[#aab0c6]'}`}
-          >
-            <FiUploadCloud size={12} /> Upload
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode('embed')}
-            className={`flex items-center gap-1 px-3 py-1 rounded-md text-xs font-semibold transition-colors ${mode === 'embed' ? 'bg-white text-[#2d2a71] shadow-sm' : 'text-[#aab0c6]'}`}
-          >
-            <FiLink size={12} /> Embed Link
-          </button>
-        </div>
-      </div>
-
-      {mode === 'upload' ? (
-        fileState?.preview ? (
-          <div className="relative rounded-xl overflow-hidden border border-[#eaecf4] h-36">
-            <video src={fileState.preview} className="w-full h-full object-cover" controls />
-            <button
-              type="button"
-              onClick={() => setFileState(null)}
-              className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow border border-[#eaecf4] text-red-500 hover:bg-red-50"
-            >
-              <FiX size={12} />
-            </button>
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-3 py-2">
-              <p className="text-white text-xs truncate">{fileState.name}</p>
-            </div>
-          </div>
-        ) : (
-          <label
-            htmlFor={fileKey}
-            className="flex flex-col items-center justify-center gap-2 h-28 border-2 border-dashed border-[#d4d6e8] rounded-xl cursor-pointer bg-[#fafafa] hover:border-[#6c63ff] hover:bg-[#f8f8ff] transition-all"
-          >
-            <FiUploadCloud size={22} className="text-[#aab0c6]" />
-            <p className="text-xs text-[#aab0c6]">Click to upload — MP4, MOV, AVI, WEBM</p>
-            <input
-              id={fileKey}
-              type="file"
-              accept="video/*"
-              className="hidden"
-              onChange={(e) => handleFile(e.target.files?.[0])}
-            />
-          </label>
-        )
-      ) : (
-        <input
-          type="text"
-          value={embedState}
-          onChange={(e) => setEmbedState(e.target.value)}
-          placeholder="YouTube/Vimeo URL only — e.g. https://www.youtube.com/watch?v=... (not full iframe HTML)"
-          className={inputCls}
-        />
-      )}
-    </div>
-  );
-};
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const ExpeditionJourneyCapsuleEdit = () => {
@@ -486,9 +406,16 @@ const ExpeditionJourneyCapsuleEdit = () => {
               <label className="text-sm font-semibold text-[#1a1a2e]">Section Title</label>
               <input type="text" value={introTitle} onChange={(e) => setIntroTitle(e.target.value)} placeholder="e.g. 🌟 Find Your Why" className={inputCls} />
             </div>
-            <VideoField label="Founder Video" fileKey="founderVideoUpload"
-              fileState={founderVideoFile} setFileState={setFounderVideoFile}
-              embedState={founderVideoEmbed} setEmbedState={setFounderVideoEmbed} />
+            <CapsuleVideoField
+              label="Founder Video"
+              fileKey="founderVideoUpload"
+              fileState={founderVideoFile}
+              setFileState={setFounderVideoFile}
+              embedState={founderVideoEmbed}
+              setEmbedState={setFounderVideoEmbed}
+              existingVideo={existingFounderVideo}
+              onClearExisting={() => setExistingFounderVideo(null)}
+            />
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-[#1a1a2e]">Additional Text</label>
               <textarea value={introText} onChange={(e) => setIntroText(e.target.value)} rows={3} placeholder="A message from Marie..." className={textareaCls} />
@@ -504,9 +431,16 @@ const ExpeditionJourneyCapsuleEdit = () => {
               <label className="text-sm font-semibold text-[#1a1a2e]">Section Title</label>
               <input type="text" value={inspTitle} onChange={(e) => setInspTitle(e.target.value)} placeholder="e.g. 💡 Inspiration" className={inputCls} />
             </div>
-            <VideoField label="Inspirational Video" fileKey="inspirationVideoUpload"
-              fileState={inspirationVideoFile} setFileState={setInspirationVideoFile}
-              embedState={inspirationVideoEmbed} setEmbedState={setInspirationVideoEmbed} />
+            <CapsuleVideoField
+              label="Inspirational Video"
+              fileKey="inspirationVideoUpload"
+              fileState={inspirationVideoFile}
+              setFileState={setInspirationVideoFile}
+              embedState={inspirationVideoEmbed}
+              setEmbedState={setInspirationVideoEmbed}
+              existingVideo={existingInspirationVideo}
+              onClearExisting={() => setExistingInspirationVideo(null)}
+            />
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-[#1a1a2e]">Additional Text</label>
               <textarea value={inspText} onChange={(e) => setInspText(e.target.value)} rows={3} placeholder="Reflection & inspiration prompt..." className={textareaCls} />
@@ -595,9 +529,16 @@ const ExpeditionJourneyCapsuleEdit = () => {
               <label className="text-sm font-semibold text-[#1a1a2e]">Educational Text</label>
               <textarea value={sciText} onChange={(e) => setSciText(e.target.value)} rows={6} placeholder="Explain concepts from neuroscience, psychology, motivation..." className={textareaCls} />
             </div>
-            <VideoField label="Optional Video Resource" fileKey="scienceVideoUpload"
-              fileState={sciVideoFile} setFileState={setSciVideoFile}
-              embedState={sciVideoEmbed} setEmbedState={setSciVideoEmbed} />
+            <CapsuleVideoField
+              label="Optional Video Resource"
+              fileKey="scienceVideoUpload"
+              fileState={sciVideoFile}
+              setFileState={setSciVideoFile}
+              embedState={sciVideoEmbed}
+              setEmbedState={setSciVideoEmbed}
+              existingVideo={existingScienceVideo}
+              onClearExisting={() => setExistingScienceVideo(null)}
+            />
           </div>
         </div>
 
