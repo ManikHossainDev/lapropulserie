@@ -1,9 +1,11 @@
-import multer from 'multer';
+import {
+  CAPSULE_VIDEO_MIME_TYPES,
+  createVideoUploadMulter,
+} from '../../../helpers/videoUploadMulter';
 import { processUploadedFilesForCreate, processUploadedFilesForUpdate } from '../../../middlewares/processUploadedFiles';
 import { TFolderName } from '../../../enums/folderNames';
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = createVideoUploadMulter();
 
 export const uploadPipelineForCreateJourneyLesson = [
   upload.fields([{ name: 'lessonVideo', maxCount: 1 }]),
@@ -12,7 +14,7 @@ export const uploadPipelineForCreateJourneyLesson = [
       name: 'lessonVideo',
       folder: TFolderName.journeyLesson,
       required: false,
-      allowedMimeTypes: ['video/mp4', 'video/webm', 'video/ogg'],
+      allowedMimeTypes: CAPSULE_VIDEO_MIME_TYPES,
     },
   ]),
 ];
@@ -24,7 +26,7 @@ export const uploadPipelineForUpdateJourneyLesson = [
       name: 'lessonVideo',
       folder: TFolderName.journeyLesson,
       required: false,
-      allowedMimeTypes: ['video/mp4', 'video/webm', 'video/ogg'],
+      allowedMimeTypes: CAPSULE_VIDEO_MIME_TYPES,
     },
   ]),
 ];

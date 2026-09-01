@@ -2,7 +2,7 @@ import { TFolderName } from '../enums/folderNames';
 import {
   getObjectUrlForKey,
   isAwsConfigured,
-  uploadFileToS3,
+  uploadMulterFileToS3,
 } from '../services/aws-s3.service';
 
 export async function uploadFileAndGetUrl(
@@ -18,12 +18,7 @@ export async function uploadFileAndGetUrl(
   const sanitizedFileName = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
   const fileName = `${Date.now()}-${sanitizedFileName}`;
 
-  const key = await uploadFileToS3(
-    file.buffer,
-    fileName,
-    file.mimetype,
-    folderName,
-  );
+  const key = await uploadMulterFileToS3(file, fileName, folderName);
 
   return getObjectUrlForKey(key);
 }

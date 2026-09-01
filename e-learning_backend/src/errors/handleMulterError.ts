@@ -22,7 +22,8 @@ const handleMulterError = (error: multer.MulterError): IMulterErrorResponse => {
       break;
 
     case "LIMIT_FILE_SIZE":
-      message = "File size too large.";
+      message =
+        "Video file is too large. Maximum upload size is 250 MB per video — compress the file or use Embed Link for larger videos.";
       errorMessages.push({
         path: error.field || "",
         message,

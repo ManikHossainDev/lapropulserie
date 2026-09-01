@@ -1,3 +1,4 @@
+import { createReadStream, promises as fs } from 'fs';
 import {
   S3Client,
   PutObjectCommand,
@@ -34,6 +35,16 @@ interface UploadFileToS3Options {
   preserveFileName?: boolean;
 }
 
+function buildObjectKey(
+  fileName: string,
+  folder: string,
+  options: UploadFileToS3Options = {},
+): string {
+  return options.preserveFileName
+    ? `${folder}/${fileName}`
+    : `${folder}/${Date.now()}-${fileName}`;
+}
+
 export async function uploadFileToS3(
   file: Buffer,
   fileName: string,
@@ -41,9 +52,7 @@ export async function uploadFileToS3(
   folder: string = 'uploads',
   options: UploadFileToS3Options = {},
 ): Promise<string> {
-  const key = options.preserveFileName
-    ? `${folder}/${fileName}`
-    : `${folder}/${Date.now()}-${fileName}`;
+  const key = buildObjectKey(fileName, folder, options);
 
   const command = new PutObjectCommand({
     Bucket: BUCKET_NAME,
@@ -55,6 +64,61 @@ export async function uploadFileToS3(
   await s3Client.send(command);
 
   return key;
+}
+
+/** Stream a disk file to S3 (avoids loading large videos fully into Node memory twice). */
+export async function uploadFilePathToS3(
+  filePath: string,
+  fileName: string,
+  contentType: string,
+  folder: string = 'uploads',
+  options: UploadFileToS3Options = {},
+): Promise<string> {
+  const key = buildObjectKey(fileName, folder, options);
+  const { size } = await fs.stat(filePath);
+  const body = createReadStream(filePath);
+
+  const command = new PutObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key,
+    Body: body,
+    ContentType: contentType,
+    ContentLength: size,
+  });
+
+  await s3Client.send(command);
+
+  return key;
+}
+
+/** Upload from either multer memory (buffer) or disk (path) storage. */
+export async function uploadMulterFileToS3(
+  file: Express.Multer.File,
+  fileName: string,
+  folder: string = 'uploads',
+  options: UploadFileToS3Options = {},
+): Promise<string> {
+  const contentType = file.mimetype || 'application/octet-stream';
+
+  if (file.path) {
+    try {
+      return await uploadFilePathToS3(
+        file.path,
+        fileName,
+        contentType,
+        folder,
+        options,
+      );
+    } finally {
+      await fs.unlink(file.path).catch(() => undefined);
+    }
+  }
+
+  if (file.buffer?.length) {
+    return uploadFileToS3(file.buffer, fileName, contentType, folder, options);
+  }
+
+  throw new Error('Uploaded file has no data (empty buffer and no disk path)');
 }
 
 export function getObjectUrlForKey(key: string): string {

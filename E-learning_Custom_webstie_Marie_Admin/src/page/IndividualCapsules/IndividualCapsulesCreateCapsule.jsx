@@ -69,7 +69,7 @@ const VideoField = ({ label, fileKey, embedKey, fileState, setFileState, embedSt
           <label htmlFor={fileKey}
             className="flex flex-col items-center justify-center gap-2 h-28 border-2 border-dashed border-[#d4d6e8] rounded-xl cursor-pointer bg-[#fafafa] hover:border-[#6c63ff] hover:bg-[#f8f8ff] transition-all">
             <FiUploadCloud size={22} className="text-[#aab0c6]" />
-            <p className="text-xs text-[#aab0c6]">Click to upload — MP4, MOV (max 100 MB). Larger files: use Embed Link.</p>
+            <p className="text-xs text-[#aab0c6]">Click to upload — MP4, MOV (max 250 MB). Larger files: use Embed Link.</p>
             <input id={fileKey} type="file" accept="video/*" className="hidden"
               onChange={e => handleFile(e.target.files?.[0])} />
           </label>

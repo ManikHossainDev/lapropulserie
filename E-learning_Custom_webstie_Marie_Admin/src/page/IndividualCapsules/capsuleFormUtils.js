@@ -183,7 +183,7 @@ export function appendCapsuleFiles(formData, files) {
   if (sciVideoFile?.file) formData.append('scienceVideo', sciVideoFile.file);
 }
 
-export const MAX_VIDEO_UPLOAD_BYTES = 100 * 1024 * 1024; // 100 MB per video file
+export const MAX_VIDEO_UPLOAD_BYTES = 250 * 1024 * 1024; // 250 MB per video file
 
 function formatFileSize(bytes) {
   if (bytes >= 1024 * 1024 * 1024) {
@@ -207,12 +207,34 @@ export function validateCapsuleVideoFiles({
   for (const { label, file } of entries) {
     if (file && file.size > MAX_VIDEO_UPLOAD_BYTES) {
       errors.push(
-        `${label} is ${formatFileSize(file.size)}. Max upload is 100 MB per video — use "Embed Link" for larger files (YouTube/Vimeo URL).`,
+        `${label} is ${formatFileSize(file.size)}. Max upload is 250 MB per video — use "Embed Link" for larger files (YouTube/Vimeo URL).`,
       );
     }
   }
 
   return errors;
+}
+
+/** Prefer API message; surface proxy/size failures when RTK has no JSON body. */
+export function getCapsuleUpdateErrorMessage(error) {
+  const apiMessage =
+    error?.data?.message ||
+    error?.data?.errorMessages?.map((item) => item?.message).filter(Boolean).join(', ');
+
+  if (apiMessage) return apiMessage;
+
+  const status = error?.status;
+  if (status === 413) {
+    return 'Upload rejected: file is too large for the server (HTTP 413). Max is 250 MB per video, and nginx on the API host must allow client_max_body_size 250m.';
+  }
+  if (status === 'FETCH_ERROR' || status === 'PARSING_ERROR' || status === 'TIMEOUT_ERROR') {
+    return 'Upload failed before a response was received (network reset, timeout, or proxy limit). Try a smaller file, wait for a stable connection, or ask ops to raise nginx client_max_body_size / proxy timeouts on the API host.';
+  }
+  if (typeof status === 'number' && status >= 500) {
+    return 'Server error while uploading the video. The API may have run out of memory — retry after the latest backend deploy (disk-based uploads).';
+  }
+
+  return 'Failed to update capsule. Please try again.';
 }
 
 export function validateCapsuleForm({ categoryId, isEdit, title }) {
