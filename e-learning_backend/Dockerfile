@@ -32,7 +32,7 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/src/views ./dist/views
 COPY --from=builder /usr/src/app/package.json ./
 
-RUN mkdir -p /tmp/videos /usr/src/app/uploads \
+RUN mkdir -p /tmp/videos/uploads /usr/src/app/uploads /usr/src/app/temp_videos/uploads \
   && chown -R app:app /usr/src/app /tmp/videos
 
 # Defaults for containers (override with env_file / -e)

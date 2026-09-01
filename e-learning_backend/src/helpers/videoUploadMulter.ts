@@ -1,19 +1,49 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import multer from 'multer';
 
 /** Per-file limit for capsule / journey video uploads (must stay in sync with admin). */
 export const MAX_VIDEO_UPLOAD_BYTES = 250 * 1024 * 1024; // 250 MB
 
-const UPLOAD_DIR =
-  process.env.NODE_ENV === 'production'
-    ? '/tmp/videos/uploads'
-    : path.join(process.cwd(), 'temp_videos', 'uploads');
+/**
+ * Prefer /tmp/videos/uploads (shared volume for ffmpeg), but fall back when the
+ * host mount is root-owned and the non-root `app` user cannot mkdir there.
+ */
+function resolveWritableUploadDir(): string {
+  const candidates = [
+    process.env.VIDEO_UPLOAD_TMP_DIR,
+    process.env.NODE_ENV === 'production' ? '/tmp/videos/uploads' : null,
+    path.join(process.cwd(), 'temp_videos', 'uploads'),
+    path.join(os.tmpdir(), 'lapropulserie-video-uploads'),
+  ].filter(Boolean) as string[];
 
-function ensureUploadDir() {
-  if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  let lastError: unknown;
+
+  for (const dir of candidates) {
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      fs.accessSync(dir, fs.constants.W_OK);
+      return dir;
+    } catch (error) {
+      lastError = error;
+    }
   }
+
+  throw new Error(
+    `No writable video upload temp directory. Last error: ${
+      lastError instanceof Error ? lastError.message : String(lastError)
+    }`,
+  );
+}
+
+let resolvedUploadDir: string | null = null;
+
+function getUploadDir(): string {
+  if (!resolvedUploadDir) {
+    resolvedUploadDir = resolveWritableUploadDir();
+  }
+  return resolvedUploadDir;
 }
 
 /**
@@ -21,12 +51,18 @@ function ensureUploadDir() {
  * (memoryStorage + S3 buffer often OOMs / resets the connection on small EC2).
  */
 export function createVideoUploadMulter() {
-  ensureUploadDir();
+  // Resolve lazily on first middleware load, with fallbacks (do not assume /tmp/videos is writable).
+  const uploadDir = getUploadDir();
 
   const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {
-      ensureUploadDir();
-      cb(null, UPLOAD_DIR);
+      try {
+        const dir = getUploadDir();
+        fs.mkdirSync(dir, { recursive: true });
+        cb(null, dir);
+      } catch (error) {
+        cb(error as Error, uploadDir);
+      }
     },
     filename: (_req, file, cb) => {
       const ext = path.extname(file.originalname) || '';
