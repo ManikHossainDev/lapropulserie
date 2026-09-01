@@ -383,7 +383,7 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
           <h2 className="text-2xl font-bold text-[#2d2a71]">🌟 {intro.title || capsule.title}</h2>
           <StepGuidance step={1} />
           {intro.founderVideo && (
-            <CapsuleVideoPlayer video={intro.founderVideo} />
+            <CapsuleVideoPlayer video={intro.founderVideo} cacheKey={capsule.updatedAt} />
           )}
           <p className="text-gray-700 whitespace-pre-wrap">{intro.text}</p>
         </section>
@@ -397,7 +397,7 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
           <h2 className="text-2xl font-bold text-[#2d2a71]">💡 {insp.title || 'Inspiration'}</h2>
           <StepGuidance step={2} />
           {insp.inspirationVideo && (
-            <CapsuleVideoPlayer video={insp.inspirationVideo} />
+            <CapsuleVideoPlayer video={insp.inspirationVideo} cacheKey={capsule.updatedAt} />
           )}
           <p className="text-gray-700 whitespace-pre-wrap">{insp.text}</p>
         </section>
@@ -465,7 +465,7 @@ export default function CapsuleJourneyExperience({ capsuleId, journeyId = null, 
           <StepGuidance step={5} />
           <p className="text-gray-700 whitespace-pre-wrap">{sci.text}</p>
           {sci.optionalVideo && (
-            <CapsuleVideoPlayer video={sci.optionalVideo} />
+            <CapsuleVideoPlayer video={sci.optionalVideo} cacheKey={capsule.updatedAt} />
           )}
         </section>
       );

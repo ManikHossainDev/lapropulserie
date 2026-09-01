@@ -48,11 +48,42 @@ export class IndividualCapsuleService extends GenericService<
     delete clean.scienceVideo;
     delete clean.__videoUploadTokens;
 
-    const updated = await IndividualCapsule.findByIdAndUpdate(
-      id,
-      { $set: clean },
-      { new: true, runValidators: true },
-    ).select('-__v');
+    const unset: Record<string, 1> = {};
+
+    // Nested $set replaces the whole subdocument — preserve videos when omitted,
+    // and $unset when admin sends explicit null (clear).
+    const mergePartVideo = (
+      partKey: 'introduction' | 'inspiration' | 'science',
+      videoKey: 'founderVideo' | 'inspirationVideo' | 'optionalVideo',
+    ) => {
+      const part = clean[partKey] as Record<string, unknown> | undefined;
+      if (!part || typeof part !== 'object') return;
+
+      if (!Object.prototype.hasOwnProperty.call(part, videoKey)) {
+        const previous = (existing as any)?.[partKey]?.[videoKey];
+        if (previous) part[videoKey] = previous;
+        return;
+      }
+
+      if (part[videoKey] === null) {
+        delete part[videoKey];
+        unset[`${partKey}.${videoKey}`] = 1;
+      }
+    };
+
+    mergePartVideo('introduction', 'founderVideo');
+    mergePartVideo('inspiration', 'inspirationVideo');
+    mergePartVideo('science', 'optionalVideo');
+
+    const updateOps: Record<string, unknown> = { $set: clean };
+    if (Object.keys(unset).length > 0) {
+      updateOps.$unset = unset;
+    }
+
+    const updated = await IndividualCapsule.findByIdAndUpdate(id, updateOps, {
+      new: true,
+      runValidators: true,
+    }).select('-__v');
 
     if (updated) {
       await syncJourneyCapsulesFromIndividualCapsule(updated._id);

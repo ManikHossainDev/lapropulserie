@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-    title: "Site Web d'E-Learning",
-    description: "Généré par create next app",
+    title: "La Propulserie",
+    description: "La Propulserie — accompagnement et capsules pour propulser ton parcours.",
 };
 
 // ce n'est pas la mise en page racine, c'est la mise en page principale

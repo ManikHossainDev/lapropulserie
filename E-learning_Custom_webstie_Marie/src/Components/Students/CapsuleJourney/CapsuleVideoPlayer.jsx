@@ -20,11 +20,18 @@ export function rewriteMediaUrl(rawUrl) {
   return rawUrl;
 }
 
-export function resolveVideoUrl(video) {
+export function resolveVideoUrl(video, cacheKey) {
   if (!video) return null;
-  if (typeof video === 'string') return rewriteMediaUrl(video);
-  if (video.url) return rewriteMediaUrl(video.url);
-  return null;
+  const raw = typeof video === 'string' ? video : video.url;
+  if (!raw) return null;
+  let url = rewriteMediaUrl(raw);
+  // Bust CDN/browser cache after admin replaces a video (same path rarely reused,
+  // but query helps when CloudFront cached a previous object briefly).
+  if (cacheKey && typeof url === 'string' && !/^https?:\/\/(www\.)?(youtube|player\.vimeo)/i.test(url)) {
+    const sep = url.includes('?') ? '&' : '?';
+    url = `${url}${sep}v=${encodeURIComponent(String(cacheKey))}`;
+  }
+  return url;
 }
 
 /** Convert YouTube / Vimeo watch URLs (or pasted iframe HTML) into embeddable iframe src. */
@@ -70,9 +77,13 @@ export function getVideoStatus(video) {
   return null;
 }
 
-export default function CapsuleVideoPlayer({ video, className = 'w-full rounded-xl max-h-96 bg-black' }) {
+export default function CapsuleVideoPlayer({
+  video,
+  cacheKey,
+  className = 'w-full rounded-xl max-h-96 bg-black',
+}) {
   const videoRef = useRef(null);
-  const url = resolveVideoUrl(video);
+  const url = resolveVideoUrl(video, cacheKey);
   const embedUrl = resolveEmbedUrl(url);
   const status = getVideoStatus(video);
   const [errorMsg, setErrorMsg] = useState('');

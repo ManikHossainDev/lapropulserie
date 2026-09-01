@@ -78,33 +78,52 @@ function applyUploadedVideos(data: IIndividualCapsule, body: Record<string, any>
     nestedScience: data.science?.optionalVideo,
   });
 
-  const introVideo =
-    normalizeVideoField(body.founderVideo) ||
-    normalizeVideoField(data.introduction?.founderVideo);
-  if (introVideo || data.introduction) {
+  // Uploaded file always wins over nested JSON (which may still carry the prior URL as fallback).
+  const introFromUpload = normalizeVideoField(body.founderVideo);
+  if (introFromUpload) {
+    data.introduction = {
+      ...(data.introduction || {}),
+      founderVideo: introFromUpload,
+    };
+  } else if (data.introduction && data.introduction.founderVideo === null) {
+    // explicit clear from admin — leave null for service $unset
+  } else if (data.introduction) {
+    const nested = normalizeVideoField(data.introduction.founderVideo);
     data.introduction = {
       ...data.introduction,
-      ...(introVideo ? { founderVideo: introVideo } : {}),
+      ...(nested ? { founderVideo: nested } : {}),
     };
   }
 
-  const inspirationVideo =
-    normalizeVideoField(body.inspirationVideo) ||
-    normalizeVideoField(data.inspiration?.inspirationVideo);
-  if (inspirationVideo || data.inspiration) {
+  const inspirationFromUpload = normalizeVideoField(body.inspirationVideo);
+  if (inspirationFromUpload) {
+    data.inspiration = {
+      ...(data.inspiration || {}),
+      inspirationVideo: inspirationFromUpload,
+    };
+  } else if (data.inspiration && data.inspiration.inspirationVideo === null) {
+    // explicit clear
+  } else if (data.inspiration) {
+    const nested = normalizeVideoField(data.inspiration.inspirationVideo);
     data.inspiration = {
       ...data.inspiration,
-      ...(inspirationVideo ? { inspirationVideo } : {}),
+      ...(nested ? { inspirationVideo: nested } : {}),
     };
   }
 
-  const scienceVideo =
-    normalizeVideoField(body.scienceVideo) ||
-    normalizeVideoField(data.science?.optionalVideo);
-  if (scienceVideo || data.science) {
+  const scienceFromUpload = normalizeVideoField(body.scienceVideo);
+  if (scienceFromUpload) {
+    data.science = {
+      ...(data.science || {}),
+      optionalVideo: scienceFromUpload,
+    };
+  } else if (data.science && data.science.optionalVideo === null) {
+    // explicit clear
+  } else if (data.science) {
+    const nested = normalizeVideoField(data.science.optionalVideo);
     data.science = {
       ...data.science,
-      ...(scienceVideo ? { optionalVideo: scienceVideo } : {}),
+      ...(nested ? { optionalVideo: nested } : {}),
     };
   }
 
