@@ -117,7 +117,7 @@ const CapsuleVideoField = ({
           >
             <FiUploadCloud size={22} className="text-[#aab0c6]" />
             <p className="text-xs text-[#aab0c6]">
-              Click to upload — MP4, MOV (max 100 MB). Larger files: use Embed Link.
+              Click to upload — MP4, MOV (max 250 MB). Larger files: use Embed Link.
             </p>
             {fileInput}
           </label>

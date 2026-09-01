@@ -8,7 +8,7 @@ import {
   deleteFileByKey,
   downloadFileFromS3,
   getObjectUrlForKey,
-  uploadFileToS3,
+  uploadMulterFileToS3,
 } from './aws-s3.service';
 import { processVideoToHls } from './video-processing.service';
 import { errorLogger, logger } from '../shared/logger';
@@ -276,10 +276,9 @@ export async function stageVideoForProcessing(
   const token = randomUUID();
   const sanitizedFileName = sanitizeFileName(file.originalname);
 
-  const sourceKey = await uploadFileToS3(
-    file.buffer,
+  const sourceKey = await uploadMulterFileToS3(
+    file,
     sanitizedFileName,
-    file.mimetype,
     `${folderName}/_source/${token}`,
     { preserveFileName: true },
   );

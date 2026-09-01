@@ -11,6 +11,7 @@ import {
   appendCapsuleFiles,
   buildCapsulePayload,
   getCapsuleHydrationKey,
+  getCapsuleUpdateErrorMessage,
   mapCapsuleApiToFormState,
   validateCapsuleForm,
   validateCapsuleVideoFiles,
@@ -190,11 +191,7 @@ const IndividualCapsulesEditCapsule = () => {
       toast.success('Capsule updated successfully!');
       navigate(-1);
     } catch (error) {
-      const message =
-        error?.data?.message ||
-        error?.data?.errorMessages?.map((item) => item.message).join(', ') ||
-        'Failed to update capsule. Please try again.';
-      toast.error(message);
+      toast.error(getCapsuleUpdateErrorMessage(error));
     }
   };
 

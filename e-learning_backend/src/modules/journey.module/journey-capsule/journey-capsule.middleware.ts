@@ -1,6 +1,6 @@
-import multer from 'multer';
 import { Request, Response, NextFunction } from 'express';
 import { TFolderName } from '../../../enums/folderNames';
+import { createVideoUploadMulter } from '../../../helpers/videoUploadMulter';
 import { uploadFileAndGetUrl } from '../../../helpers/uploadHelpers';
 import {
   isVideoSourceReference,
@@ -10,8 +10,7 @@ import {
   VideoUploadTokenMap,
 } from '../../../services/video-processing-queue.service';
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = createVideoUploadMulter();
 
 interface UploadedFiles {
   [key: string]: Express.Multer.File[];

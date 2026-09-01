@@ -30,6 +30,38 @@ const isVideoField = (name: string) =>
   name === 'inspirationVideo' ||    // Part 2 – Inspiration
   name === 'scienceVideo';          // Part 5 – Science
 
+function hasVideoLikeExtension(originalname?: string) {
+  if (!originalname) return false;
+  return /\.(mp4|mov|m4v|webm|avi|mpeg|mpg|3gp)$/i.test(originalname);
+}
+
+/** Allow listed MIME, any video/*, empty/octet-stream, or known video extension. */
+function isAllowedUploadMime(
+  config: FileFieldConfig,
+  file: Express.Multer.File,
+): boolean {
+  const mime = (file.mimetype || '').toLowerCase();
+  const allowed = config.allowedMimeTypes || [];
+
+  if (allowed.includes(mime) || allowed.includes(file.mimetype)) {
+    return true;
+  }
+
+  if (!isVideoField(config.name)) {
+    return false;
+  }
+
+  if (!mime || mime === 'application/octet-stream') {
+    return true;
+  }
+
+  if (mime.startsWith('video/')) {
+    return true;
+  }
+
+  return hasVideoLikeExtension(file.originalname);
+}
+
 function attachVideoUploadToken(
   target: Record<string, any>,
   fieldName: string,
@@ -69,16 +101,7 @@ export const processUploadedFilesForCreate = (configs: FileFieldConfig[]) => {
         }
 
         if (config.allowedMimeTypes && files?.length) {
-          const invalid = files.some((f) => {
-            // Some browsers send empty MIME for .mov/.avi — allow for video fields
-            if (
-              isVideoField(config.name) &&
-              (!f.mimetype || f.mimetype === 'application/octet-stream')
-            ) {
-              return false;
-            }
-            return !config.allowedMimeTypes!.includes(f.mimetype);
-          });
+          const invalid = files.some((f) => !isAllowedUploadMime(config, f));
           if (invalid) {
             throw new Error(`Invalid file type for field: ${config.name}`);
           }
@@ -141,16 +164,7 @@ export const processUploadedFilesForUpdate = (configs: FileFieldConfig[]) => {
         }
 
         if (config.allowedMimeTypes && files?.length) {
-          const invalid = files.some((f) => {
-            // Some browsers send empty MIME for .mov/.avi — allow for video fields
-            if (
-              isVideoField(config.name) &&
-              (!f.mimetype || f.mimetype === 'application/octet-stream')
-            ) {
-              return false;
-            }
-            return !config.allowedMimeTypes!.includes(f.mimetype);
-          });
+          const invalid = files.some((f) => !isAllowedUploadMime(config, f));
           if (invalid) {
             throw new Error(`Invalid file type for field: ${config.name}`);
           }
