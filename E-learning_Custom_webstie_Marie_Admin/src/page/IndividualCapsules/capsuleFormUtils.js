@@ -56,7 +56,6 @@ export function normalizeEmbedVideoInput(raw) {
 }
 
 function resolveVideoPayload(embedValue, fileState, existingVideo) {
-  if (fileState?.file) return undefined;
   const trimmed = normalizeEmbedVideoInput(
     typeof embedValue === 'string' ? embedValue : '',
   );
@@ -64,7 +63,9 @@ function resolveVideoPayload(embedValue, fileState, existingVideo) {
     // Embed field wins — YouTube/Vimeo (or any explicit paste) replaces prior upload
     return { url: trimmed, status: 'ready' };
   }
-  if (existingVideo && typeof existingVideo === 'object') {
+
+  const existingPayload = (() => {
+    if (!existingVideo || typeof existingVideo !== 'object') return undefined;
     // Don't keep stuck processing placeholders without a URL
     if (existingVideo.status === 'processing' && !existingVideo.url) {
       return undefined;
@@ -78,13 +79,21 @@ function resolveVideoPayload(embedValue, fileState, existingVideo) {
       };
     }
     return existingVideo;
+  })();
+
+  // New file is sent as multipart; backend prefers it over nested JSON.
+  // Still include existing as fallback so a dropped file part does not wipe the video.
+  if (fileState?.file) {
+    return existingPayload;
   }
-  return undefined;
+
+  return existingPayload;
 }
 
 function buildPartVideoField(embedValue, fileState, existingVideo) {
   const video = resolveVideoPayload(embedValue, fileState, existingVideo);
-  return video !== undefined ? { video } : {};
+  // Always return a key: object = keep/set, null = explicit clear, undefined omitted only if never called
+  return { video: video ?? null };
 }
 
 export function buildCapsulePayload({
@@ -133,12 +142,12 @@ export function buildCapsulePayload({
     introduction: {
       title: introTitle,
       text: introText,
-      ...(founderVideo.video !== undefined ? { founderVideo: founderVideo.video } : {}),
+      founderVideo: founderVideo.video,
     },
     inspiration: {
       title: inspTitle,
       text: inspText,
-      ...(inspirationVideo.video !== undefined ? { inspirationVideo: inspirationVideo.video } : {}),
+      inspirationVideo: inspirationVideo.video,
     },
     reflection: {
       title: reflTitle,
@@ -162,7 +171,7 @@ export function buildCapsulePayload({
     science: {
       title: sciTitle,
       text: sciText,
-      ...(optionalVideo.video !== undefined ? { optionalVideo: optionalVideo.video } : {}),
+      optionalVideo: optionalVideo.video,
     },
   };
 }

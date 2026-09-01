@@ -29,7 +29,8 @@ const CapsuleVideoField = ({
     if (!file) return;
     setFileState({ file, preview: URL.createObjectURL(file), name: file.name });
     setEmbedState('');
-    onClearExisting?.();
+    // Keep existingVideo until save succeeds — if the multipart file is dropped
+    // (proxy limit, network), the payload can still re-send the prior URL.
   };
 
   const existingUrl =

@@ -152,13 +152,28 @@ async function getNestedField(doc: Record<string, any> | null, fieldPath: string
   return fieldPath.split('.').reduce((acc: any, key) => acc?.[key], doc);
 }
 
+function urlOwnsSourceKey(url: string, sourceKey: string): boolean {
+  if (!url || !sourceKey) return false;
+  if (url.includes(sourceKey)) return true;
+  try {
+    // getObjectUrlForKey encodes path segments; compare decoded forms too
+    const decodedUrl = decodeURIComponent(url);
+    if (decodedUrl.includes(sourceKey)) return true;
+    const decodedKey = decodeURIComponent(sourceKey);
+    return url.includes(decodedKey) || decodedUrl.includes(decodedKey);
+  } catch {
+    return false;
+  }
+}
+
+/** @returns true when the document field was updated */
 async function updateVideoField(
   modelName: VideoTargetModelName,
   targetId: string,
   fieldPath: string,
   value: QueuedVideoInfo,
   options?: { onlyIfSourceKey?: string },
-) {
+): Promise<boolean> {
   const model = VIDEO_TARGET_MODELS[modelName];
 
   // Don't overwrite a YouTube/Vimeo (or any newer) URL the admin saved after upload.
@@ -170,14 +185,14 @@ async function updateVideoField(
     const currentUrl = currentField?.url || '';
     const stillOwnedByThisUpload =
       !currentUrl ||
-      currentUrl.includes(options.onlyIfSourceKey) ||
+      urlOwnsSourceKey(currentUrl, options.onlyIfSourceKey) ||
       currentField?.status === 'processing';
 
     if (!stillOwnedByThisUpload) {
       logger.info(
         `[VIDEO DEBUG] skip job overwrite on ${fieldPath} — current url is no longer this upload (${currentUrl.slice(0, 80)})`,
       );
-      return;
+      return false;
     }
   }
 
@@ -189,6 +204,7 @@ async function updateVideoField(
       [`${fieldPath}.errorMessage`]: value.errorMessage,
     },
   });
+  return true;
 }
 
 async function processQueuedVideo(job: Job<VideoProcessingJobData>) {
@@ -209,7 +225,7 @@ async function processQueuedVideo(job: Job<VideoProcessingJobData>) {
       folderName,
     );
 
-    await updateVideoField(
+    const updated = await updateVideoField(
       targetModel,
       targetId,
       fieldPath,
@@ -221,11 +237,17 @@ async function processQueuedVideo(job: Job<VideoProcessingJobData>) {
       { onlyIfSourceKey: sourceKey },
     );
 
-    // HLS ready — remove temporary source upload
-    try {
-      await deleteFileByKey(sourceKey);
-    } catch (deleteError) {
-      logger.warn(`Failed to delete source file ${sourceKey}: ${deleteError}`);
+    // Only delete the source after DB points at HLS — never orphan a playable URL
+    if (updated) {
+      try {
+        await deleteFileByKey(sourceKey);
+      } catch (deleteError) {
+        logger.warn(`Failed to delete source file ${sourceKey}: ${deleteError}`);
+      }
+    } else {
+      logger.info(
+        `[VIDEO DEBUG] keeping source ${sourceKey} — field update was skipped`,
+      );
     }
   } catch (error) {
     const message = buildFailureMessage(error);
@@ -264,10 +286,12 @@ export async function stageVideoForProcessing(
 
   // Expose the original file immediately so learners can play while HLS runs
   // (or when ffmpeg is unavailable on the host).
+  // status "processing" keeps ownership checks reliable for the HLS worker
+  // (URL is still playable — clients treat any URL as ready).
   return {
     videoInfo: {
       url: getObjectUrlForKey(sourceKey),
-      status: 'ready',
+      status: 'processing',
     },
     stagedUpload: {
       token,

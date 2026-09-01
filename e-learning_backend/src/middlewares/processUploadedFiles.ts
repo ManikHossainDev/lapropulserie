@@ -69,9 +69,16 @@ export const processUploadedFilesForCreate = (configs: FileFieldConfig[]) => {
         }
 
         if (config.allowedMimeTypes && files?.length) {
-          const invalid = files.some(
-            (f) => !config.allowedMimeTypes!.includes(f.mimetype)
-          );
+          const invalid = files.some((f) => {
+            // Some browsers send empty MIME for .mov/.avi — allow for video fields
+            if (
+              isVideoField(config.name) &&
+              (!f.mimetype || f.mimetype === 'application/octet-stream')
+            ) {
+              return false;
+            }
+            return !config.allowedMimeTypes!.includes(f.mimetype);
+          });
           if (invalid) {
             throw new Error(`Invalid file type for field: ${config.name}`);
           }
@@ -134,9 +141,16 @@ export const processUploadedFilesForUpdate = (configs: FileFieldConfig[]) => {
         }
 
         if (config.allowedMimeTypes && files?.length) {
-          const invalid = files.some(
-            (f) => !config.allowedMimeTypes!.includes(f.mimetype)
-          );
+          const invalid = files.some((f) => {
+            // Some browsers send empty MIME for .mov/.avi — allow for video fields
+            if (
+              isVideoField(config.name) &&
+              (!f.mimetype || f.mimetype === 'application/octet-stream')
+            ) {
+              return false;
+            }
+            return !config.allowedMimeTypes!.includes(f.mimetype);
+          });
           if (invalid) {
             throw new Error(`Invalid file type for field: ${config.name}`);
           }
