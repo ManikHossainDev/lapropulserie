@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const S3_DOMAIN = 'la-propulserie-media.s3.eu-west-3.amazonaws.com';
 const CLOUDFRONT_DOMAIN = 'd4k0cugb067ei.cloudfront.net';
-const DEBUG = typeof window !== 'undefined';
+const DEBUG = process.env.NEXT_PUBLIC_VIDEO_DEBUG === '1';
 
 function debugLog(step, payload) {
   if (!DEBUG) return;
@@ -20,6 +20,16 @@ export function rewriteMediaUrl(rawUrl) {
   return rawUrl;
 }
 
+/** Same-origin proxy — CloudFront has no CORS; bucket is private (S3 403). */
+export function toProxiedMediaUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('/api/media-proxy')) return url;
+  const cdn = rewriteMediaUrl(url);
+  if (!/^https?:\/\//i.test(cdn)) return cdn;
+  if (!cdn.includes(CLOUDFRONT_DOMAIN) && !cdn.includes(S3_DOMAIN)) return cdn;
+  return `/api/media-proxy?url=${encodeURIComponent(cdn)}`;
+}
+
 export function resolveVideoUrl(video, cacheKey) {
   if (!video) return null;
   const raw = typeof video === 'string' ? video : video.url;
@@ -31,12 +41,19 @@ export function resolveVideoUrl(video, cacheKey) {
     const sep = url.includes('?') ? '&' : '?';
     url = `${url}${sep}v=${encodeURIComponent(String(cacheKey))}`;
   }
+  // HLS must go through proxy (CloudFront has no CORS; playlists may cite private S3).
+  // Progressive MP4/WebM: <video src> works cross-origin without CORS — only rewrite S3→CF.
+  if (typeof url === 'string' && url.includes('.m3u8')) {
+    return toProxiedMediaUrl(url);
+  }
   return url;
 }
 
 /** Convert YouTube / Vimeo watch URLs (or pasted iframe HTML) into embeddable iframe src. */
 export function resolveEmbedUrl(rawUrl) {
   if (!rawUrl || typeof rawUrl !== 'string') return null;
+  // Proxied URLs are never embeds
+  if (rawUrl.startsWith('/api/media-proxy')) return null;
   const url = rawUrl.trim();
 
   const iframeSrc = url.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i);
@@ -84,7 +101,9 @@ export default function CapsuleVideoPlayer({
 }) {
   const videoRef = useRef(null);
   const url = resolveVideoUrl(video, cacheKey);
-  const embedUrl = resolveEmbedUrl(url);
+  const embedUrl = resolveEmbedUrl(
+    typeof video === 'string' ? video : video?.url,
+  );
   const status = getVideoStatus(video);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -105,14 +124,18 @@ export default function CapsuleVideoPlayer({
       return undefined;
     }
 
-    const isHls = url.includes('.m3u8');
-    debugLog('2. native/HLS path', { url, isHls });
+    const rawForType = typeof video === 'string' ? video : video?.url;
+    const treatAsHls =
+      (typeof rawForType === 'string' && rawForType.includes('.m3u8')) ||
+      (typeof url === 'string' && url.includes('.m3u8'));
 
-    if (!isHls) {
+    debugLog('2. native/HLS path', { url, treatAsHls });
+
+    if (!treatAsHls) {
       element.src = url;
       element.onerror = () => {
         debugLog('3. <video> error', { url, code: element.error?.code, message: element.error?.message });
-        setErrorMsg("Impossible de lire cette vidéo (fichier / URL invalide).");
+        setErrorMsg('Impossible de lire cette vidéo (fichier / URL invalide).');
       };
       element.onloadeddata = () => {
         debugLog('3. <video> loadeddata OK', { url });
@@ -120,11 +143,8 @@ export default function CapsuleVideoPlayer({
       return undefined;
     }
 
-    if (element.canPlayType('application/vnd.apple.mpegurl')) {
-      element.src = url;
-      return undefined;
-    }
-
+    // Prefer hls.js when available (URL control). iOS: native against proxied playlist
+    // (proxy rewrites KEY/segments to same-origin proxy URLs).
     let hlsInstance;
     let cancelled = false;
 
@@ -134,13 +154,18 @@ export default function CapsuleVideoPlayer({
         if (Hls.isSupported()) {
           hlsInstance = new Hls({
             enableWorker: true,
-            loader: class CloudFrontLoader extends Hls.DefaultConfig.loader {
+            loader: class ProxiedLoader extends Hls.DefaultConfig.loader {
               constructor(config) {
                 super(config);
                 const load = this.load.bind(this);
                 this.load = function (context, cfg, callbacks) {
                   if (context?.url) {
-                    context.url = rewriteMediaUrl(context.url);
+                    // Absolute CDN → same-origin proxy; already-proxied left as-is
+                    if (!context.url.startsWith('/') && !context.url.startsWith(window.location.origin)) {
+                      context.url = toProxiedMediaUrl(rewriteMediaUrl(context.url));
+                    } else if (context.url.includes(S3_DOMAIN) || context.url.includes(CLOUDFRONT_DOMAIN)) {
+                      context.url = toProxiedMediaUrl(context.url);
+                    }
                   }
                   return load(context, cfg, callbacks);
                 };
@@ -150,8 +175,24 @@ export default function CapsuleVideoPlayer({
           hlsInstance.on(Hls.Events.ERROR, (_event, data) => {
             if (data?.fatal) {
               debugLog('3. HLS fatal error', data);
+              if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                try {
+                  hlsInstance.startLoad();
+                  return;
+                } catch {
+                  // fall through
+                }
+              }
+              if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+                try {
+                  hlsInstance.recoverMediaError();
+                  return;
+                } catch {
+                  // fall through
+                }
+              }
               setErrorMsg(
-                "Impossible de lire la vidéo pour le moment. Réessayez dans quelques instants.",
+                'Impossible de lire la vidéo pour le moment. Réessayez dans quelques instants.',
               );
             }
           });
@@ -160,6 +201,11 @@ export default function CapsuleVideoPlayer({
           debugLog('3. HLS attached', { url });
         } else {
           element.src = url;
+          element.onerror = () => {
+            setErrorMsg(
+              'Impossible de lire la vidéo pour le moment. Réessayez dans quelques instants.',
+            );
+          };
         }
       })
       .catch((err) => {
@@ -172,14 +218,13 @@ export default function CapsuleVideoPlayer({
       cancelled = true;
       hlsInstance?.destroy();
     };
-  }, [url, embedUrl]);
+  }, [url, embedUrl, video]);
 
   if (status === 'processing') {
     debugLog('UI: processing (no URL yet)', { video });
     return (
       <p className="text-sm text-gray-500 border border-dashed rounded-xl p-4">
         Vidéo en cours de traitement. Revenez dans quelques instants.
-        <span className="block text-xs mt-1 opacity-70">[debug: status=processing, no url]</span>
       </p>
     );
   }
@@ -196,12 +241,11 @@ export default function CapsuleVideoPlayer({
     );
   }
 
-  if (!url) {
+  if (!url && !embedUrl) {
     debugLog('UI: no url', { video });
     return (
       <p className="text-sm text-amber-700 border border-amber-200 bg-amber-50 rounded-xl p-4">
         Aucune vidéo n&apos;est encore disponible pour cette étape.
-        <span className="block text-xs mt-1 opacity-70">[debug: empty video field]</span>
       </p>
     );
   }
@@ -221,7 +265,6 @@ export default function CapsuleVideoPlayer({
             onLoad={() => debugLog('3. iframe loaded', { embedUrl })}
           />
         </div>
-        <p className="text-[10px] text-gray-400 break-all">[debug iframe] {embedUrl}</p>
       </div>
     );
   }
@@ -229,7 +272,9 @@ export default function CapsuleVideoPlayer({
   return (
     <div className="space-y-2">
       <video ref={videoRef} controls playsInline className={className} />
-      <p className="text-[10px] text-gray-400 break-all">[debug file] {url}</p>
+      {DEBUG && (
+        <p className="text-[10px] text-gray-400 break-all">[debug file] {url}</p>
+      )}
       {errorMsg && (
         <p className="text-sm text-red-500 border border-red-200 rounded-xl p-3">{errorMsg}</p>
       )}
