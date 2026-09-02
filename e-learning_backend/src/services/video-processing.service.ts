@@ -71,26 +71,21 @@ async function getVideoDuration(inputPath: string): Promise<number | undefined> 
   }
 }
 
-function updatePlaylistReferences(
-  playlistContent: string,
-  folderName: string,
-): string {
-  const keyPattern = /(URI=")([^"]+)(")/g;
-  const segmentPattern = /^(?!#)(.+)$/gm;
-
-  const withKeyUrl = playlistContent.replace(keyPattern, (_, prefix, uri, suffix) => {
-    const absoluteUrl = getObjectUrlForKey(`${folderName}/${uri}`);
-    return `${prefix}${absoluteUrl}${suffix}`;
-  });
-
-  return withKeyUrl.replace(segmentPattern, line => {
-    const trimmedLine = line.trim();
-    if (!trimmedLine) {
-      return line;
-    }
-
-    return getObjectUrlForKey(`${folderName}/${trimmedLine}`);
-  });
+/**
+ * Keep playlist refs relative (enc.key, segment000.ts).
+ * Absolute S3 URLs break playback: the bucket is private (403) while only
+ * CloudFront is public. Relative paths resolve against the master.m3u8 host,
+ * so serving master via CloudFront works for Safari native + hls.js.
+ */
+function updatePlaylistReferences(playlistContent: string): string {
+  // Ensure KEY URI stays a bare filename (ffmpeg already writes enc.key).
+  return playlistContent.replace(
+    /(URI=")([^"]+)(")/g,
+    (_match, prefix: string, uri: string, suffix: string) => {
+      const fileName = uri.split('/').pop() || uri;
+      return `${prefix}${fileName}${suffix}`;
+    },
+  );
 }
 
 export async function processVideoToHls(
@@ -179,7 +174,7 @@ export async function processVideoToHls(
     }
 
     const playlistContent = await fs.readFile(masterPlaylistPath, 'utf-8');
-    const updatedPlaylist = updatePlaylistReferences(playlistContent, s3Folder);
+    const updatedPlaylist = updatePlaylistReferences(playlistContent);
 
     await uploadFileToS3(
       Buffer.from(updatedPlaylist),
@@ -189,6 +184,7 @@ export async function processVideoToHls(
       { preserveFileName: true },
     );
 
+    // Public URL must be CloudFront (AWS_PUBLIC_BASE_URL), not private S3.
     const masterPlaylistUrl = getObjectUrlForKey(`${s3Folder}/${masterPlaylistFileName}`);
 
     return {
