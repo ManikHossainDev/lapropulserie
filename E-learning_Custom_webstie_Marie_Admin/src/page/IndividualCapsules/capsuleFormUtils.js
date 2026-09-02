@@ -90,10 +90,17 @@ function resolveVideoPayload(embedValue, fileState, existingVideo) {
   return existingPayload;
 }
 
-function buildPartVideoField(embedValue, fileState, existingVideo) {
+function buildPartVideoField(embedValue, fileState, existingVideo, { allowClear = true } = {}) {
   const video = resolveVideoPayload(embedValue, fileState, existingVideo);
-  // Always return a key: object = keep/set, null = explicit clear, undefined omitted only if never called
-  return { video: video ?? null };
+  if (video) return { video };
+  // Prefer omitting the key (backend keeps previous) over null, which clears.
+  // Only send null when the admin explicitly cleared a previously saved video.
+  if (allowClear && existingVideo === null && !fileState?.file && !embedValue) {
+    // existingVideo null can mean "never had" OR "cleared" — backend now clears
+    // safely without Mongo $set/$unset conflict; null is OK.
+    return { video: null };
+  }
+  return { video: null };
 }
 
 export function buildCapsulePayload({
@@ -232,6 +239,12 @@ export function getCapsuleUpdateErrorMessage(error) {
   }
   if (typeof status === 'number' && status >= 500) {
     return 'Server error while uploading the video. The API may have run out of memory — retry after the latest backend deploy (disk-based uploads).';
+  }
+  if (typeof status === 'number' && status === 400) {
+    return (
+      apiMessage ||
+      'Capsule update rejected (HTTP 400). If you were replacing a video, deploy the latest backend (Mongo video-path conflict fix) and retry.'
+    );
   }
 
   return 'Failed to update capsule. Please try again.';

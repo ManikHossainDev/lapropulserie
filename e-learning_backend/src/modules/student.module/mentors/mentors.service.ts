@@ -43,6 +43,19 @@ const paginateResults = (
   };
 };
 
+/** Mentor card/detail photo: profile.avatarUrl, else user.profileImage.imageUrl. */
+const resolveMentorAvatarUrl = (mentor: any): string => {
+  const fromProfile =
+    typeof mentor?.avatarUrl === 'string' ? mentor.avatarUrl.trim() : '';
+  const pi = mentor?.userId?.profileImage;
+  const fromUser =
+    typeof pi?.imageUrl === 'string' ? pi.imageUrl.trim() : '';
+  // Skip default placeholder so empty feels intentional on FE
+  if (fromProfile) return fromProfile;
+  if (fromUser && fromUser !== '/uploads/users/user.png') return fromUser;
+  return fromUser || '';
+};
+
 const getBookSessionAgainStudents = async (
   mentorId: string,
   page: number = 1,
@@ -97,14 +110,14 @@ const getRecommendedMentorsForMentor = async (
     .skip((page - 1) * limit)
     .limit(limit)
     .select(
-      'avatarUrl rating location language availableIn bio sessionPrice currentJobTitle companyName yearsOfExperience topics language coreValues specialties coachingMethodologies careerStage focusArea industry',
+      'avatarUrl rating location language availableIn bio sessionPrice calendlyProfileLink currentJobTitle companyName yearsOfExperience topics language coreValues specialties coachingMethodologies careerStage focusArea industry',
     )
-    .populate('userId', 'name')
+    .populate('userId', 'name profileImage')
     .lean();
 
   const formattedMentors = mentors.map((mentor: any) => ({
     mentorId: mentor._id,
-    avatarUrl: mentor.avatarUrl,
+    avatarUrl: resolveMentorAvatarUrl(mentor),
     name: mentor.userId?.name || '',
     avgRating: mentor.rating || 0,
     location: mentor.location,
@@ -112,6 +125,7 @@ const getRecommendedMentorsForMentor = async (
     availableIn: mentor.availableIn,
     bio: mentor.bio,
     sessionPrice: mentor.sessionPrice,
+    calendlyProfileLink: mentor.calendlyProfileLink || null,
     currentJobTitle: mentor.currentJobTitle,
     companyName: mentor.companyName,
     yearsOfExperience: mentor.yearsOfExperience,
@@ -146,14 +160,14 @@ const getTopMentorsForMentor = async (
     .skip((page - 1) * limit)
     .limit(limit)
     .select(
-      'avatarUrl rating location language availableIn bio sessionPrice currentJobTitle companyName yearsOfExperience topics language coreValues specialties coachingMethodologies careerStage focusArea industry',
+      'avatarUrl rating location language availableIn bio sessionPrice calendlyProfileLink currentJobTitle companyName yearsOfExperience topics language coreValues specialties coachingMethodologies careerStage focusArea industry',
     )
-    .populate('userId', 'name')
+    .populate('userId', 'name profileImage')
     .lean();
 
   const formattedMentors = mentors.map((mentor: any) => ({
     mentorId: mentor._id,
-    avatarUrl: mentor.avatarUrl,
+    avatarUrl: resolveMentorAvatarUrl(mentor),
     name: mentor.userId?.name || '',
     avgRating: mentor.rating || 0,
     location: mentor.location,
@@ -161,6 +175,7 @@ const getTopMentorsForMentor = async (
     availableIn: mentor.availableIn,
     bio: mentor.bio,
     sessionPrice: mentor.sessionPrice,
+    calendlyProfileLink: mentor.calendlyProfileLink || null,
     currentJobTitle: mentor.currentJobTitle,
     companyName: mentor.companyName,
     yearsOfExperience: mentor.yearsOfExperience,
@@ -234,7 +249,7 @@ const getMentorDetails = async (mentorId: string) => {
   }));
 
   return {
-    avatarUrl: mentor.avatarUrl || user?.profileImage?.imageUrl || '',
+    avatarUrl: resolveMentorAvatarUrl({ ...mentor, userId: user }),
     name: user?.name || '',
     currentJobTitle: mentor.currentJobTitle,
     companyName: mentor.companyName,
@@ -464,9 +479,9 @@ const getRecommendedMentorsWithGeneration = async (
     .skip((page - 1) * limit)
     .limit(limit)
     .select(
-      'avatarUrl rating location language availableIn bio sessionPrice currentJobTitle companyName yearsOfExperience topics language coreValues specialties coachingMethodologies careerStage focusArea industry',
+      'avatarUrl rating location language availableIn bio sessionPrice calendlyProfileLink currentJobTitle companyName yearsOfExperience topics language coreValues specialties coachingMethodologies careerStage focusArea industry',
     )
-    .populate('userId', 'name')
+    .populate('userId', 'name profileImage')
     .lean();
 
   if (mentors.length === 0) {
@@ -475,7 +490,7 @@ const getRecommendedMentorsWithGeneration = async (
 
   const formattedMentors = mentors.map((mentor: any) => ({
     mentorId: mentor._id,
-    avatarUrl: mentor.avatarUrl,
+    avatarUrl: resolveMentorAvatarUrl(mentor),
     name: mentor.userId?.name || '',
     avgRating: mentor.rating || 0,
     location: mentor.location,
@@ -483,6 +498,7 @@ const getRecommendedMentorsWithGeneration = async (
     availableIn: mentor.availableIn,
     bio: mentor.bio,
     sessionPrice: mentor.sessionPrice,
+    calendlyProfileLink: mentor.calendlyProfileLink || null,
     currentJobTitle: mentor.currentJobTitle,
     companyName: mentor.companyName,
     yearsOfExperience: mentor.yearsOfExperience,
@@ -512,11 +528,18 @@ const bookSession = async (mentorId: string, studentId: string) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Mentor not found');
   }
 
+  if (!mentor.calendlyProfileLink) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This mentor has not configured a Calendly link yet.',
+    );
+  }
+
   return {
     sessionPrice: mentor.sessionPrice,
     calendlyProfileLink: mentor.calendlyProfileLink,
     mentorName: mentor.userId?.name || '',
-    message: 'Please use the calendly link to book a session',
+    message: 'Use the Calendly link to book a free intro (no payment on the platform)',
   };
 };
 

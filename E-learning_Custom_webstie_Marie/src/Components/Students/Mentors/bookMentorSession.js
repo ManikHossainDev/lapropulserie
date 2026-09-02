@@ -1,27 +1,40 @@
-export const startMentorSessionCheckout = async (bookMentor, mentorId) => {
-  if (!mentorId) {
-    throw new Error('Mentor introuvable.');
-  }
+/**
+ * #17 — Free intro: open mentor Calendly. No Stripe / platform payment.
+ */
+export function openMentorFreeIntro(calendlyProfileLink) {
+  const url =
+    typeof calendlyProfileLink === 'string' ? calendlyProfileLink.trim() : '';
 
-  const res = await bookMentor({ mentorId });
-  if (res?.error) {
-    const message =
-      res.error?.data?.message ||
-      'Impossible de réserver ce mentor. Réessayez plus tard.';
-    throw new Error(message);
-  }
-
-  if (res?.data?.code !== 200) {
+  if (!url) {
     throw new Error(
-      res?.data?.message ||
-        'Impossible de réserver ce mentor. Réessayez plus tard.',
+      'Lien Calendly indisponible pour ce mentor. Ouvre le profil ou réessaie plus tard.',
     );
   }
 
-  const checkoutUrl = res?.data?.data?.url || res?.data?.data?.paymentUrl;
-  if (!checkoutUrl) {
-    throw new Error('Lien de paiement introuvable.');
+  if (!/^https?:\/\//i.test(url)) {
+    throw new Error('Lien Calendly invalide.');
   }
 
-  window.location.href = checkoutUrl;
-};
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+/**
+ * Back-compat wrapper. Prefer openMentorFreeIntro(link).
+ * 2nd arg must be a Calendly URL or an object with calendlyProfileLink
+ * (not a bare mentorId — that cannot resolve the link).
+ */
+export async function startMentorSessionCheckout(_bookMentor, calendlyOrMentor) {
+  if (typeof calendlyOrMentor === 'string') {
+    if (/^[a-f\d]{24}$/i.test(calendlyOrMentor.trim())) {
+      throw new Error(
+        'Lien Calendly manquant. Ouvre le profil du mentor pour réserver la découverte offerte.',
+      );
+    }
+    openMentorFreeIntro(calendlyOrMentor);
+    return;
+  }
+
+  openMentorFreeIntro(
+    calendlyOrMentor?.calendlyProfileLink || calendlyOrMentor?.calendlyLink,
+  );
+}

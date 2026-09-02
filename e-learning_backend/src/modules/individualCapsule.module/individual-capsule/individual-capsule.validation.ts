@@ -3,15 +3,29 @@ import { z } from 'zod';
 
 // ── Part sub-schemas ──────────────────────────────────────────────────────────
 
+/** Admin sends string URL, { url, status }, or null (clear). */
+const videoFieldSchema = z
+  .union([
+    z.string(),
+    z.object({
+      url: z.string().optional(),
+      status: z.enum(['processing', 'ready', 'failed']).optional(),
+      duration: z.number().optional(),
+      errorMessage: z.string().optional(),
+    }),
+    z.null(),
+  ])
+  .optional();
+
 const introductionSchema = z.object({
   title: z.string().optional(),
-  founderVideo: z.string().optional(),
+  founderVideo: videoFieldSchema,
   text: z.string().optional(),
 }).optional();
 
 const inspirationSchema = z.object({
   title: z.string().optional(),
-  inspirationVideo: z.string().optional(),
+  inspirationVideo: videoFieldSchema,
   text: z.string().optional(),
 }).optional();
 
@@ -35,7 +49,7 @@ const practicalSchema = z.object({
 const scienceSchema = z.object({
   title: z.string().optional(),
   text: z.string().optional(),
-  optionalVideo: z.string().optional(),
+  optionalVideo: videoFieldSchema,
 }).optional();
 
 // ── Main schemas ──────────────────────────────────────────────────────────────

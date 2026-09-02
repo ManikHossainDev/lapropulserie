@@ -6,22 +6,18 @@ import { FaRocket } from 'react-icons/fa6';
 import { CiLocationOn } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
 import Link from 'next/link';
-import { useBookingMentorMutation } from '@/redux/fetures/Mentors/Mentors';
 import { toast } from 'react-toastify';
 import { mentorOptionFr, mentorOptionsFrJoin } from '@/Components/mentors/All/mentorOptionLabels';
-import { startMentorSessionCheckout } from '@/Components/Students/Mentors/bookMentorSession';
+import { openMentorFreeIntro } from '@/Components/Students/Mentors/bookMentorSession';
 
 const Mentors = ({ item }) => {
-
-    const [bookMentor, { isLoading }] = useBookingMentorMutation();
-
-    const handleBooking = async (mentorId) => {
+    const handleBooking = () => {
         try {
-            await startMentorSessionCheckout(bookMentor, mentorId);
+            openMentorFreeIntro(item?.calendlyProfileLink);
         } catch (error) {
-            toast.error(error?.message || 'Impossible de réserver ce mentor. Réessayez plus tard.');
+            toast.error(error?.message || 'Impossible de réserver ce mentor. Réessaie plus tard.');
         }
-    }
+    };
 
     return (
         <div className="relative overflow-hidden rounded-3xl text-white h-auto">
@@ -95,12 +91,11 @@ const Mentors = ({ item }) => {
 
                         <button
                             type="button"
-                            onClick={() => handleBooking(item?.mentorId)}
-                            disabled={isLoading}
-                            className="flex w-full text-sm items-center justify-center gap-2 border bg-white text-[#15153a] px-3 py-3 rounded-xl hover:bg-gray-200 transition disabled:opacity-60"
+                            onClick={handleBooking}
+                            className="flex w-full text-sm items-center justify-center gap-2 border bg-white text-[#15153a] px-3 py-3 rounded-xl hover:bg-gray-200 transition"
                         >
                             <FaRocket />
-                            {isLoading ? 'Redirection…' : 'Réserver une séance'}
+                            Découverte offerte
                         </button>
 
                     </div>
@@ -112,9 +107,12 @@ const Mentors = ({ item }) => {
 
                     {/* IMAGE */}
                     <img
-                        src={item?.avatarUrl}
+                        src={item?.avatarUrl || '/Images/default-avatar.png'}
                         alt={item?.name}
                         className="h-[75%] object-contain rounded-lg relative z-10"
+                        onError={(e) => {
+                            e.currentTarget.src = '/Images/default-avatar.png';
+                        }}
                     />
 
                     {/* IMAGE OVERLAY (IMPORTANT FIX) */}

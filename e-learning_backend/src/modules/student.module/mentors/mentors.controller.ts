@@ -3,14 +3,6 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { MentorsService } from './mentors.service';
-import { IUser } from '../../token/token.interface';
-import { PaymentService } from '../../payment.module/payment/payment.service';
-import { StripeGateway } from '../../payment.module/payment/gateways/stripe/stripe.gateway';
-import { MentorSessionPurchaseStrategy } from './mentor-session-purchase-strategy';
-
-const paymentService = new PaymentService();
-paymentService.registerStrategy('MentorSession', new MentorSessionPurchaseStrategy());
-paymentService.registerGateway('stripe', new StripeGateway());
 
 const getUserId = (req: Request): string => {
   const user = req.user as any;
@@ -143,20 +135,19 @@ const bookSession = catchAsync(async (req: Request, res: Response) => {
   const mentorId = req.params.mentorId as string;
   const studentId = getUserId(req);
 
-  console.log('bookSession called with mentorId:', mentorId, 'studentId:', studentId);
-
-  const result = await paymentService.processPayment(
-    'MentorSession',
-    'stripe',
-    mentorId,
-    req.user as IUser
-  );
+  // #17 — free intro via mentor Calendly (no Stripe / platform payment)
+  const result = await MentorsService.bookSession(mentorId, studentId);
 
   sendResponse(res, {
     code: httpStatus.OK,
     success: true,
-    message: 'Mentor session purchase initiated — redirect to payment URL',
-    data: result,
+    message:
+      'Free intro — open the mentor Calendly link to pick a slot (no payment on the platform)',
+    data: {
+      ...result,
+      url: result.calendlyProfileLink,
+      isFreeIntro: true,
+    },
   });
 });
 

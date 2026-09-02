@@ -48,10 +48,11 @@ export class IndividualCapsuleService extends GenericService<
     delete clean.scienceVideo;
     delete clean.__videoUploadTokens;
 
-    const unset: Record<string, 1> = {};
-
-    // Nested $set replaces the whole subdocument — preserve videos when omitted,
-    // and $unset when admin sends explicit null (clear).
+    // Nested $set replaces the whole subdocument.
+    // - omitted video key → keep previous
+    // - null video key → drop key so replacement clears it
+    // Never $unset a child path while $set-ing the parent (Mongo conflict —
+    // caused intermittent "Failed to update capsule" when a part had no video).
     const mergePartVideo = (
       partKey: 'introduction' | 'inspiration' | 'science',
       videoKey: 'founderVideo' | 'inspirationVideo' | 'optionalVideo',
@@ -61,13 +62,34 @@ export class IndividualCapsuleService extends GenericService<
 
       if (!Object.prototype.hasOwnProperty.call(part, videoKey)) {
         const previous = (existing as any)?.[partKey]?.[videoKey];
-        if (previous) part[videoKey] = previous;
+        if (previous) {
+          part[videoKey] =
+            typeof previous?.toObject === 'function'
+              ? previous.toObject()
+              : previous;
+        }
         return;
       }
 
-      if (part[videoKey] === null) {
+      if (part[videoKey] === null || part[videoKey] === undefined) {
         delete part[videoKey];
-        unset[`${partKey}.${videoKey}`] = 1;
+        return;
+      }
+
+      const video = part[videoKey] as Record<string, unknown>;
+      if (video && typeof video === 'object') {
+        // Drop empty processing placeholders that fail validators / wipe URLs
+        if (video.status === 'processing' && !video.url) {
+          const previous = (existing as any)?.[partKey]?.[videoKey];
+          if (previous) {
+            part[videoKey] =
+              typeof previous?.toObject === 'function'
+                ? previous.toObject()
+                : previous;
+          } else {
+            delete part[videoKey];
+          }
+        }
       }
     };
 
@@ -75,15 +97,26 @@ export class IndividualCapsuleService extends GenericService<
     mergePartVideo('inspiration', 'inspirationVideo');
     mergePartVideo('science', 'optionalVideo');
 
-    const updateOps: Record<string, unknown> = { $set: clean };
-    if (Object.keys(unset).length > 0) {
-      updateOps.$unset = unset;
+    let updated;
+    try {
+      updated = await IndividualCapsule.findByIdAndUpdate(
+        id,
+        { $set: clean },
+        {
+          new: true,
+          runValidators: true,
+        },
+      ).select('-__v');
+    } catch (err: any) {
+      const msg = String(err?.message || err);
+      if (/conflict/i.test(msg)) {
+        throw new ApiError(
+          StatusCodes.BAD_REQUEST,
+          `Capsule video update conflict. Retry replace without clearing other videos. (${msg})`,
+        );
+      }
+      throw err;
     }
-
-    const updated = await IndividualCapsule.findByIdAndUpdate(id, updateOps, {
-      new: true,
-      runValidators: true,
-    }).select('-__v');
 
     if (updated) {
       await syncJourneyCapsulesFromIndividualCapsule(updated._id);

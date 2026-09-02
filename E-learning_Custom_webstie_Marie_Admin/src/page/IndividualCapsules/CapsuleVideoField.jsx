@@ -27,6 +27,14 @@ const CapsuleVideoField = ({
 
   const handleFile = (file) => {
     if (!file) return;
+    const maxBytes = 250 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      // Soft guard — form submit also validates; catch early for UX
+      window.alert(
+        `This video is ${(file.size / (1024 * 1024)).toFixed(0)} MB. Max upload is 250 MB — use Embed Link for larger files.`,
+      );
+      return;
+    }
     setFileState({ file, preview: URL.createObjectURL(file), name: file.name });
     setEmbedState('');
     // Keep existingVideo until save succeeds — if the multipart file is dropped

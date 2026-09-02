@@ -1,6 +1,10 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
-import { Button, Upload } from 'antd';
+import { Button, Upload, message } from 'antd';
+
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 /**
  * Mentor profile photo picker (onboarding + Mon compte).
@@ -11,7 +15,6 @@ const PhotoUpload = ({ onChange, avatarUrl, disabled = false }) => {
 
   useEffect(() => {
     if (!avatarUrl) return;
-    // Don't overwrite a freshly picked local preview with the old server URL
     setPreview((current) => {
       if (current && String(current).startsWith('data:')) return current;
       return avatarUrl;
@@ -19,8 +22,17 @@ const PhotoUpload = ({ onChange, avatarUrl, disabled = false }) => {
   }, [avatarUrl]);
 
   const handleBeforeUpload = (file) => {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      message.error('Format non supporté. Utilisez JPG, PNG ou WebP.');
+      return Upload.LIST_IGNORE;
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      message.error('Image trop lourde (max 5 Mo).');
+      return Upload.LIST_IGNORE;
+    }
+
     const reader = new FileReader();
-    reader.onload = (e) => setPreview(e.target.result);
+    reader.onload = (e) => setPreview(e.target?.result);
     reader.readAsDataURL(file);
     onChange?.(file);
     return false;
@@ -30,7 +42,12 @@ const PhotoUpload = ({ onChange, avatarUrl, disabled = false }) => {
     <div className="flex items-center gap-5 mb-6">
       <div className="w-20 h-20 rounded-full border-2 border-indigo-200 bg-indigo-50 flex items-center justify-center overflow-hidden flex-shrink-0">
         {preview ? (
-          <img src={preview} alt="profile" className="w-full h-full object-cover" />
+          <img
+            src={preview}
+            alt="profile"
+            className="w-full h-full object-cover"
+            onError={() => setPreview(null)}
+          />
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -55,14 +72,20 @@ const PhotoUpload = ({ onChange, avatarUrl, disabled = false }) => {
         )}
       </div>
       <div>
-        <p className="text-sm font-semibold text-gray-800 mb-1">Photo de profil</p>
+        <p className="text-sm font-semibold text-gray-800 mb-1">
+          Photo de profil
+        </p>
         <p className="text-xs text-gray-400 mb-3">
           {disabled
             ? 'Cliquez sur Modifier pour changer votre photo.'
-            : 'Ajoutez ou remplacez une photo professionnelle.'}
+            : 'JPG, PNG ou WebP — max 5 Mo. Enregistrez le formulaire après sélection.'}
         </p>
         {!disabled && (
-          <Upload accept="image/*" showUploadList={false} beforeUpload={handleBeforeUpload}>
+          <Upload
+            accept="image/jpeg,image/png,image/webp"
+            showUploadList={false}
+            beforeUpload={handleBeforeUpload}
+          >
             <Button
               style={{
                 backgroundColor: '#3730a3',

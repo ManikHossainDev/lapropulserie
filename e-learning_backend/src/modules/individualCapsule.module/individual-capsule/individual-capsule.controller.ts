@@ -86,7 +86,7 @@ function applyUploadedVideos(data: IIndividualCapsule, body: Record<string, any>
       founderVideo: introFromUpload,
     };
   } else if (data.introduction && data.introduction.founderVideo === null) {
-    // explicit clear from admin — leave null for service $unset
+    // explicit clear from admin — leave null; service omits key so $set clears safely
   } else if (data.introduction) {
     const nested = normalizeVideoField(data.introduction.founderVideo);
     data.introduction = {
