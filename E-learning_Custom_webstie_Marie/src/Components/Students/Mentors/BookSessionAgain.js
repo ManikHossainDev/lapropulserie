@@ -56,9 +56,12 @@ const BookSessionAgain = () => {
                             {/* Profile */}
                             <div className="flex items-center gap-3 mb-3">
                                 <img
-                                    src={mentor.avatarUrl || "https://randomuser.me/api/portraits/men/32.jpg"}
+                                    src={mentor.avatarUrl || '/Images/default-avatar.png'}
                                     className="w-12 h-12 rounded-full object-cover"
                                     alt={mentor.name}
+                                    onError={(e) => {
+                                        e.currentTarget.src = '/Images/default-avatar.png';
+                                    }}
                                 />
                                 <div>
                                     <h3 className="font-semibold text-gray-800">
@@ -77,7 +80,7 @@ const BookSessionAgain = () => {
                             {/* Meta */}
                             <div className="text-sm text-gray-600 flex gap-3 flex-wrap mb-3">
                                 <span className="text-primary font-medium">
-                                    {mentor.sessionPrice} €/séance
+                                    Découverte offerte
                                 </span>
                                 <span>⭐ {mentor.avgRating}</span>
                                 <span>🌐 {mentorOptionFr(mentor.availableIn) || 'En ligne'}</span>

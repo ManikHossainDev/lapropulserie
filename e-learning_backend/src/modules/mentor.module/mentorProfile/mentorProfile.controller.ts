@@ -7,7 +7,7 @@ import { IMentorProfile } from './mentorProfile.interface';
 import { MentorProfileService } from './mentorProfile.service';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { processFiles } from '../../../helpers/processFilesToUpload';
+import { processFilesV2 } from '../../../helpers/processFilesToUpload';
 import { TFolderName } from '../../../enums/folderNames';
 import { User } from '../../user.module/user/user.model';
 
@@ -25,26 +25,29 @@ export class MentorProfileController extends GenericController<
     const mentorId = req.user.userId;
 
     let avatarUrl: string | null = null;
-    
+
+    // Must use V2 (URL strings). V1 processFiles returns Attachment ObjectIds — not usable as img src.
     if (req.files && (req.files as any).avatarUrl) {
-      const [avatarFile] = await processFiles(
+      const uploaded = await processFilesV2(
         (req.files as any).avatarUrl,
         TFolderName.profile,
       );
-      if (avatarFile) {
-        avatarUrl = typeof avatarFile === 'string' ? avatarFile : (avatarFile as any).attachment;
-      }
+      avatarUrl = uploaded[0] || null;
     }
 
     const data = req.body.data ? JSON.parse(req.body.data) : req.body;
-    
+
     if (avatarUrl) {
       data.avatarUrl = avatarUrl;
     }
 
-    const result = await this.mentorProfileService.updateMentorProfileV2(data, mentorId);
+    const result = await this.mentorProfileService.updateMentorProfileV2(
+      data,
+      mentorId,
+    );
 
     if (avatarUrl) {
+      // User schema: profileImage.imageUrl
       await User.findByIdAndUpdate(mentorId, {
         profileImage: { imageUrl: avatarUrl },
       });

@@ -53,9 +53,12 @@ const RecommendedMentors = () => {
                             {/* Profile */}
                             <div className="flex items-center gap-3 mb-3">
                                 <img
-                                    src={mentor.avatarUrl}
+                                    src={mentor.avatarUrl || '/Images/default-avatar.png'}
                                     className="w-12 h-12 rounded-full object-cover"
                                     alt={mentor.name}
+                                    onError={(e) => {
+                                        e.currentTarget.src = '/Images/default-avatar.png';
+                                    }}
                                 />
                                 <div>
                                     <h3 className="font-semibold text-gray-800">
@@ -74,7 +77,7 @@ const RecommendedMentors = () => {
                             {/* Meta */}
                             <div className="text-sm text-gray-600 flex flex-wrap gap-3 mb-3">
                                 <span className="text-primary font-medium">
-                                    ${mentor.sessionPrice}
+                                    Découverte offerte
                                 </span>
                                 <span>⭐ {mentor.avgRating}</span>
                                     🌐 {mentorOptionFr(mentor.availableIn)}

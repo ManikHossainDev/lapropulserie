@@ -81,6 +81,10 @@ if (cluster.isPrimary) {
       const port =
         typeof config.port === 'number' ? config.port : Number(config.port);
       server = app.listen(port, config.backend.ip as string, () => {
+        // Large capsule video replaces (≤250 MB) need long-lived sockets
+        server.headersTimeout = 16 * 60 * 1000;
+        server.requestTimeout = 16 * 60 * 1000;
+        server.timeout = 16 * 60 * 1000;
         logger.info(
           colors.yellow(
             `♻️  Application listening on port ${config.backend.baseUrl}/v1`,

@@ -1,7 +1,5 @@
 import React from 'react';
-
-const CALENDLY_DEMO =
-    'https://calendly.com/marie-bouleau-lapropulserie/rdv';
+import { MARIE_CALENDLY_BOOKING_URL } from '@/constants/siteLinks';
 
 const Mostcompanies = () => {
     const features = [
@@ -117,7 +115,7 @@ const Mostcompanies = () => {
 
                 {/* CTA Button */}
                 <a
-                    href={CALENDLY_DEMO}
+                    href={MARIE_CALENDLY_BOOKING_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-10 py-3.5 rounded-full font-semibold text-white text-sm transition-opacity hover:opacity-90 active:scale-95 inline-block"

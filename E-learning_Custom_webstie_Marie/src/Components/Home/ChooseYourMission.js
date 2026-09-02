@@ -1,9 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
+import { MARIE_CALENDLY_BOOKING_URL } from '@/constants/siteLinks';
 
 const SIGNUP_PARTICULIER = '/signup?role=student';
-const CALENDLY_DEMO =
-    'https://calendly.com/marie-bouleau-lapropulserie/rdv';
 
 const ChooseYourMission = () => {
     return (
@@ -51,7 +50,7 @@ const ChooseYourMission = () => {
                             </ul>
                             <span className='text-orange-400 my-5 block'>⭐ Déploiement en cours – possibilité d&apos;échanges dès maintenant</span>
                             <a
-                                href={CALENDLY_DEMO}
+                                href={MARIE_CALENDLY_BOOKING_URL}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className='py-3 w-full text-center border font-semibold border-orange-500 bg-orange-400/20 text-orange-400 mt-5 rounded-lg block'

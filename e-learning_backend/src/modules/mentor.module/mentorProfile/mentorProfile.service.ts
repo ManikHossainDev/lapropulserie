@@ -230,11 +230,19 @@ export class MentorProfileService extends GenericService<
     }
 
     const user = await User.findById(mentorId).select('name profileImage').lean();
-    
+    const userImg =
+      typeof user?.profileImage?.imageUrl === 'string'
+        ? user.profileImage.imageUrl.trim()
+        : '';
+    const resolvedAvatar =
+      (typeof mentorProfile.avatarUrl === 'string' && mentorProfile.avatarUrl.trim()) ||
+      (userImg && userImg !== '/uploads/users/user.png' ? userImg : '') ||
+      null;
+
     const profileWithUser = {
       ...mentorProfile,
       name: user?.name || null,
-      avatarUrl: user?.profileImage?.imageUrl || mentorProfile.avatarUrl,
+      avatarUrl: resolvedAvatar,
     };
 
     const completedStages = this.getOnboardingStageSummaries(profileWithUser as IMentorProfile & { name?: string | null; avatarUrl?: string | null }).filter(
@@ -281,11 +289,19 @@ export class MentorProfileService extends GenericService<
     }
 
     const user = await User.findById(mentorId).select('name profileImage').lean();
-    
+    const userImg =
+      typeof user?.profileImage?.imageUrl === 'string'
+        ? user.profileImage.imageUrl.trim()
+        : '';
+    const resolvedAvatar =
+      (typeof mentorProfile.avatarUrl === 'string' && mentorProfile.avatarUrl.trim()) ||
+      (userImg && userImg !== '/uploads/users/user.png' ? userImg : '') ||
+      null;
+
     const profileWithUser = {
       ...mentorProfile,
       name: user?.name || null,
-      avatarUrl: user?.profileImage?.imageUrl || mentorProfile.avatarUrl,
+      avatarUrl: resolvedAvatar,
     };
 
     const steps = this.getOnboardingStageSummaries(profileWithUser as IMentorProfile);

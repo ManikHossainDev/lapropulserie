@@ -320,6 +320,9 @@ export async function stageUploadedVideoSource(
 
   return {
     videoInfo: {
+      // Always expose a playable URL — empty processing placeholders get stripped
+      // by capsule update normalize and looked like intermittent replace failures.
+      url: getObjectUrlForKey(source.sourceKey),
       status: 'processing',
     },
     stagedUpload: {
