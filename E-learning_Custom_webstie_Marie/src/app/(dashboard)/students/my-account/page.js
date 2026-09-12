@@ -156,7 +156,7 @@ const Page = () => {
                                     : url + profile.profileImage.imageUrl
                                 :'/Images/Home/Others/avatar.png'
                             }
-                        alt="Maire Wagner"
+                        alt={profile?.name || 'Photo de profil'}
                         className="w-20 h-20 rounded-full object-cover ring-4 ring-indigo-100"
                     />
                     <div>
