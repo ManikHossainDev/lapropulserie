@@ -89,7 +89,11 @@ const ProfileTab = () => {
                         <img src={preview} alt="" className="w-20 h-20 rounded-full object-cover" />
                     ) : profile?.profileImage?.imageUrl ? (
                         <img
-                            src={url + profile.profileImage.imageUrl}
+                            src={
+                                profile.profileImage.imageUrl.startsWith('http')
+                                    ? profile.profileImage.imageUrl
+                                    : url + profile.profileImage.imageUrl
+                            }
                             alt=""
                             className="w-20 h-20 rounded-full object-cover"
                         />
