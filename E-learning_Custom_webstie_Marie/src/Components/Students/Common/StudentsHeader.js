@@ -139,7 +139,13 @@ const StudentsHeader = ({ isOpen, setIsOpen }) => {
                 >
                     <img
                         className="w-10 h-10 rounded-full object-cover"
-                        src={url + profile?.profileImage?.imageUrl || 'https://t4.ftcdn.net/jpg/04/34/72/82/360_F_434728286_OWQQvAFoXZLdGHlGqYqXqQH8aGC2bG.jpg'}
+                        src={
+                            profile?.profileImage?.imageUrl
+                                ? profile.profileImage.imageUrl.startsWith('http')
+                                    ? profile.profileImage.imageUrl
+                                    : url + profile.profileImage.imageUrl
+                            :'/Images/Home/Others/avatar.png'
+                        }
                         alt="profile"
                     />
                     <div>
