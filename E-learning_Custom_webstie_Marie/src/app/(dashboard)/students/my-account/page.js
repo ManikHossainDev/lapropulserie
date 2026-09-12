@@ -149,7 +149,13 @@ const Page = () => {
                 {/* Profile Header */}
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-5 flex items-center gap-5 shadow-sm">
                     <img
-                        src={url + (profile?.profileImage?.imageUrl)}
+                        src={
+                            profile?.profileImage?.imageUrl
+                                ? profile.profileImage.imageUrl.startsWith('http')
+                                    ? profile.profileImage.imageUrl
+                                    : url + profile.profileImage.imageUrl
+                                :'/Images/Home/Others/avatar.png'
+                            }
                         alt="Maire Wagner"
                         className="w-20 h-20 rounded-full object-cover ring-4 ring-indigo-100"
                     />
