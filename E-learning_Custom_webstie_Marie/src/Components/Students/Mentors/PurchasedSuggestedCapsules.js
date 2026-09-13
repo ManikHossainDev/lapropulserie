@@ -37,10 +37,13 @@ const CategoryCarousel = () => {
                 {categories.map((cat) => {
                     const id = cat.id || cat._id;
                     return (
-                        <SwiperSlide key={id}>
+                        <SwiperSlide
+                            key={id}
+                            className={categories.length === 1 ? "!w-[280px] sm:!w-[320px]" : ""}
+                        >
                             <Link
                                 href={`/students/discover/${id}`}
-                                className="flex items-center justify-center px-8 py-3 rounded-xl bg-[#2d2a71] text-white shadow-md hover:bg-[#3d3875] hover:shadow-lg transition whitespace-nowrap"
+                                className="flex items-center justify-center px-5 sm:px-8 py-3 rounded-xl bg-[#2d2a71] text-white shadow-md hover:bg-[#3d3875] hover:shadow-lg transition whitespace-nowrap"
                             >
                                 <span className="text-base font-semibold">
                                     {categories.length === 1
