@@ -70,10 +70,13 @@ export class SettingsService extends GenericService<
   async getDetailsByType(type: settingsType) {
     this.assertEditableType(type);
 
-    const setting = await Settings.findOne({ type });
+    let setting = await Settings.findOne({ type });
 
     if (!setting) {
-      throw new ApiError(StatusCodes.NOT_FOUND, `Details not found for type: ${type}.`);
+      setting = await Settings.create({
+        type,
+        details: '',
+      });
     }
 
     return this.mapDocument(setting);

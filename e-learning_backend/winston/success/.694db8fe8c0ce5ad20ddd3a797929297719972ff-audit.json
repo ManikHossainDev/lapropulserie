@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 1
+    },
+    "auditLog": "C:\\Users\\fiver\\Desktop\\AllProject\\lapropulserie\\e-learning_backend\\winston\\success\\.694db8fe8c0ce5ad20ddd3a797929297719972ff-audit.json",
+    "files": [
+        {
+            "date": 1789188595338,
+            "name": "C:\\Users\\fiver\\Desktop\\AllProject\\lapropulserie\\e-learning_backend\\winston\\success\\2026-09-12-success.log",
+            "hash": "7b062af46c400d154717340a77e696a33483772dfc164f5e7bc89c9aa48cf936"
+        },
+        {
+            "date": 1789267759467,
+            "name": "C:\\Users\\fiver\\Desktop\\AllProject\\lapropulserie\\e-learning_backend\\winston\\success\\2026-09-13-success.log",
+            "hash": "13dd15298178e7d3e07517a0790a2933070b2987e57e51afb22d1461102277f8"
+        }
+    ],
+    "hashType": "sha256"
+}

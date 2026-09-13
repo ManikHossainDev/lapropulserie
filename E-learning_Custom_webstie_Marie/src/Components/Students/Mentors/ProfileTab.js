@@ -1,5 +1,5 @@
 'use client';
-import url from '@/redux/api/baseUrl';
+import { getFullImageUrl } from '@/utils/imageUrl';
 import {
     useGetStudentMyProfileInfoQuery,
     useUpdateStudentProfileMutation
@@ -89,7 +89,7 @@ const ProfileTab = () => {
                         <img src={preview} alt="" className="w-20 h-20 rounded-full object-cover" />
                     ) : profile?.profileImage?.imageUrl ? (
                         <img
-                            src={url + profile.profileImage.imageUrl}
+                            src={getFullImageUrl(profile.profileImage.imageUrl)}
                             alt=""
                             className="w-20 h-20 rounded-full object-cover"
                         />

@@ -136,7 +136,7 @@ const MentorHeader = ({ isOpen, setIsOpen }) => {
                         src={basicInfo.avatarUrl || '/Images/default-avatar.png'}
                         alt={basicInfo.name || 'profile'}
                     />
-                    <div>
+                    <div className="hidden sm:block">
                         <h2 className="font-semibold text-sm text-gray-800">{basicInfo.name || 'Mentor'}</h2>
                         <p className="text-gray-500 text-xs">Mentor</p>
                     </div>

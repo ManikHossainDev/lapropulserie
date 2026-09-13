@@ -1,8 +1,9 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import path from 'path';
+import fs from 'fs';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import notFound from './middlewares/notFound';
 import router from './routes';
@@ -77,7 +78,28 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // file retrieve
-app.use('/uploads', express.static(path.join(__dirname, '../uploads/')));
+const uploadsPath = path.join(__dirname, '../uploads/');
+const fallbackUserPng = path.join(
+  __dirname,
+  '../../E-learning_Custom_webstie_Marie_Admin/public/Auth/user.png',
+);
+
+app.use(
+  ['/uploads/users/user.png', '/api/v1/uploads/users/user.png'],
+  (req: Request, res: Response, next: NextFunction) => {
+    const localPath = path.join(uploadsPath, 'users/user.png');
+    if (fs.existsSync(localPath)) {
+      return res.sendFile(localPath);
+    }
+    if (fs.existsSync(fallbackUserPng)) {
+      return res.sendFile(fallbackUserPng);
+    }
+    next();
+  },
+);
+
+app.use('/uploads', express.static(uploadsPath));
+app.use('/api/v1/uploads', express.static(uploadsPath));
 
 // Use i18next middleware
 app.use(i18nextMiddleware.handle(i18next));

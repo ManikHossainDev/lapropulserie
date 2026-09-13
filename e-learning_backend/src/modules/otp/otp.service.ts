@@ -8,24 +8,47 @@ import {
 } from '../../helpers/emailService';
 import OTP from './otp.model';
 import { config } from '../../config';
+import { User } from '../user.module/user/user.model';
 
 import EventEmitter from 'events';
 const eventEmitterForOTPCreateAndSendMail = new EventEmitter(); // functional way
 
+eventEmitterForOTPCreateAndSendMail.on(
+  'eventEmitterForOTPCreateAndSendMail',
+  async (valueFromRequest: any) => {
+    try {
+      let userName = valueFromRequest.name;
+      if (!userName && valueFromRequest.email) {
+        const user = await User.findOne({
+          email: valueFromRequest.email.trim().toLowerCase(),
+        })
+          .select('name')
+          .lean();
+        if (user?.name) {
+          userName = user.name;
+        }
+      }
 
-eventEmitterForOTPCreateAndSendMail.on('eventEmitterForOTPCreateAndSendMail', async (valueFromRequest: any) => {
-  try {
+      const expiration = config.otp.verifyEmailOtpExpiration;
       const otpDoc = await createOTP(
         valueFromRequest.email,
-        config.otp.verifyEmailOtpExpiration.toString(),
+        expiration.toString(),
         'verify',
       );
-      await sendVerificationEmail(valueFromRequest.email, otpDoc.otp);
-
-    }catch (error) {
-      console.error('Error occurred while handling token creation and deletion:', error);
+      await sendVerificationEmail(
+        valueFromRequest.email,
+        otpDoc.otp,
+        userName,
+        expiration,
+      );
+    } catch (error) {
+      console.error(
+        'Error occurred while handling token creation and deletion:',
+        error,
+      );
     }
-});
+  },
+);
 
 export default eventEmitterForOTPCreateAndSendMail;
 
@@ -98,23 +121,45 @@ const verifyOTP = async (userEmail: string, otp: string, type: string) => {
   return true;
 };
 
-const createVerificationEmailOtp = async (email: string) => {
+const createVerificationEmailOtp = async (email: string, name?: string) => {
+  let userName = name;
+  if (!userName) {
+    const user = await User.findOne({ email: email.trim().toLowerCase() })
+      .select('name')
+      .lean();
+    if (user?.name) {
+      userName = user.name;
+    }
+  }
+
+  const expiration = config.otp.verifyEmailOtpExpiration;
   const otpDoc = await createOTP(
     email,
-    config.otp.verifyEmailOtpExpiration.toString(),
+    expiration.toString(),
     'verify',
   );
-  await sendVerificationEmail(email, otpDoc.otp);
+  await sendVerificationEmail(email, otpDoc.otp, userName, expiration);
   return otpDoc;
 };
 
-const createResetPasswordOtp = async (email: string) => {
+const createResetPasswordOtp = async (email: string, name?: string) => {
+  let userName = name;
+  if (!userName) {
+    const user = await User.findOne({ email: email.trim().toLowerCase() })
+      .select('name')
+      .lean();
+    if (user?.name) {
+      userName = user.name;
+    }
+  }
+
+  const expiration = config.otp.resetPasswordOtpExpiration;
   const otpDoc = await createOTP(
     email,
-    config.otp.resetPasswordOtpExpiration.toString(),
+    expiration.toString(),
     'resetPassword',
   );
-  await sendResetPasswordEmail(email, otpDoc.otp);
+  await sendResetPasswordEmail(email, otpDoc.otp, userName, expiration);
   return otpDoc;
 };
 

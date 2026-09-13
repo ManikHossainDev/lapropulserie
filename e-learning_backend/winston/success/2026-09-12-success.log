@@ -1,0 +1,66 @@
+Sat Sep 12 2026 10:50:2 [Marie-Wagner] warn: Unable to connect to email server. Make sure you have configured the SMTP options in .env
+Sat Sep 12 2026 10:50:4 [Marie-Wagner] info: [32m🎯 Database connected successfully[39m
+Sat Sep 12 2026 10:53:6 [Marie-Wagner] warn: Unable to connect to email server. Make sure you have configured the SMTP options in .env
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] info: [32m🎯 Database connected successfully[39m
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] info: [33m♻️  Application listening on port http://10.10.28.126:8005/v1[39m
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] info: [33m♻️  Shobhoy port https://newsheakh8888.sobhoy.com/[39m
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Sat Sep 12 2026 10:53:30 [Marie-Wagner] info: [32m♨️  Redis Pub Client ready[39m
+Sat Sep 12 2026 10:53:30 [Marie-Wagner] info: [32m♨️  Redis Sub Client ready[39m
+Sat Sep 12 2026 10:53:30 [Marie-Wagner] info: [32m✅ Redis clients connected successfully[39m
+Sat Sep 12 2026 10:53:53 [Marie-Wagner] warn: Unable to connect to email server. Make sure you have configured the SMTP options in .env
+Sat Sep 12 2026 10:53:55 [Marie-Wagner] info: [32m🎯 Database connected successfully[39m
+Sat Sep 12 2026 10:53:55 [Marie-Wagner] info: [33m♻️  Application listening on port http://10.10.28.126:8005/v1[39m
+Sat Sep 12 2026 10:53:55 [Marie-Wagner] info: [33m♻️  Shobhoy port https://newsheakh8888.sobhoy.com/[39m
+Sat Sep 12 2026 10:53:55 [Marie-Wagner] info: [32m♨️  Redis Pub Client ready[39m
+Sat Sep 12 2026 10:53:55 [Marie-Wagner] info: [32m♨️  Redis Sub Client ready[39m
+Sat Sep 12 2026 10:53:55 [Marie-Wagner] info: [32m✅ Redis clients connected successfully[39m

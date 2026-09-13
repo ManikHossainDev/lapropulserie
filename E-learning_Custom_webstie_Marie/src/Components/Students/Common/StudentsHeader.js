@@ -3,7 +3,7 @@
 
 'use client';
 
-import url from '@/redux/api/baseUrl';
+import { getFullImageUrl, DEFAULT_AVATAR } from '@/utils/imageUrl';
 import { useGetStudentMyProfileInfoQuery } from '@/redux/fetures/profile/profile';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
@@ -139,10 +139,10 @@ const StudentsHeader = ({ isOpen, setIsOpen }) => {
                 >
                     <img
                         className="w-10 h-10 rounded-full object-cover"
-                        src={url + profile?.profileImage?.imageUrl || 'https://t4.ftcdn.net/jpg/04/34/72/82/360_F_434728286_OWQQvAFoXZLdGHlGqYqXqQH8aGC2bG.jpg'}
-                        alt="profile"
+                        src={getFullImageUrl(profile?.profileImage?.imageUrl, DEFAULT_AVATAR)}
+                        alt={profile?.name || 'profile'}
                     />
-                    <div>
+                    <div className="hidden sm:block">
                         <h2 className="font-semibold text-sm text-gray-800">{profile?.name}</h2>
                         {/* <p className="text-gray-500 text-xs">Student</p> */}
                     </div>

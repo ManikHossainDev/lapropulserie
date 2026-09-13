@@ -22,6 +22,9 @@ const transporter = nodemailer.createTransport({
         pass: config.smtp.password,
       }
     : undefined,
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 // Verify transporter connection
@@ -54,7 +57,11 @@ const renderEmailTemplate = async (templateName: string, data: Record<string, un
   const templatePath = path.join(__dirname, '..', 'views', 'email', `${templateName}.ejs`);
   const template = fs.readFileSync(templatePath, 'utf-8');
   
-  return ejs.render(template, { ...data, appName: config.app.name });
+  return ejs.render(template, {
+    appName: config.app.name || 'La Propulserie',
+    supportEmail: config.smtp.emailFrom || 'contact@lapropulserie.fr',
+    ...data,
+  });
 };
 
 // Function to send email
@@ -72,16 +79,66 @@ const sendEmail = async (values: ISendEmail) => {
   }
 };
 
-const sendVerificationEmail = async (to: string, otp: string, name?: string) => {
+const sendVerificationEmail = async (
+  to: string,
+  otp: string,
+  name?: string,
+  expiresInMinutes?: number,
+) => {
   const subject = 'Vérifie ton adresse e-mail';
-  const html = await renderEmailTemplate('otp', { otp, name, expiresInMinutes: 3 });
+  let displayName = name;
+  if (!displayName) {
+    try {
+      const user = await User.findOne({ email: to.trim().toLowerCase() })
+        .select('name')
+        .lean();
+      if (user?.name) {
+        displayName = user.name;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const expiry =
+    expiresInMinutes ?? config.otp.verifyEmailOtpExpiration ?? 10;
+  const html = await renderEmailTemplate('otp', {
+    otp,
+    name: displayName,
+    expiresInMinutes: expiry,
+  });
 
   emitEmailJob({ to, subject, html });
 };
 
-const sendResetPasswordEmail = async (to: string, otp: string, name?: string) => {
+const sendResetPasswordEmail = async (
+  to: string,
+  otp: string,
+  name?: string,
+  expiresInMinutes?: number,
+) => {
   const subject = 'Reset Your Password';
-  const html = await renderEmailTemplate('password-reset-otp', { otp, name, expiresInMinutes: 10 });
+  let displayName = name;
+  if (!displayName) {
+    try {
+      const user = await User.findOne({ email: to.trim().toLowerCase() })
+        .select('name')
+        .lean();
+      if (user?.name) {
+        displayName = user.name;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const expiry =
+    expiresInMinutes ?? config.otp.resetPasswordOtpExpiration ?? 5;
+  const html = await renderEmailTemplate('password-reset-otp', {
+    otp,
+    name: displayName,
+    expiresInMinutes: expiry,
+  });
 
   emitEmailJob({ to, subject, html });
 };

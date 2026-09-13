@@ -229,7 +229,10 @@ const createUser = async (userData: ICreateUser, userProfileId: string) => {
     const verificationToken = await TokenService.createVerifyEmailToken(
       existingUser as unknown as IUser,
     );
-    await OtpService.createVerificationEmailOtp(existingUser.email);
+    await OtpService.createVerificationEmailOtp(
+      existingUser.email,
+      existingUser.name,
+    );
 
     return {
       user: sanitizeUser(existingUser as unknown as IUser),
@@ -257,7 +260,7 @@ const createUser = async (userData: ICreateUser, userProfileId: string) => {
   const verificationToken = await TokenService.createVerifyEmailToken(
     user as unknown as IUser,
   );
-  await OtpService.createVerificationEmailOtp(user.email);
+  await OtpService.createVerificationEmailOtp(user.email, user.name);
 
   return {
     user: sanitizeUser(user as unknown as IUser),
@@ -341,7 +344,7 @@ const forgotPassword = async (email: string) => {
   const resetPasswordToken = await TokenService.createResetPasswordToken(
     user as unknown as IUser,
   );
-  await OtpService.createResetPasswordOtp(user.email);
+  await OtpService.createResetPasswordOtp(user.email, user.name);
   user.isResetPassword = true;
   await user.save();
 
@@ -359,14 +362,14 @@ const resendOtp = async (email: string) => {
     const resetPasswordToken = await TokenService.createResetPasswordToken(
       user as unknown as IUser,
     );
-    await OtpService.createResetPasswordOtp(user.email);
+    await OtpService.createResetPasswordOtp(user.email, user.name);
     return { resetPasswordToken };
   }
 
   const verificationToken = await TokenService.createVerifyEmailToken(
     user as unknown as IUser,
   );
-  await OtpService.createVerificationEmailOtp(user.email);
+  await OtpService.createVerificationEmailOtp(user.email, user.name);
   return { verificationToken };
 };
 

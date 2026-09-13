@@ -11,7 +11,7 @@ export const baseApi = createApi({
     baseUrl: apiBaseUrl,
     // Capsule / lesson video replaces can be 50–250 MB — default fetch abort is too aggressive
     timeout: 15 * 60 * 1000,
-  
+
     prepareHeaders: (headers, { getState }) => {
       // const token = getState().auth.token; 
       const token = localStorage.getItem("token");

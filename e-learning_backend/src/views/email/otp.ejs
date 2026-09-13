@@ -99,7 +99,7 @@
           <tr>
             <td class="content-padding" style="padding:24px 18px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; line-height:1.65; color:#3d3d4e;">
               <p style="margin:0 0 14px;">
-                Bonjour <strong style="color:#1a1a2e;"><%= name ?? "là" %></strong>,
+                Bonjour<% if (typeof name !== 'undefined' && name && name.trim()) { %> <strong style="color:#1a1a2e;"><%= name.trim() %></strong><% } %>,
               </p>
               <p style="margin:0 0 20px; color:#6b7280;">
                 Nous avons reçu une demande pour vérifier ton identité. Utilise le code ci-dessous pour continuer :
@@ -171,7 +171,7 @@
                     </p>
                     <p style="margin:6px 0 0; font-size:12px; line-height:1.5; color:#9ca3af;">
                       Besoin d&apos;aide ?
-                      <a href="mailto:backend@template.com" style="color:#4f6ef7; text-decoration:none; font-weight:600;">Contacter le support</a>
+                      <a href="mailto:<%= typeof supportEmail !== 'undefined' && supportEmail ? supportEmail : 'contact@lapropulserie.fr' %>" style="color:#4f6ef7; text-decoration:none; font-weight:600;">Contacter le support</a>
                     </p>
                   </td>
                 </tr>

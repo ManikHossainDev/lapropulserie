@@ -1,6 +1,6 @@
 'use client';
 
-import url from '@/redux/api/baseUrl';
+import { getFullImageUrl, DEFAULT_AVATAR } from '@/utils/imageUrl';
 import { useGetCompletedJourneysQuery, useGetMyMentorsQuery, useGetStudentMyProfileInfoQuery, useGetStudentProfileProgressQuery } from '@/redux/fetures/profile/profile';
 import DownloadCertificate from '@/Components/others/DownloadCertificate';
 import React from 'react';
@@ -149,8 +149,8 @@ const Page = () => {
                 {/* Profile Header */}
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-5 flex items-center gap-5 shadow-sm">
                     <img
-                        src={url + (profile?.profileImage?.imageUrl)}
-                        alt="Maire Wagner"
+                        src={getFullImageUrl(profile?.profileImage?.imageUrl, DEFAULT_AVATAR)}
+                        alt={profile?.name || 'User Profile'}
                         className="w-20 h-20 rounded-full object-cover ring-4 ring-indigo-100"
                     />
                     <div>
@@ -224,11 +224,7 @@ const Page = () => {
                         <div className="space-y-3">
                             {mentorsData?.map((mentor, i) => {
                                 const avatar = mentor.avatarUrl || mentor.imgSrc || '';
-                                const imgSrc = avatar.startsWith('http')
-                                    ? avatar
-                                    : avatar
-                                        ? url + avatar
-                                        : undefined;
+                                const imgSrc = getFullImageUrl(avatar, DEFAULT_AVATAR);
                                 return (
                                     <MentorCard
                                         key={mentor.mentorId || i}
