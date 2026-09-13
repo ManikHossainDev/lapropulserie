@@ -150,7 +150,7 @@ const Page = () => {
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-5 flex items-center gap-5 shadow-sm">
                     <img
                         src={getFullImageUrl(profile?.profileImage?.imageUrl, DEFAULT_AVATAR)}
-                        alt={profile?.name || 'User Profile'}
+                        alt={profile?.name || 'Photo de profil'}
                         className="w-20 h-20 rounded-full object-cover ring-4 ring-indigo-100"
                     />
                     <div>

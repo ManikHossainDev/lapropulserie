@@ -42,7 +42,7 @@ export class StripeGateway extends PaymentGateway {
           price_data: {
             currency: 'eur',
             product_data: { name: 'Paiement' },
-            unit_amount: price * 100,
+            unit_amount: Math.round(price * 100),
           },
           quantity: 1,
         },

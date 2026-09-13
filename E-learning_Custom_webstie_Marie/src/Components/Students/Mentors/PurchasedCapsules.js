@@ -5,7 +5,9 @@ import { useGetMySuggestedCapsuleQuery } from '@/redux/fetures/capsules/capsules
 
 const PurchasedCapsules = () => {
     const { data: capsules, isLoading } = useGetMySuggestedCapsuleQuery('purchased');
-    const fullData = capsules?.data?.results ?? [];
+    const fullData = Array.isArray(capsules?.data)
+        ? capsules.data
+        : capsules?.data?.results ?? [];
 
     return (
         <div className='max-w-7xl mx-auto my-10 bg-gray-100 rounded-2xl p-5 lg:p-10'>
