@@ -24,6 +24,7 @@ const CategoryCarousel = () => {
             <Swiper
                 modules={[Navigation]}
                 navigation
+                centeredSlides={categories.length === 1}
                 spaceBetween={16}
                 slidesPerView={2}
                 breakpoints={{
@@ -39,10 +40,12 @@ const CategoryCarousel = () => {
                         <SwiperSlide key={id}>
                             <Link
                                 href={`/students/discover/${id}`}
-                                className="flex items-center justify-center gap-2 px-4 py-2 border rounded-full bg-white shadow-sm hover:shadow-md transition whitespace-nowrap"
+                                className="flex items-center justify-center px-8 py-3 rounded-xl bg-[#2d2a71] text-white shadow-md hover:bg-[#3d3875] hover:shadow-lg transition whitespace-nowrap"
                             >
-                                <span className="text-sm font-medium text-gray-700 truncate max-w-[140px]">
-                                    {cat.title}
+                                <span className="text-base font-semibold">
+                                    {categories.length === 1
+                                        ? 'Découvrir toutes les capsules'
+                                        : {cat.title}
                                 </span>
                             </Link>
                         </SwiperSlide>
@@ -79,12 +82,6 @@ const PurchasedSuggestedCapsules = () => {
                             <p className="font-medium text-gray-500">
                                 Aucune capsule individuelle à vous recommander pour le moment.
                             </p>
-                            <Link
-                                href="/students/discover"
-                                className="inline-block text-[#2d2a71] font-semibold hover:underline"
-                            >
-                                Découvrir les capsules
-                            </Link>
                         </div>
                     )}
                 </>
