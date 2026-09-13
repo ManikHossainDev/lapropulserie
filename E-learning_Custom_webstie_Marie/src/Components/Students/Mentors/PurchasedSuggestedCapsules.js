@@ -45,7 +45,7 @@ const CategoryCarousel = () => {
                                 <span className="text-base font-semibold">
                                     {categories.length === 1
                                         ? 'Découvrir toutes les capsules'
-                                        : {cat.title}
+                                        : cat.title}
                                 </span>
                             </Link>
                         </SwiperSlide>
