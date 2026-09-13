@@ -196,3 +196,11 @@ npm run preview
 | `GHCR_USERNAME` | secret | docker login on EC2 |
 | `GHCR_PULL_TOKEN` | secret | PAT with `read:packages` |
 | `NEXT_PUBLIC_API_BASE_URL` | variable | website image build (API origin, no `/api/v1`) |
+
+
+
+
+
+https://api.lapropulserie.fr/
+https://admin.lapropulserie.fr/
+https://www.lapropulserie.fr/
