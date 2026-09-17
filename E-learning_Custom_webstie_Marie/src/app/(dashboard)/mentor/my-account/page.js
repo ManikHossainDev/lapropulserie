@@ -76,7 +76,7 @@ const Page = () => {
                         <div className="p-4 bg-yellow-50 border-b border-yellow-100">
                             <p className="text-sm text-yellow-800 text-center">
                                 Veuillez compléter la configuration de votre profil pour passer en ligne et recevoir des demandes de mentorat.
-                                <button 
+                                <button
                                     onClick={handleCompleteProfile}
                                     className="ml-2 text-primary font-medium hover:underline"
                                 >

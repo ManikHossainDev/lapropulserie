@@ -1,0 +1,684 @@
+Thu Sep 17 2026 8:48:23 [Marie-Wagner] info: [36m📧  Connected to email server[39m
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] info: [32m🎯 Database connected successfully[39m
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] info: [33m♻️  Application listening on port http://10.10.28.126:8080/v1[39m
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] info: [33m♻️  Shobhoy port https://maniknew8080.sobhoy.com/[39m
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:48:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:49:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:50:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:51:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:12 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:13 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:14 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:15 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:16 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:17 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:18 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:19 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:20 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:21 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:22 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:23 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:24 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:25 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:26 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:27 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:28 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:29 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:30 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:31 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:32 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:33 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:34 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:35 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:36 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:37 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:38 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:39 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:40 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:41 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:42 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:43 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:44 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:45 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:46 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:47 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:48 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:49 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:50 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:51 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:52 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:53 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:54 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:55 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:56 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:57 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:58 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:52:59 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:0 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:1 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:2 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:3 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:4 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:5 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:6 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:7 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:8 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:9 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:10 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:11 [Marie-Wagner] error: Redis Sub Client Error: connect ECONNREFUSED 127.0.0.1:6379
+Thu Sep 17 2026 8:53:12 [Marie-Wagner] info: [32m♨️  Redis Pub Client ready[39m
+Thu Sep 17 2026 8:53:12 [Marie-Wagner] info: [32m♨️  Redis Sub Client ready[39m
+Thu Sep 17 2026 8:53:12 [Marie-Wagner] info: [32m✅ Redis clients connected successfully[39m
+Thu Sep 17 2026 8:53:28 [Marie-Wagner] info: [36m📧  Connected to email server[39m
+Thu Sep 17 2026 8:53:31 [Marie-Wagner] info: [32m🎯 Database connected successfully[39m
+Thu Sep 17 2026 8:53:31 [Marie-Wagner] info: [33m♻️  Application listening on port http://10.10.28.126:8080/v1[39m
+Thu Sep 17 2026 8:53:31 [Marie-Wagner] info: [33m♻️  Shobhoy port https://maniknew8080.sobhoy.com/[39m
+Thu Sep 17 2026 8:53:31 [Marie-Wagner] info: [32m♨️  Redis Sub Client ready[39m
+Thu Sep 17 2026 8:53:31 [Marie-Wagner] info: [32m♨️  Redis Pub Client ready[39m
+Thu Sep 17 2026 8:53:31 [Marie-Wagner] info: [32m✅ Redis clients connected successfully[39m
+Thu Sep 17 2026 9:10:59 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/auth/login 204 - 0.546 ms anonymous - anonymous
+Thu Sep 17 2026 9:11:0 [Marie-Wagner] info: 10.10.28.126 - POST /api/v1/auth/login 200 - 623.586 ms anonymous - anonymous
+Thu Sep 17 2026 9:11:1 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.068 ms anonymous - anonymous
+Thu Sep 17 2026 9:11:1 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.064 ms anonymous - anonymous
+Thu Sep 17 2026 9:11:1 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/dashboard 204 - 0.049 ms anonymous - anonymous
+Thu Sep 17 2026 9:11:1 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 233.390 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:11:1 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 287.559 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:11:1 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/dashboard 200 - 426.018 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:11:32 [Marie-Wagner] info: [36m📧  Connected to email server[39m
+Thu Sep 17 2026 9:13:0 [Marie-Wagner] info: [36m📧  Connected to email server[39m
+Thu Sep 17 2026 9:13:1 [Marie-Wagner] info: [32m🎯 Database connected successfully[39m
+Thu Sep 17 2026 9:13:1 [Marie-Wagner] info: [33m♻️  Application listening on port http://10.10.28.126:8080/v1[39m
+Thu Sep 17 2026 9:13:1 [Marie-Wagner] info: [33m♻️  Shobhoy port https://maniknew8080.sobhoy.com/[39m
+Thu Sep 17 2026 9:13:1 [Marie-Wagner] info: [32m♨️  Redis Sub Client ready[39m
+Thu Sep 17 2026 9:13:1 [Marie-Wagner] info: [32m♨️  Redis Pub Client ready[39m
+Thu Sep 17 2026 9:13:1 [Marie-Wagner] info: [32m✅ Redis clients connected successfully[39m
+Thu Sep 17 2026 9:13:8 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 1.172 ms anonymous - anonymous
+Thu Sep 17 2026 9:13:8 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.115 ms anonymous - anonymous
+Thu Sep 17 2026 9:13:8 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/dashboard 204 - 0.135 ms anonymous - anonymous
+Thu Sep 17 2026 9:13:8 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 283.829 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:13:8 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 312.375 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:13:9 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/dashboard 200 - 444.293 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:20 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/settings/public/terms-and-conditions 204 - 0.061 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:20 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/settings/public/terms-and-conditions 200 - 90.766 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:21 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/reviews?page=1&limit=10 204 - 0.046 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:21 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/rating-overview 204 - 0.052 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:21 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/reviews?page=1&limit=10 200 - 197.340 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:22 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/rating-overview 200 - 202.705 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/wallet-overview 204 - 0.127 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/successful-payments?page=1&limit=6 204 - 0.063 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/withdrawal-history?page=1&limit=10 204 - 0.079 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/bank-info 204 - 0.050 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/successful-payments?page=1&limit=6 200 - 188.288 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/wallet-overview 200 - 556.179 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/withdrawal-history?page=1&limit=10 200 - 461.723 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:23 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/bank-info 200 - 459.559 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:25 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.039 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:25 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue-trend?period=monthly 204 - 0.028 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:25 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/payout-history?page=1&limit=10 204 - 0.030 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:25 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue-trend?period=monthly 200 - 195.019 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:25 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/payout-history?page=1&limit=10 200 - 202.302 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:25 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 270.103 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:14:42 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.070 ms anonymous - anonymous
+Thu Sep 17 2026 9:14:43 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 225.680 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:16:22 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.039 ms anonymous - anonymous
+Thu Sep 17 2026 9:16:22 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 224.801 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:17:15 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/profile 204 - 0.035 ms anonymous - anonymous
+Thu Sep 17 2026 9:17:15 [Marie-Wagner] info: 10.10.28.126 - PUT /api/v1/mentor-profiles/onboarding/profile 200 - 295.001 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:17:15 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.033 ms anonymous - anonymous
+Thu Sep 17 2026 9:17:16 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 236.925 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:20:59 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/profile 204 - 0.053 ms anonymous - anonymous
+Thu Sep 17 2026 9:20:59 [Marie-Wagner] info: 10.10.28.126 - PUT /api/v1/mentor-profiles/onboarding/profile 200 - 292.174 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:20:59 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.050 ms anonymous - anonymous
+Thu Sep 17 2026 9:21:0 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 243.492 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:21:17 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.082 ms anonymous - anonymous
+Thu Sep 17 2026 9:21:17 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/dashboard 204 - 0.063 ms anonymous - anonymous
+Thu Sep 17 2026 9:21:17 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 250.962 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:21:17 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/dashboard 200 - 409.094 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:21:59 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/dashboard 204 - 0.032 ms anonymous - anonymous
+Thu Sep 17 2026 9:21:59 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.025 ms anonymous - anonymous
+Thu Sep 17 2026 9:21:59 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.064 ms anonymous - anonymous
+Thu Sep 17 2026 9:21:59 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 211.977 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:21:59 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 274.622 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:21:59 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/dashboard 200 - 411.172 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:11 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.042 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:11 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/payout-history?page=1&limit=10 204 - 0.029 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:11 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue-trend?period=monthly 204 - 0.022 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:11 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/payout-history?page=1&limit=10 200 - 176.865 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:11 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue-trend?period=monthly 200 - 187.654 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:11 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 268.740 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:18 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/wallet-overview 204 - 0.030 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:18 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/successful-payments?page=1&limit=6 204 - 0.043 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:18 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/withdrawal-history?page=1&limit=10 204 - 0.115 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:18 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/bank-info 204 - 0.072 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:19 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/bank-info 200 - 176.484 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:19 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/successful-payments?page=1&limit=6 200 - 185.464 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:19 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/withdrawal-history?page=1&limit=10 200 - 185.554 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:19 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/wallet-overview 200 - 269.472 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:30 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/rating-overview 204 - 0.038 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:30 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/reviews?page=1&limit=10 204 - 0.025 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:31 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/rating-overview 200 - 186.419 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:31 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/reviews?page=1&limit=10 200 - 191.423 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:22:51 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/settings/public/terms-and-conditions 204 - 0.030 ms anonymous - anonymous
+Thu Sep 17 2026 9:22:51 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/settings/public/terms-and-conditions 200 - 38.890 ms anonymous - anonymous
+Thu Sep 17 2026 9:24:1 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/profile 204 - 0.032 ms anonymous - anonymous
+Thu Sep 17 2026 9:24:2 [Marie-Wagner] info: 10.10.28.126 - PUT /api/v1/mentor-profiles/onboarding/profile 200 - 284.962 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:24:2 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.031 ms anonymous - anonymous
+Thu Sep 17 2026 9:24:2 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 229.422 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:28:53 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/dashboard 204 - 0.047 ms anonymous - anonymous
+Thu Sep 17 2026 9:28:53 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.033 ms anonymous - anonymous
+Thu Sep 17 2026 9:28:53 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.022 ms anonymous - anonymous
+Thu Sep 17 2026 9:28:54 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 223.795 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:28:54 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 261.606 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:28:54 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/dashboard 200 - 420.900 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:29:47 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/dashboard 204 - 0.035 ms anonymous - anonymous
+Thu Sep 17 2026 9:29:47 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.025 ms anonymous - anonymous
+Thu Sep 17 2026 9:29:47 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-dashboard/revenue 204 - 0.019 ms anonymous - anonymous
+Thu Sep 17 2026 9:29:47 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 228.832 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:29:47 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/revenue 200 - 267.592 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:29:47 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-dashboard/dashboard 200 - 423.602 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
+Thu Sep 17 2026 9:36:10 [Marie-Wagner] info: 10.10.28.126 - OPTIONS /api/v1/mentor-profiles/onboarding/status 204 - 0.044 ms anonymous - anonymous
+Thu Sep 17 2026 9:36:10 [Marie-Wagner] info: 10.10.28.126 - GET /api/v1/mentor-profiles/onboarding/status 200 - 229.869 ms Test Mentor - 6aa4d9fb5b212fec05606e4a
