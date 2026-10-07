@@ -1,6 +1,6 @@
 # Propulserie — E-learning Platform
 
-E-learning platform for **students**, **mentors**, and **admins**: exploration journeys, individual capsules, questionnaires, mentoring sessions, payments, and AI-assisted reports (Marii).
+E-learning platform for **students**, **mentors**, and **admins**: exploration journeys, individual capsules, questionnaires, mentoring sessions, payments, and AI-assisted reports (Marii)
 
 This workspace contains three applications that work together.
 
